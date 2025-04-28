@@ -10,7 +10,7 @@
                 <form id="editItemForm" method="post">
                     <input type="hidden" id="edit_item_id" name="id">
                     <div class="mb-3">
-                        <label for="edit_name" class="form-label">Item Name</label>
+                        <label for="edit_name" class="form-label">Item Name/ Description</label>
                         <input type="text" class="form-control" id="edit_name" name="name" required>
                     </div>
                     <div class="mb-3">

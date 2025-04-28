@@ -46,7 +46,7 @@ try {
                             <tr>
                                 <th>Stock</th>
                                 <th>Sold By</th>
-                                <th>Name</th>
+                                <th>Name/ Description</th>
                                 <th>Category</th>
                                 <th>Cost</th>
                                 <th>Price</th>
