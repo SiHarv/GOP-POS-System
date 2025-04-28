@@ -1,0 +1,49 @@
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 80px;
+    background-color: #2c3e50;
+    padding-top: 80px;
+    z-index: 1000;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-icon {
+    display: block;
+    text-align: center;
+    padding: 20px 0;
+    color: white;
+    font-size: 30px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.sidebar-icon:hover {
+    background-color: #34495e;
+    color: #ecf0f1;
+    transform: scale(1.1);
+}
+
+/* Adjust content for sidebar */
+body {
+    margin-left: 60px;
+}
+
+.container {
+    margin-left: 60px;
+    width: calc(100% - 60px);
+    transition: margin-left 0.3s ease;
+}
+
+/* Add this specific style for active state */
+.sidebar-icon.active {
+    background-color: #4684c2 !important; /* bright green */
+    transition: background-color 0.3s ease;
+}
+
+/* Keep icons white and unaffected */
+.sidebar-icon .iconify {
+    color: white;
+}

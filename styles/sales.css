@@ -1,0 +1,46 @@
+.month-selector {
+    width: 150px;
+}
+
+.sales-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.card {
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+}
+
+.stat-item {
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.stat-item:last-child {
+    border-bottom: none;
+}
+
+.stat-item .label {
+    color: #666;
+    font-weight: 500;
+}
+
+.stat-item .value {
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+#salesChart {
+    min-height: 400px;
+}
+
+.main-content {
+    padding-top: 120px;
+}

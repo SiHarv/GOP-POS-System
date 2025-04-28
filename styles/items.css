@@ -1,0 +1,123 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f6f9;
+    color: #333;
+    padding-top: 120px; /* Add this line - should match header height */
+}
+
+.container {
+    max-width: 1600px;
+    margin: 4rem auto;  /* Fixed the missing value before 'rem' */
+    padding: 0 20px;
+    position: relative;
+}
+
+h2 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 2rem;
+    font-size: 24px;
+}
+
+.table-wrapper {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.items-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+}
+
+.items-table th,
+.items-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.items-table th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+    color: #2c3e50;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+}
+
+.items-table tr:hover {
+    background-color: #f5f7fa;
+}
+
+.items-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.table-header {
+    width: 100%;
+}
+
+.items {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 65px;
+    padding: 10px;
+    border-radius: 8px;
+    position: relative;
+}
+
+.items h2 {
+    margin: 0;
+    font-size: 24px;
+    flex-grow: 1;
+    text-align: center;
+}
+
+.add-btn {
+    position: absolute;
+    right: 0;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.add-btn:hover {
+    background-color: #45a049;
+}
+
+.edit-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.edit-btn:hover {
+    background-color: #0056b3;
+}
+
+.action-column {
+    width: 100px;
+    text-align: center;
+}
