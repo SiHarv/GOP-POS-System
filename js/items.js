@@ -73,7 +73,6 @@ $(document).ready(function() {
                     // Create new row and prepend it to the table
                     const newRow = `
                         <tr>
-                            <td>${response.item.id}</td>
                             <td>${response.item.stock}</td>
                             <td>${response.item.sold_by}</td>
                             <td>${response.item.name}</td>

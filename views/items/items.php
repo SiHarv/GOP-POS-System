@@ -44,7 +44,6 @@ try {
                     <table class="items-table">
                         <thead>
                             <tr>
-                                <th>Item ID</th>
                                 <th>Stock</th>
                                 <th>Sold By</th>
                                 <th>Name</th>
@@ -57,7 +56,6 @@ try {
                         <tbody>
                             <?php foreach ($items as $item): ?>
                             <tr>
-                                <td><?php echo $item['id']; ?></td>
                                 <td><?php echo $item['stock']; ?></td>
                                 <td><?php echo $item['sold_by']; ?></td>
                                 <td><?php echo $item['name']; ?></td>
@@ -65,7 +63,7 @@ try {
                                 <td>₱<?php echo number_format($item['cost'], 2); ?></td>
                                 <td>₱<?php echo number_format($item['price'], 2); ?></td>
                                 <td>
-                                    <button class="btn btn-sm btn-primary edit-btn" 
+                                    <button class="btn btn-sm btn-primary edit-btn"
                                             data-id="<?php echo $item['id']; ?>"
                                             data-name="<?php echo $item['name']; ?>"
                                             data-stock="<?php echo $item['stock']; ?>"
