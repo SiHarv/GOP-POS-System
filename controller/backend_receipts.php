@@ -66,8 +66,8 @@ class ReceiptsController {
             
             do {
                 $receipt['items'][] = [
-                    'name' => $row['item_name'],
                     'quantity' => $row['quantity'],
+                    'name' => $row['item_name'],
                     'unit_price' => $row['unit_price'],
                     'subtotal' => $row['subtotal']
                 ];

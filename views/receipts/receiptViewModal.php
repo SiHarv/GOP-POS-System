@@ -22,8 +22,8 @@
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th>Item</th>
                             <th>Quantity</th>
+                            <th>Item</th>
                             <th>Unit Price</th>
                             <th>Subtotal</th>
                         </tr>

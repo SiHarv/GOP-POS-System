@@ -42,7 +42,7 @@ try {
                     <table class="customers-table">
                         <thead>
                             <tr>
-                                <th>Customer ID</th>
+                                <!-- <th>Customer ID</th> -->
                                 <th>Name</th>
                                 <th>Phone Number</th>
                                 <th>Address</th>
@@ -52,7 +52,6 @@ try {
                         <tbody>
                             <?php foreach ($customers as $customer): ?>
                             <tr>
-                                <td><?php echo $customer['id']; ?></td>
                                 <td><?php echo $customer['name']; ?></td>
                                 <td><?php echo $customer['phone_number']; ?></td>
                                 <td><?php echo $customer['address']; ?></td>

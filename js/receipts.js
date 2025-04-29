@@ -25,8 +25,8 @@ $(document).ready(function() {
                 response.items.forEach(item => {
                     itemsBody.append(`
                         <tr>
-                            <td>${item.name}</td>
                             <td>${item.quantity}</td>
+                            <td>${item.name}</td>
                             <td>₱${parseFloat(item.unit_price).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                             <td>₱${parseFloat(item.subtotal).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                         </tr>
