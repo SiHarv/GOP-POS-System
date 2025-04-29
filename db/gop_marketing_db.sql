@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 29, 2025 at 04:17 AM
+-- Generation Time: Apr 29, 2025 at 04:13 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -165,8 +165,29 @@ INSERT INTO `items` (`id`, `stock`, `sold_by`, `name`, `category`, `cost`, `pric
 (8, 0, 'PCS', 'wowowo hahah', 'wowowo', 34.00, 665.00),
 (9, 446, 'BOX', 'nails wow', 'nails', 3434.00, 5543.00),
 (10, 45, 'PCS', 'ice Candy', 'malameg', 34.00, 56.00),
-(11, 49, 'PCS', 'charger', 'kiss', 50.00, 15.00),
-(12, 456, 'BOX', 'test', 'test', 45.00, 67.00);
+(11, 50, 'PCS', 'charger', 'japan', 50.00, 15.00),
+(12, 460, 'PCS', 'test', 'test', 45.00, 67.00);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `item_stock_history`
+--
+
+CREATE TABLE `item_stock_history` (
+  `id` int(11) NOT NULL,
+  `item_id` int(11) NOT NULL,
+  `quantity_added` int(11) NOT NULL,
+  `date_added` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `item_stock_history`
+--
+
+INSERT INTO `item_stock_history` (`id`, `item_id`, `quantity_added`, `date_added`) VALUES
+(1, 12, 4, '2025-04-29 13:57:21'),
+(2, 11, 1, '2025-04-29 14:01:56');
 
 --
 -- Indexes for dumped tables
@@ -200,6 +221,13 @@ ALTER TABLE `items`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `item_stock_history`
+--
+ALTER TABLE `item_stock_history`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `item_id` (`item_id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -228,6 +256,12 @@ ALTER TABLE `items`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
+-- AUTO_INCREMENT for table `item_stock_history`
+--
+ALTER TABLE `item_stock_history`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- Constraints for dumped tables
 --
 
@@ -243,6 +277,12 @@ ALTER TABLE `charges`
 ALTER TABLE `charge_items`
   ADD CONSTRAINT `charge_items_ibfk_1` FOREIGN KEY (`charge_id`) REFERENCES `charges` (`id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `charge_items_ibfk_2` FOREIGN KEY (`item_id`) REFERENCES `items` (`id`) ON UPDATE CASCADE;
+
+--
+-- Constraints for table `item_stock_history`
+--
+ALTER TABLE `item_stock_history`
+  ADD CONSTRAINT `item_stock_history_ibfk_1` FOREIGN KEY (`item_id`) REFERENCES `items` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
