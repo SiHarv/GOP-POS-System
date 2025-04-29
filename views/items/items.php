@@ -44,7 +44,9 @@ try {
                     <table class="items-table">
                         <thead>
                             <tr>
-                                <th>Stock</th>
+                                <th>New Stock Date</th>
+                                <th>New Stock</th>
+                                <th>Current Stock</th>
                                 <th>Sold By</th>
                                 <th>Name/ Description</th>
                                 <th>Category</th>
@@ -56,6 +58,8 @@ try {
                         <tbody>
                             <?php foreach ($items as $item): ?>
                             <tr>
+                            <td><?php echo isset($item['date_added']) ? date('Y-m-d H:i', strtotime($item['date_added'])) : '-'; ?></td>
+                                <td><?php echo isset($item['quantity_added']) ? $item['quantity_added'] : '0'; ?></td>
                                 <td><?php echo $item['stock']; ?></td>
                                 <td><?php echo $item['sold_by']; ?></td>
                                 <td><?php echo $item['name']; ?></td>

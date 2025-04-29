@@ -10,7 +10,21 @@ class ItemsController {
     }
 
     public function getAllItems() {
-        $sql = "SELECT * FROM items ORDER BY id DESC"; // Added ORDER BY clause
+        $sql = "SELECT i.*, 
+                h.quantity_added,
+                h.date_added
+                FROM items i
+                LEFT JOIN (
+                    SELECT item_id, quantity_added, date_added
+                    FROM item_stock_history
+                    WHERE (item_id, date_added) IN (
+                        SELECT item_id, MAX(date_added)
+                        FROM item_stock_history
+                        GROUP BY item_id
+                    )
+                ) h ON i.id = h.item_id
+                ORDER BY i.id DESC";
+                
         $result = $this->conn->query($sql);
         $items = [];
 
@@ -65,37 +79,45 @@ class ItemsController {
         }
     }
 
-    public function editItem($data) {
+    public function updateItem($data) {
         try {
-            $stmt = $this->conn->prepare("UPDATE items SET 
-                name = ?, 
-                stock = ?, 
-                sold_by = ?, 
-                category = ?, 
-                cost = ?, 
-                price = ? 
-                WHERE id = ?");
+            $this->conn->begin_transaction();
 
-            $stmt->bind_param("sissddi", 
+            // Update main item information
+            $sql = "UPDATE items SET 
+                    name = ?, 
+                    category = ?, 
+                    sold_by = ?, 
+                    cost = ?, 
+                    price = ?,
+                    stock = stock + ? 
+                    WHERE id = ?";
+            
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bind_param("sssddii", 
                 $data['name'],
-                $data['stock'],
-                $data['sold_by'],
                 $data['category'],
+                $data['sold_by'],
                 $data['cost'],
                 $data['price'],
+                $data['new_stock'],
                 $data['id']
             );
+            $stmt->execute();
 
-            if ($stmt->execute()) {
-                return ['status' => 'success'];
-            } else {
-                throw new Exception($stmt->error);
+            // Record new stock addition if any
+            if (!empty($data['new_stock']) && $data['new_stock'] > 0) {
+                $historySql = "INSERT INTO item_stock_history (item_id, quantity_added) VALUES (?, ?)";
+                $stmt = $this->conn->prepare($historySql);
+                $stmt->bind_param("ii", $data['id'], $data['new_stock']);
+                $stmt->execute();
             }
+
+            $this->conn->commit();
+            return true;
         } catch (Exception $e) {
-            return [
-                'status' => 'error',
-                'message' => $e->getMessage()
-            ];
+            $this->conn->rollback();
+            throw $e;
         }
     }
 }
@@ -111,7 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 echo json_encode($controller->addItem($_POST));
                 break;
             case 'edit_item':
-                echo json_encode($controller->editItem($_POST));
+                echo json_encode($controller->updateItem($_POST));
                 break;
         }
     }

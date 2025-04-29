@@ -26,28 +26,36 @@ $(document).ready(function() {
     });
 
     // Handle edit form submission
-    $('#editItemForm').submit(function(e) {
+    $('#editItemForm').on('submit', function(e) {
         e.preventDefault();
         
-        const formData = new FormData(this);
-        formData.append('action', 'edit_item');
+        const formData = {
+            id: $('#edit_item_id').val(),
+            name: $('#edit_name').val(),
+            stock: $('#edit_stock').val(),
+            new_stock: $('#edit_new_stock').val(),
+            sold_by: $('#edit_sold_by').val(),
+            category: $('#edit_category').val(),
+            cost: $('#edit_cost').val(),
+            price: $('#edit_price').val()
+        };
 
         $.ajax({
-            url: '../../controller/backend_items.php',
+            url: '../../controller/update_item.php',
             method: 'POST',
-            data: Object.fromEntries(formData),
+            data: formData,
             dataType: 'json',
             success: function(response) {
-                if (response.status === 'success') {
-                    editItemModal.hide();
-                    window.location.reload();
+                if(response.success) {
+                    $('#editItemModal').modal('hide');
+                    location.reload();
                 } else {
-                    alert('Error updating item: ' + (response.message || 'Unknown error'));
+                    alert('Error updating item: ' + response.message);
                 }
             },
             error: function(xhr, status, error) {
-                console.error('AJAX Error:', {xhr, status, error});
-                alert('Failed to update item. Check console for details.');
+                console.error("AJAX Error:", xhr.responseText);
+                alert('Error: ' + error);
             }
         });
     });
