@@ -81,8 +81,6 @@ $(document).ready(function() {
                     // Create new row and prepend it to the table
                     const newRow = `
                         <tr>
-                            <td>${response.null}</td>
-                            <td>${response.null}</td>
                             <td>${response.item.stock}</td>
                             <td>${response.item.sold_by}</td>
                             <td>${response.item.name}</td>
@@ -112,6 +110,7 @@ $(document).ready(function() {
                     
                     // Show success message
                     alert('Item added successfully!');
+                    location.reload();
                 } else {
                     alert("Error adding item: " + (response.message || 'Unknown error'));
                 }
