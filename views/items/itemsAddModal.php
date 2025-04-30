@@ -20,14 +20,24 @@
                     <div class="mb-3">
                         <label for="sold_by" class="form-label">Sold By</label>
                         <select class="form-select" id="sold_by" name="sold_by" required>
-                            <option value="PCS">Piece</option>
-                            <option value="PCK">Pack</option>
-                            <option value="BOX">Box</option>
+                            <option value="PCS">PIECE</option>
+                            <option value="PCK">PACK</option>
+                            <option value="BOX">BOX</option>
                         </select>
                     </div>
                     <div class="mb-3">
                         <label for="category" class="form-label">Category</label>
-                        <input type="text" class="form-control" id="category" name="category" required>
+                        <!-- <input type="text" class="form-control" id="category" name="category" required> -->
+                        <select class="form-select" id="category" name="category" required>
+                            <option value="HARDWARE">HARDWARE</option>
+                            <option value="ELECTRICAL">ELECTRICAL</option>
+                            <option value="PLUMBING">PLUMBING</option>
+                            <option value="PVC FITTING">PVC FITTING</option>
+                            <option value="G.I FITTING">G.I FITTING</option>
+                            <option value="PPR FITTING">PPR FITTING</option>
+                            <option value="BLUE FITTING">BLUE FITTING</option>
+                            <option value="P.E FITTING">P.E FITTING</option>
+                        </select>
                     </div>
                     <div class="mb-3">
                         <label for="cost" class="form-label">Cost (₱)</label>
