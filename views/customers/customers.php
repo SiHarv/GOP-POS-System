@@ -34,7 +34,7 @@ try {
             <div class="table-header">
                 <div class="customers">
                     <button id="addCustomerBtn" class="add-btn">
-                        Add Customer<span class="iconify" data-icon="gg:add-r" data-width="24" data-height="24"></span>
+                        Add Customer<span class="iconify" data-icon="solar:add-circle-outline" data-width="24" data-height="24"></span>
                     </button>
                     <h2>Customers Directory</h2>
                 </div>
@@ -67,8 +67,8 @@ try {
                                             data-address="<?php echo $customer['address']; ?>"
                                             data-terms="<?php echo $customer['terms']; ?>"
                                             data-salesman="<?php echo $customer['salesman']; ?>">
-                                        <span class="iconify" data-icon="mdi:pencil" data-width="16"></span>
-                                        Edit
+                                            EDIT
+                                            <!-- <span class="iconify" data-icon="solar:pen-linear" data-width="16"></span> -->
                                     </button>
                                 </td>
                             </tr>

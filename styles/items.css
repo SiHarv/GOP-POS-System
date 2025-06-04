@@ -3,17 +3,19 @@
     padding: 0;
     box-sizing: border-box;
 }
-
+.main-content {
+    padding-top: 3rem;
+}
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f6f9;
     color: #333;
-    padding-top: 120px; /* Add this line - should match header height */
+    /* padding-top: 120px; */
 }
 
 .container {
     max-width: 1600px;
-    margin: 4rem auto;  /* Fixed the missing value before 'rem' */
+    margin: 4rem auto;
     padding: 0 20px;
     position: relative;
 }

@@ -3,12 +3,14 @@
     padding: 0;
     box-sizing: border-box;
 }
-
+.main-content {
+    padding-top: 3rem;
+}
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f6f9;
     color: #333;
-    padding-top: 120px;
+    /* padding-top: 120px; */
 }
 
 .container {

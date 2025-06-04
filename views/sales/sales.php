@@ -14,13 +14,14 @@ $currentMonth = date('n');
     <link rel="stylesheet" href="../../styles/sidebar.css">
     <link rel="stylesheet" href="../../styles/header.css">
     <link rel="stylesheet" href="../../styles/sales.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     
     <!-- Load jQuery first -->
     <script src="../../js/libraries/jquery-3.7.1.min.js"></script>
     <!-- Load Chart.js UMD version -->
     <script src="../../js/libraries/chart.umd.min.js"></script>
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+    <link rel="stylesheet" href="../../bootstrap-5.3.6/css/bootstrap.min.css">
+    <script src="../../bootstrap-5.3.6/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
     <?php require_once '../renderParts/header.php'; ?>

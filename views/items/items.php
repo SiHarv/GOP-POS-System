@@ -22,9 +22,9 @@ try {
     <link rel="stylesheet" href="../../styles/sidebar.css">
     <link rel="stylesheet" href="../../styles/items.css">
     <link rel="stylesheet" href="../../styles/header.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../bootstrap-5.3.6/css/bootstrap.min.css">
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../../bootstrap-5.3.6/js/bootstrap.bundle.min.js"></script>
     <script src="../../js/libraries/jquery-3.7.1.min.js"></script>
     <script src="../../js/items.js"></script>
 </head>
@@ -36,7 +36,7 @@ try {
             <div class="table-header">
                 <div class="items">
                     <button id="addItemBtn" class="add-btn">
-                        Add Item<span class="iconify" data-icon="gg:add-r" data-width="24" data-height="24"></span>
+                        Add Item<span class="iconify" data-icon="solar:add-circle-outline" data-width="24" data-height="24"></span>
                     </button>
                     <h2>Items Inventory</h2>
                 </div>
@@ -75,8 +75,8 @@ try {
                                             data-category="<?php echo $item['category']; ?>"
                                             data-cost="<?php echo $item['cost']; ?>"
                                             data-price="<?php echo $item['price']; ?>">
-                                        <span class="iconify" data-icon="mdi:pencil" data-width="16"></span>
-                                        Edit
+                                        <!-- <span class="iconify" data-icon="mdi:pencil" data-width="16"></span> -->
+                                        EDIT
                                     </button>
                                 </td>
                             </tr>

@@ -1,0 +1,6 @@
+{
+   "editor.wordWrap": "off",
+   "editor.minimap.autohide": false,
+   "workbench.secondarySideBar.defaultVisibility": "hidden",
+   "workbench.editor.enablePreviewFromCodeNavigation": false
+}

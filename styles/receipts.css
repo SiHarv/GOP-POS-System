@@ -1,75 +1,428 @@
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
-
+.main-content {
+  padding-top: 1rem;
+}
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f6f9;
-    color: #333;
-    padding-top: 120px;
+  font-family: Arial, sans-serif;
+  background-color: #f4f6f9;
+  color: #333;
+  /* padding-top: 120px; */
 }
 
 .container {
-    max-width: 1600px;
-    margin: 4rem auto;
-    padding: 0 20px;
+  max-width: 1600px;
+  margin: 4rem auto;
+  padding: 0 20px;
 }
-
-.table-wrapper {
-    background-color: white;
+.receipts {
+    width: 100%;
+    border: 1px solid #ddd;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
+}
+.receipts h2 {
+  font-size: 24px;
+  color: #007acc;
+}
+.table-wrapper {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  max-height: calc(53px + (49px * 10));
+  overflow-y: auto;
 }
 
 .receipts-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 0;
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0;
+  background: #fff;
+  table-layout: fixed;
 }
 
 .receipts-table th,
 .receipts-table td {
-    padding: 12px 15px;
-    text-align: left;
-    border-bottom: 1px solid #eee;
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .receipts-table th {
-    background-color: #f8f9fa;
-    font-weight: bold;
-    color: #2c3e50;
-    text-transform: uppercase;
-    font-size: 0.9rem;
+  background-color: #f8f9fa;
+  font-weight: bold;
+  color: #007acc;
+  text-transform: uppercase;
+  font-size: 0.9rem;
 }
 
-.receipts-table tr:hover {
-    background-color: #f5f7fa;
+.receipts-table thead th {
+  background-color: #4e73df;
+  color: white;
+  padding: 12px;
+  text-align: left;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  height: 53px;
 }
 
-.receipts-table tbody tr:last-child td {
-    border-bottom: none;
+.receipts-table tbody tr {
+  height: 49px; /* Fixed height for rows */
 }
 
-.receipts {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 24px;
-    padding: 10px;
-    border-radius: 8px;
+.receipts-table tbody tr:nth-child(odd) {
+  background-color: #f8f9fc;
 }
 
-.receipts h2 {
-    margin: 0;
-    font-size: 24px;
-    text-align: center;
+.receipts-table tbody tr:hover {
+  background-color: #eaecf4;
 }
 
+.receipts-table td {
+  padding: 12px;
+  border-bottom: 1px solid #e3e6f0;
+}
+
+/* Column widths */
+.receipts-table th:nth-child(1),
+.receipts-table td:nth-child(1) {
+  width: 15%;
+}
+
+.receipts-table th:nth-child(2),
+.receipts-table td:nth-child(2) {
+  width: 25%;
+}
+
+.receipts-table th:nth-child(3),
+.receipts-table td:nth-child(3) {
+  width: 15%;
+}
+
+.receipts-table th:nth-child(4),
+.receipts-table td:nth-child(4) {
+  width: 30%;
+}
+
+.receipts-table th:nth-child(5),
+.receipts-table td:nth-child(5) {
+  width: 15%;
+  text-align: center;
+}
+
+/* Button Styling */
 .view-receipt {
-    display: inline-flex;
-    align-items: center;
+  display: inline-flex;
+  /* align-items: center; */
+  gap: 5px;
+}
+
+.btn-primary {
+  background-color: #007acc;
+  border-color: #007acc;
+}
+
+.btn-primary:hover {
+  background-color: #0062a3;
+  border-color: #0062a3;
+}
+
+.btn-outline-secondary {
+  color: #333333;
+  border-color: #d1d1d1;
+}
+
+.btn-outline-secondary:hover {
+  background-color: #f3f3f3;
+  color: #333333;
+}
+
+/* Filter Area Styling */
+.filter-area {
+  margin-top: 15px;
+  padding: 15px 0;
+}
+
+.form-control,
+.form-select {
+  border-radius: 4px;
+  border: 1px solid #d1d1d1;
+  padding: 8px 12px;
+  font-size: 14px;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #007acc;
+  box-shadow: 0 0 0 0.25rem rgba(0, 122, 204, 0.25);
+}
+
+.filter-dropdown .form-select {
+  min-width: 150px;
+}
+
+/* Search Input Styling */
+.input-group .form-control {
+  border-right: none;
+}
+
+.input-group .btn {
+  border-left: none;
+  background-color: white;
+}
+
+.input-group .btn:hover {
+  background-color: #f3f3f3;
+}
+
+/* Pagination Styling */
+.pagination-container {
+  padding: 15px 0;
+}
+
+.pagination .page-link {
+  color: #007acc;
+  border-color: #dee2e6;
+  padding: 6px 12px;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: #007acc;
+  border-color: #007acc;
+  color: white;
+}
+
+.pagination .page-item.disabled .page-link {
+  color: #6c757d;
+  background-color: #f8f9fa;
+}
+
+/* Receipt ID Badge */
+.receipt-id {
+  background-color: #f3f3f3;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: "Courier New", monospace;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* Amount Badge */
+.amount-badge {
+  color: #28a745;
+  font-weight: 600;
+}
+
+/* Action Buttons Container */
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+/* No Records Styling */
+.text-muted {
+  color: #6c757d !important;
+}
+
+/* Filter Styles */
+.filter-container {
+  margin-top: 15px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.filter-container .card-header {
+  padding: 10px 15px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e3e6f0;
+}
+
+.filter-container .card-body {
+  padding: 15px;
+  background-color: #fff;
+}
+
+.filter-container label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #4e73df;
+}
+
+#toggle-filters {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+}
+
+.form-control-sm {
+  font-size: 0.85rem;
+}
+
+#filter-body {
+  display: none;
+}
+
+/* Enhance table styling */
+.table-wrapper {
+  border-radius: 8px;
+  overflow-x: auto;
+  box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+  max-height: calc(
+    53px + (49px * 10)
+  ); /* Header height + (row height * 10 rows) */
+  overflow-y: auto;
+}
+
+.receipts-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  table-layout: fixed;
+}
+
+.receipts-table thead th {
+  background-color: #4e73df;
+  color: white;
+  padding: 12px;
+  text-align: left;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  height: 53px;
+}
+
+.receipts-table tbody tr {
+  height: 49px; /* Fixed height for rows */
+}
+
+.receipts-table tbody tr:nth-child(odd) {
+  background-color: #f8f9fc;
+}
+
+.receipts-table tbody tr:hover {
+  background-color: #eaecf4;
+}
+
+.receipts-table td {
+  padding: 12px;
+  border-bottom: 1px solid #e3e6f0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Column widths */
+.receipts-table th:nth-child(1),
+.receipts-table td:nth-child(1) {
+  width: 15%;
+}
+
+.receipts-table th:nth-child(2),
+.receipts-table td:nth-child(2) {
+  width: 25%;
+}
+
+.receipts-table th:nth-child(3),
+.receipts-table td:nth-child(3) {
+  width: 15%;
+}
+
+.receipts-table th:nth-child(4),
+.receipts-table td:nth-child(4) {
+  width: 30%;
+}
+
+.receipts-table th:nth-child(5),
+.receipts-table td:nth-child(5) {
+  width: 15%;
+  text-align: center;
+}
+
+/* Scrollbar styling */
+.table-wrapper::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.table-wrapper::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
+}
+
+/* Responsive Styling */
+@media (max-width: 767px) {
+  .container {
+    padding: 0 10px;
+    margin: 2rem auto;
+  }
+
+  .receipts-table th,
+  .receipts-table td {
+    padding: 10px;
+  }
+
+  .filter-dropdown {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .pagination {
+    justify-content: center;
+  }
+
+  .action-buttons {
+    flex-direction: column;
     gap: 5px;
+  }
+
+  .action-buttons .btn {
+    width: 100%;
+  }
+
+  .receipts h2 {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 992px) {
+  .table-wrapper {
+    max-height: calc(53px + (49px * 7)); /* Smaller height on smaller screens */
+  }
+}
+
+/* Fade-in animation for table rows */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.receipt-row {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+/* Highlight on filter match */
+.highlight-match {
+  background-color: rgba(255, 193, 7, 0.2);
+  transition: background-color 0.5s ease;
 }

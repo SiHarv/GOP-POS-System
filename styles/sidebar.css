@@ -1,49 +1,99 @@
 .sidebar {
-    position: fixed;
-    left: 0;
-    top: 0;
-    height: 100%;
-    width: 80px;
-    background-color: #2c3e50;
-    padding-top: 80px;
-    z-index: 1000;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 80px;
+  background-color: #007ACC;
+  display: flex;
+  flex-direction: column;
+  padding-top: 15px;
+  z-index: 1000;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+  transition: width 0.3s ease;
+}
+
+.sidebar:hover {
+  width: 180px;
+}
+
+.sidebar-brand {
+  color: white;
+  margin-bottom: 20px;
+}
+
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 }
 
 .sidebar-icon {
-    display: block;
-    text-align: center;
-    padding: 20px 0;
-    color: white;
-    font-size: 30px;
-    text-decoration: none;
-    transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  padding: 15px 0;
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  white-space: nowrap;
+  margin: 5px 0;
+  border-left: 3px solid transparent;
 }
 
 .sidebar-icon:hover {
-    background-color: #34495e;
-    color: #ecf0f1;
-    transform: scale(1.1);
+  background-color: #34495e;
+  color: #ffffff;
+  border-left: 3px solid #3498db;
+}
+
+.sidebar-icon.active {
+  background-color: #34495e;
+  color: #ffffff;
+  border-left: 3px solid #2ecc71;
+}
+
+.sidebar-text {
+  opacity: 0;
+  margin-left: 10px;
+  font-size: 0.8rem;
+  transition: opacity 0.3s ease;
+}
+
+.sidebar:hover .sidebar-text {
+  opacity: 1;
 }
 
 /* Adjust content for sidebar */
 body {
-    margin-left: 60px;
+  margin-left: 80px;
+  transition: margin-left 0.3s ease;
 }
 
 .container {
+  margin-left: 80px;
+  width: calc(100% - 80px);
+  transition: margin-left 0.3s ease, width 0.3s ease;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding-bottom: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 60px;
+  }
+
+  .sidebar:hover {
+    width: 150px;
+  }
+
+  body,
+  .container {
     margin-left: 60px;
     width: calc(100% - 60px);
-    transition: margin-left 0.3s ease;
-}
-
-/* Add this specific style for active state */
-.sidebar-icon.active {
-    background-color: #4684c2 !important; /* bright green */
-    transition: background-color 0.3s ease;
-}
-
-/* Keep icons white and unaffected */
-.sidebar-icon .iconify {
-    color: white;
+  }
 }

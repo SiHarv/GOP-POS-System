@@ -14,9 +14,9 @@ $items = $chargeController->getAllItems();
     <link rel="stylesheet" href="../../styles/sidebar.css">
     <link rel="stylesheet" href="../../styles/charge.css">
     <link rel="stylesheet" href="../../styles/header.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../bootstrap-5.3.6/css/bootstrap.min.css">
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../../bootstrap-5.3.6/js/bootstrap.bundle.min.js"></script>
     <script src="../../js/libraries/jquery-3.7.1.min.js"></script>
     <script src="../../js/charge.js"></script>
 </head>
@@ -30,7 +30,8 @@ $items = $chargeController->getAllItems();
                 <!-- Left side - Item Selection -->
                 <div class="col-md-8">
                     <div class="card mb-4">
-                        <div class="card-header">
+                        <div class="card-header d-flex align-items-center">
+                            <span class="iconify me-1" data-icon="solar:box-linear" data-width="24"></span>
                             <h5 class="card-title mb-0">Available Items</h5>
                         </div>
                         <div class="card-body">
@@ -59,7 +60,8 @@ $items = $chargeController->getAllItems();
                                                             data-name="<?php echo $item['name']; ?>"
                                                             data-price="<?php echo $item['price']; ?>"
                                                             data-stock="<?php echo $item['stock']; ?>">
-                                                        Add
+                                                            ADD 
+                                                            <span class="iconify" data-icon="solar:add-circle-outline" data-width="20" data-height="20"></span>
                                                     </button>
                                                 <?php else: ?>
                                                     <button class="btn btn-sm btn-secondary" disabled>
@@ -79,7 +81,8 @@ $items = $chargeController->getAllItems();
                 <!-- Right side - Cart -->
                 <div class="col-md-4">
                     <div class="card">
-                        <div class="card-header">
+                        <div class="card-header d-flex align-items-center">
+                            <span class="iconify me-1" data-icon="solar:cart-large-linear" data-width="24"></span>
                             <h5 class="card-title mb-0">Current Charge</h5>
                         </div>
                         <div class="card-body">
