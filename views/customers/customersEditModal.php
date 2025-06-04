@@ -21,6 +21,22 @@
                         <label for="edit_address" class="form-label">Address</label>
                         <textarea class="form-control" id="edit_address" name="address" rows="3" required></textarea>
                     </div>
+                    <div class="mb-3">
+                        <label for="edit_terms" class="form-label">Terms (COD / monthly payment, etc.)</label>
+                        <select class="form-select mt-2" id="edit_terms" name="terms" required>
+                            <option value="COD">COD</option>
+                            <option value="Monthly payment">Monthly payment</option>
+                            <!-- <option value="BOX">BOX</option> -->
+                        </select>
+                    </div>
+                    <!-- <div class="mb-3">
+                        <label for="edit_terms" class="form-label">Terms (COD / monthly payment)</label>
+                        <input type="text" class="form-control mt-2" id="edit_terms" name="terms" required>
+                    </div> -->
+                    <div class="mb-3">
+                        <label for="edit_salesman" class="form-label">Salesman:</label>
+                        <input type="text" name="salesman" id="edit_salesman" class="form-control" required>
+                    </div>
                     <div class="modal-footer px-0 pb-0">
                         <button type="submit" class="btn btn-primary">Save Changes</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

@@ -31,7 +31,16 @@
                     </div>
                     <div class="mb-3">
                         <label for="edit_category" class="form-label">Category</label>
-                        <input type="text" class="form-control" id="edit_category" name="category" required>
+                        <select class="form-select" id="edit_category" name="category" required>
+                            <option value="HARDWARE">HARDWARE</option>
+                            <option value="ELECTRICAL">ELECTRICAL</option>
+                            <option value="PLUMBING">PLUMBING</option>
+                            <option value="PVC FITTING">PVC FITTING</option>
+                            <option value="G.I FITTING">G.I FITTING</option>
+                            <option value="PPR FITTING">PPR FITTING</option>
+                            <option value="BLUE FITTING">BLUE FITTING</option>
+                            <option value="P.E FITTING">P.E FITTING</option>
+                        </select>
                     </div>
                     <div class="mb-3">
                         <label for="edit_cost" class="form-label">Cost (₱)</label>

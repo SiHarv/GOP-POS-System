@@ -24,9 +24,9 @@ class CustomersController {
 
     public function addCustomer($data) {
         try {
-            $sql = "INSERT INTO customers (name, phone_number, address) VALUES (?, ?, ?)";
+            $sql = "INSERT INTO customers (name, phone_number, address, terms, salesman) VALUES (?, ?, ?, ?, ?)";
             $stmt = $this->conn->prepare($sql);
-            $stmt->bind_param("sss", $data['name'], $data['phone_number'], $data['address']);
+            $stmt->bind_param("sssss", $data['name'], $data['phone_number'], $data['address'], $data['terms'], $data['salesman']);
 
             if ($stmt->execute()) {
                 $lastInsertId = $this->conn->insert_id;
@@ -36,7 +36,9 @@ class CustomersController {
                         'id' => $lastInsertId,
                         'name' => $data['name'],
                         'phone_number' => $data['phone_number'],
-                        'address' => $data['address']
+                        'address' => $data['address'],
+                        'terms' => $data['terms'],
+                        'salesman' => $data['salesman']
                     ]
                 ];
             } else {
@@ -55,13 +57,15 @@ class CustomersController {
 
     public function editCustomer($data) {
         try {
-            $sql = "UPDATE customers SET name = ?, phone_number = ?, address = ? WHERE id = ?";
+            $sql = "UPDATE customers SET name = ?, phone_number = ?, address = ?, terms = ?, salesman = ? WHERE id = ?";
             $stmt = $this->conn->prepare($sql);
-            $stmt->bind_param("sssi", 
+            $stmt->bind_param("sssssi", 
                 $data['name'],
                 $data['phone_number'],
                 $data['address'],
-                $data['id']
+                $data['terms'],
+                $data['salesman'],
+                $data['id'],
             );
 
             if ($stmt->execute()) {

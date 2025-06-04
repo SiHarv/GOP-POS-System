@@ -13,12 +13,16 @@ $(document).ready(function() {
         const name = $(this).data('name');
         const phone = $(this).data('phone');
         const address = $(this).data('address');
+        const terms = $(this).data('terms');
+        const salesman = $(this).data('salesman');
 
         // Populate form fields
         $('#edit_customer_id').val(id);
         $('#edit_name').val(name);
         $('#edit_phone_number').val(phone);
         $('#edit_address').val(address);
+        $('#edit_terms').val(terms);
+        $('#edit_salesman').val(salesman);
 
         // Show modal
         editCustomerModal.show();

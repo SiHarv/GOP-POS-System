@@ -46,6 +46,8 @@ try {
                                 <th>Name</th>
                                 <th>Phone Number</th>
                                 <th>Address</th>
+                                <th>Terms (days)</th>
+                                <th>Salesman</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -55,12 +57,16 @@ try {
                                 <td><?php echo $customer['name']; ?></td>
                                 <td><?php echo $customer['phone_number']; ?></td>
                                 <td><?php echo $customer['address']; ?></td>
+                                <td><?php echo $customer['terms']; ?></td>
+                                <td><?php echo $customer['salesman']; ?></td>
                                 <td>
                                     <button class="btn btn-sm btn-primary edit-btn" 
                                             data-id="<?php echo $customer['id']; ?>"
                                             data-name="<?php echo $customer['name']; ?>"
                                             data-phone="<?php echo $customer['phone_number']; ?>"
-                                            data-address="<?php echo $customer['address']; ?>">
+                                            data-address="<?php echo $customer['address']; ?>"
+                                            data-terms="<?php echo $customer['terms']; ?>"
+                                            data-salesman="<?php echo $customer['salesman']; ?>">
                                         <span class="iconify" data-icon="mdi:pencil" data-width="16"></span>
                                         Edit
                                     </button>

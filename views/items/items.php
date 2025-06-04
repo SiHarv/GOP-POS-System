@@ -59,7 +59,7 @@ try {
                             <?php foreach ($items as $item): ?>
                             <tr>
                             <td><?php echo isset($item['date_added']) ? date('Y-m-d H:i', strtotime($item['date_added'])) : '-'; ?></td>
-                                <td><?php echo isset($item['quantity_added']) ? $item['quantity_added'] : '0'; ?></td>
+                                <td><?php echo isset($item['quantity_added']) ? $item['quantity_added'] : '0', " (new)"; ?></td>
                                 <td><?php echo $item['stock']; ?></td>
                                 <td><?php echo $item['sold_by']; ?></td>
                                 <td><?php echo $item['name']; ?></td>
