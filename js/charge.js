@@ -387,15 +387,13 @@ $(document).ready(function () {
 
       totalAmount += item.total;
 
-      // Calculate savings from discount
       const subtotal = item.price * item.quantity;
       const savings = subtotal - item.total;
 
-      // Create a better UI for cart items with discount
       const itemElement = `
         <div class="cart-item card mb-3">
-          <div class="card-header bg-light d-flex justify-content-between align-items-center py-2">
-            <h6 class="mb-0">${item.name}</h6>
+          <div class="card-header bg-light d-flex justify-content-between align-items-center">
+            <h6 class="mb-0 px-3">${item.name}</h6>
             <button class="btn btn-sm btn-outline-danger remove-item" data-index="${index}">
               <span class="iconify" data-icon="solar:trash-bin-minimalistic-outline" data-width="16"></span>
             </button>
@@ -460,7 +458,6 @@ $(document).ready(function () {
       cartContainer.append(itemElement);
     });
 
-    // Show a summary of the total savings if there are discounted items
     const discountedItems = cart.filter((item) => item.discount > 0);
     if (discountedItems.length > 0) {
       const totalSavings = discountedItems.reduce((sum, item) => {
