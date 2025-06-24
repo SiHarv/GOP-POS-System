@@ -61,6 +61,11 @@ try {
                                     <label for="customer-name-filter" class="form-label">Customer Name</label>
                                     <input type="text" class="form-control form-control-sm" id="customer-name-filter" placeholder="Filter by name">
                                 </div>
+                                <!-- Add PO Number filter -->
+                                <div class="col-md-3">
+                                    <label for="po-number-filter" class="form-label">P.O. Number</label>
+                                    <input type="text" class="form-control form-control-sm" id="po-number-filter" placeholder="Filter by PO#">
+                                </div>
                                 <div class="col-md-3">
                                     <label for="date-from-filter" class="form-label">Date From</label>
                                     <input type="date" class="form-control form-control-sm" id="date-from-filter">
@@ -85,6 +90,7 @@ try {
                             <tr>
                                 <th>Receipt ID</th>
                                 <th>Customer Name</th>
+                                <th>P.O. Number</th>
                                 <th>Total Amount</th>
                                 <th>Date</th>
                                 <th>View Details</th>
@@ -92,11 +98,9 @@ try {
                         </thead>
                         <tbody>
                             <?php
-                            // Check if there are no receipts
                             if (empty($receipts)) {
-                                echo '<tr><td colspan="5" class="text-center">No receipts found</td></tr>';
+                                echo '<tr><td colspan="6" class="text-center">No receipts found</td></tr>';
                             } else {
-                                // Make sure we have at least 10 rows for consistent height
                                 $receiptCount = count($receipts);
 
                                 foreach ($receipts as $receipt):
@@ -104,6 +108,7 @@ try {
                                     <tr>
                                         <td><?php echo $receipt['id']; ?></td>
                                         <td><?php echo $receipt['customer_name']; ?></td>
+                                        <td><?php echo !empty($receipt['po_number']) ? $receipt['po_number'] : '-'; ?></td>
                                         <td>₱<?php echo number_format($receipt['total_price'], 2); ?></td>
                                         <td><?php echo date('M d, Y h:i A', strtotime($receipt['charge_date'])); ?></td>
                                         <td>
@@ -116,10 +121,9 @@ try {
                             <?php
                                 endforeach;
 
-                                // Add empty rows if we have fewer than 10 receipts
                                 if ($receiptCount < 10) {
                                     for ($i = 0; $i < (10 - $receiptCount); $i++) {
-                                        echo '<tr class="empty-row"><td colspan="5">&nbsp;</td></tr>';
+                                        echo '<tr class="empty-row"><td colspan="6">&nbsp;</td></tr>';
                                     }
                                 }
                             }

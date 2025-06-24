@@ -19,9 +19,9 @@ body {
   padding: 0 20px;
 }
 .receipts {
-    width: 100%;
-    border: 1px solid #ddd;
-    border-radius: 8px;
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 8px;
 }
 .receipts h2 {
   font-size: 24px;
@@ -34,6 +34,8 @@ body {
   overflow: hidden;
   max-height: calc(53px + (49px * 10));
   overflow-y: auto;
+  width: 100%;
+  margin-bottom: 20px;
 }
 
 .receipts-table {
@@ -42,6 +44,7 @@ body {
   margin: 0;
   background: #fff;
   table-layout: fixed;
+  min-width: 900px; /* Ensure minimum width to prevent squeezing */
 }
 
 .receipts-table th,
@@ -88,32 +91,40 @@ body {
 .receipts-table td {
   padding: 12px;
   border-bottom: 1px solid #e3e6f0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Column widths */
 .receipts-table th:nth-child(1),
 .receipts-table td:nth-child(1) {
-  width: 15%;
+  width: 10%; /* Receipt ID */
 }
 
 .receipts-table th:nth-child(2),
 .receipts-table td:nth-child(2) {
-  width: 25%;
+  width: 20%; /* Customer Name */
 }
 
 .receipts-table th:nth-child(3),
 .receipts-table td:nth-child(3) {
-  width: 15%;
+  width: 15%; /* P.O. Number */
 }
 
 .receipts-table th:nth-child(4),
 .receipts-table td:nth-child(4) {
-  width: 30%;
+  width: 15%; /* Total Amount */
 }
 
 .receipts-table th:nth-child(5),
 .receipts-table td:nth-child(5) {
-  width: 15%;
+  width: 25%; /* Date */
+}
+
+.receipts-table th:nth-child(6),
+.receipts-table td:nth-child(6) {
+  width: 15%; /* View Button */
   text-align: center;
 }
 
@@ -122,6 +133,8 @@ body {
   display: inline-flex;
   /* align-items: center; */
   gap: 5px;
+  white-space: nowrap;
+  min-width: 60px;
 }
 
 .btn-primary {
@@ -284,6 +297,7 @@ body {
   border-collapse: collapse;
   background: #fff;
   table-layout: fixed;
+  min-width: 900px; /* Ensure minimum width to prevent squeezing */
 }
 
 .receipts-table thead th {
@@ -320,27 +334,32 @@ body {
 /* Column widths */
 .receipts-table th:nth-child(1),
 .receipts-table td:nth-child(1) {
-  width: 15%;
+  width: 10%; /* Receipt ID */
 }
 
 .receipts-table th:nth-child(2),
 .receipts-table td:nth-child(2) {
-  width: 25%;
+  width: 20%; /* Customer Name */
 }
 
 .receipts-table th:nth-child(3),
 .receipts-table td:nth-child(3) {
-  width: 15%;
+  width: 15%; /* P.O. Number */
 }
 
 .receipts-table th:nth-child(4),
 .receipts-table td:nth-child(4) {
-  width: 30%;
+  width: 15%; /* Total Amount */
 }
 
 .receipts-table th:nth-child(5),
 .receipts-table td:nth-child(5) {
-  width: 15%;
+  width: 25%; /* Date */
+}
+
+.receipts-table th:nth-child(6),
+.receipts-table td:nth-child(6) {
+  width: 15%; /* View Button */
   text-align: center;
 }
 

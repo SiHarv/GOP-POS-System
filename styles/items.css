@@ -44,7 +44,8 @@ h2 {
 .items-table thead th {
   background-color: #007bff;
   color: white;
-  padding: 12px;
+  padding: 3px;
+  padding-left: 12px;
   text-align: left;
   position: sticky;
   top: 0;
@@ -315,7 +316,6 @@ h2 {
   background-color: rgba(246, 194, 62, 0.1);
 }
 
-/* Purchase Order styles */
 .purchase-order-alert {
   background-color: #f8d7da;
   color: #721c24;
@@ -349,7 +349,6 @@ h2 {
   align-items: center;
 }
 
-/* Adjust the layout for items with PO checkbox */
 .item-actions {
   display: flex;
   flex-direction: column;
@@ -357,7 +356,6 @@ h2 {
   min-width: 90px;
 }
 
-/* Purchase Order Modal Styles */
 #purchaseOrderModal .modal-body {
   max-height: 60vh;
   overflow-y: auto;

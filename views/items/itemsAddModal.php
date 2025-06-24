@@ -10,7 +10,7 @@
                 <form id="addItemForm" method="post">
                     <input type="hidden" name="action" value="add">
                     <div class="mb-3">
-                        <label for="name" class="form-label">Item Name/ Description</label>
+                        <label for="name" class="form-label">Item Name & Description</label>
                         <input type="text" class="form-control" id="name" name="name" placeholder="Enter item dame & description" required>
                     </div>
                     <div class="mb-3">

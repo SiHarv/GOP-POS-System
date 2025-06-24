@@ -1,15 +1,18 @@
 <?php
 require_once __DIR__ . '/../connection/DBConnection.php';
 
-class ChargeController {
+class ChargeController
+{
     private $conn;
 
-    public function __construct() {
+    public function __construct()
+    {
         $db = new DBConnection();
         $this->conn = $db->getConnection();
     }
 
-    public function getAllCustomers() {
+    public function getAllCustomers()
+    {
         $sql = "SELECT id, name FROM customers ORDER BY name ASC";
         $result = $this->conn->query($sql);
         $customers = [];
@@ -22,7 +25,8 @@ class ChargeController {
         return $customers;
     }
 
-    public function getAllItems() {
+    public function getAllItems()
+    {
         // Add stock to the SELECT statement
         $sql = "SELECT id, name, category, stock, price FROM items ORDER BY name ASC";
         $result = $this->conn->query($sql);
@@ -36,29 +40,35 @@ class ChargeController {
         return $items;
     }
 
-    public function processCharge($customerId, $items) {
+    public function processCharge($customerId, $items, $poNumber = null)
+    {
         try {
             $this->conn->begin_transaction();
 
             // 1. Create the main charge record
-            $totalAmount = array_reduce($items, function($sum, $item) {
-                return $sum + ($item['price'] * $item['quantity']);
+            $totalAmount = array_reduce($items, function ($sum, $item) {
+                // Ensure total exists and is valid
+                $itemTotal = isset($item['total']) && is_numeric($item['total']) ?
+                    $item['total'] : ($item['price'] * $item['quantity']);
+
+                return $sum + $itemTotal;
             }, 0);
 
-            $sql = "INSERT INTO charges (customer_id, total_price) VALUES (?, ?)";
+            // Modified SQL to include po_number field
+            $sql = "INSERT INTO charges (customer_id, total_price, po_number) VALUES (?, ?, ?)";
             $stmt = $this->conn->prepare($sql);
-            $stmt->bind_param("id", $customerId, $totalAmount);
-            
+            $stmt->bind_param("ids", $customerId, $totalAmount, $poNumber);
+
             if (!$stmt->execute()) {
                 throw new Exception("Error creating charge record");
             }
-            
+
             $chargeId = $this->conn->insert_id;
 
             // 2. Insert charge items and update stock
-            $insertItemSql = "INSERT INTO charge_items (charge_id, item_id, quantity, price) VALUES (?, ?, ?, ?)";
+            $insertItemSql = "INSERT INTO charge_items (charge_id, item_id, quantity, price, discount_percentage) VALUES (?, ?, ?, ?, ?)";
             $updateStockSql = "UPDATE items SET stock = stock - ? WHERE id = ? AND stock >= ?";
-            
+
             $insertStmt = $this->conn->prepare($insertItemSql);
             $updateStmt = $this->conn->prepare($updateStockSql);
 
@@ -69,25 +79,32 @@ class ChargeController {
                     throw new Exception("Insufficient stock for item: " . $item['name']);
                 }
 
-                // Insert charge item
-                $insertStmt->bind_param("iiid", 
+                // Ensure discount is a valid number
+                $discount = isset($item['discount']) && is_numeric($item['discount']) ?
+                    $item['discount'] : 0;
+
+                // Insert charge item with discount
+                $insertStmt->bind_param(
+                    "iiidd",
                     $chargeId,
                     $item['id'],
                     $item['quantity'],
-                    $item['price']
+                    $item['price'],
+                    $discount  // Store discount percentage
                 );
-                
+
                 if (!$insertStmt->execute()) {
                     throw new Exception("Error adding charge item");
                 }
 
                 // Update stock
-                $updateStmt->bind_param("iii", 
+                $updateStmt->bind_param(
+                    "iii",
                     $item['quantity'],
                     $item['id'],
                     $item['quantity']
                 );
-                
+
                 if (!$updateStmt->execute() || $updateStmt->affected_rows === 0) {
                     throw new Exception("Error updating stock for item: " . $item['name']);
                 }
@@ -95,7 +112,6 @@ class ChargeController {
 
             $this->conn->commit();
             return ['status' => 'success'];
-
         } catch (Exception $e) {
             $this->conn->rollback();
             return [
@@ -105,7 +121,8 @@ class ChargeController {
         }
     }
 
-    private function getItemStock($itemId) {
+    private function getItemStock($itemId)
+    {
         $sql = "SELECT stock FROM items WHERE id = ?";
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("i", $itemId);
@@ -122,10 +139,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
     switch ($_POST['action']) {
         case 'process_charge':
-            $result = $controller->processCharge($_POST['customer_id'], $_POST['items']);
+            // Get P.O. number from the request
+            $poNumber = isset($_POST['po_number']) ? $_POST['po_number'] : null;
+            $result = $controller->processCharge($_POST['customer_id'], $_POST['items'], $poNumber);
             echo json_encode($result);
             break;
-            
+
         case 'get_items':
             $items = $controller->getAllItems();
             echo json_encode($items);

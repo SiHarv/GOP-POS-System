@@ -18,6 +18,7 @@
                     <div><strong>Date:</strong> <span id="receipt-date"></span></div>
                     <div><strong>Customer:</strong> <span id="receipt-customer"></span></div>
                     <div><strong>Address:</strong> <span id="receipt-address"></span></div>
+                    <div><strong>P.O. Number:</strong> <span id="receipt-po-number">-</span></div>
                 </div>
                 <table class="table table-bordered">
                     <thead>
@@ -25,6 +26,7 @@
                             <th>Quantity</th>
                             <th>Item</th>
                             <th>Unit Price</th>
+                            <th>Discount</th>
                             <th>Subtotal</th>
                         </tr>
                     </thead>
@@ -33,7 +35,7 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="3" class="text-end"><strong>Total Amount:</strong></td>
+                            <td colspan="4" class="text-end"><strong>Total Amount:</strong></td>
                             <td><strong>₱<span id="receipt-total"></span></strong></td>
                         </tr>
                     </tfoot>
@@ -56,29 +58,37 @@
         body * {
             visibility: hidden;
         }
-        #printable-area, #printable-area * {
+
+        #printable-area,
+        #printable-area * {
             visibility: visible;
         }
+
         #printable-area {
             position: absolute;
             left: 0;
             top: 0;
             width: 100%;
         }
+
         .modal-footer {
             display: none;
         }
+
         .receipt-header {
             text-align: center;
             margin-bottom: 30px;
         }
+
         .receipt-details {
             margin-bottom: 20px;
         }
+
         .table {
             width: 100%;
             margin-bottom: 20px;
         }
+
         .footer {
             margin-top: 30px;
             text-align: center;

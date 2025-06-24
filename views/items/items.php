@@ -67,7 +67,7 @@ try {
                                         <th>New stock</th>
                                         <th>Current stock</th>
                                         <th>Sold by</th>
-                                        <th>Name & description</th>
+                                        <th>Name & Description</th>
                                         <th>Category</th>
                                         <th>Cost</th>
                                         <th>Price</th>

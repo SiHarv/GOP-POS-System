@@ -8,14 +8,18 @@ $(document).ready(function () {
   $("#reset-filter").click(function () {
     $("#receipt-id-filter").val("");
     $("#customer-name-filter").val("");
+    $("#po-number-filter").val("");
     $("#date-from-filter").val("");
     $("#date-to-filter").val("");
-    filterTable(); 
-  });
-
-  $("#receipt-id-filter, #customer-name-filter").on("input", function () {
     filterTable();
   });
+
+  $("#receipt-id-filter, #customer-name-filter, #po-number-filter").on(
+    "input",
+    function () {
+      filterTable();
+    }
+  );
 
   function initFilterPanel() {
     const filterPanelVisible = localStorage.getItem("filterPanelVisible");
@@ -37,6 +41,7 @@ $(document).ready(function () {
   function filterTable() {
     const receiptIdFilter = $("#receipt-id-filter").val().toLowerCase();
     const customerNameFilter = $("#customer-name-filter").val().toLowerCase();
+    const poNumberFilter = $("#po-number-filter").val().toLowerCase();
     const dateFromFilter = $("#date-from-filter").val();
     const dateToFilter = $("#date-to-filter").val();
 
@@ -47,6 +52,7 @@ $(document).ready(function () {
     if (
       !receiptIdFilter &&
       !customerNameFilter &&
+      !poNumberFilter &&
       !dateFromFilter &&
       !dateToFilter
     ) {
@@ -56,15 +62,17 @@ $(document).ready(function () {
 
     let hiddenRowCount = 0;
 
-    $("#receipts-table tbody tr:not(.empty-row)").each(function () {
+    $("#receipts-table tbody tr").each(function () {
       const $row = $(this);
-      const receiptId = $row.find("td:nth-child(1)").text().toLowerCase();
-      const customerName = $row.find("td:nth-child(2)").text().toLowerCase();
-      const dateText = $row.find("td:nth-child(4)").text();
 
-      if ($row.find('td[colspan="5"]').length > 0) {
+      if ($row.hasClass("empty-row")) {
         return;
       }
+
+      const receiptId = $row.find("td:nth-child(1)").text().toLowerCase();
+      const customerName = $row.find("td:nth-child(2)").text().toLowerCase();
+      const poNumber = $row.find("td:nth-child(3)").text().toLowerCase();
+      const dateText = $row.find("td:nth-child(5)").text();
 
       const dateParts = dateText.match(/(\w+) (\d+), (\d+) (\d+):(\d+) (\w+)/);
       let shouldShow = true;
@@ -87,11 +95,11 @@ $(document).ready(function () {
 
         const rowDate = new Date(
           parseInt(dateParts[3]),
-          month[dateParts[1]], 
-          parseInt(dateParts[2]), 
+          month[dateParts[1]],
+          parseInt(dateParts[2]),
           dateParts[6] === "PM" && parseInt(dateParts[4]) < 12
             ? parseInt(dateParts[4]) + 12
-            : parseInt(dateParts[4]), 
+            : parseInt(dateParts[4]),
           parseInt(dateParts[5])
         );
 
@@ -103,6 +111,14 @@ $(document).ready(function () {
           shouldShow &&
           customerNameFilter &&
           !customerName.includes(customerNameFilter)
+        ) {
+          shouldShow = false;
+        }
+
+        if (
+          shouldShow &&
+          poNumberFilter &&
+          !poNumber.includes(poNumberFilter)
         ) {
           shouldShow = false;
         }
