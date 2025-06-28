@@ -98,7 +98,7 @@ $currentMonth = date('n');
         </div>
     </main>
     <script src="../../js/sales.js"></script>
-    <!-- Add this before closing </body> tag -->
+    <script src="../../js/sidebar.js"></script>
     <script>
         console.log('Year:', $('#yearSelect').val());
         console.log('Month:', $('#monthSelect').val());
