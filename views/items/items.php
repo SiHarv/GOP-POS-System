@@ -20,6 +20,7 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Items Management</title>
+    <link rel="icon" type="image/x-icon" href="../../icon/temporary-icon.png">
     <link rel="stylesheet" href="../../styles/sidebar.css">
     <link rel="stylesheet" href="../../styles/items.css">
     <link rel="stylesheet" href="../../styles/header.css">
@@ -43,7 +44,7 @@ try {
                             <button id="addItemBtn" class="add-btn btn btn-success">
                                 ADD ITEM <span class="iconify" data-icon="solar:add-circle-outline" data-width="24" data-height="24"></span>
                             </button>
-                            <h2 style="font-weight: bold;">PRODUCT INVENTORY</h2>
+                            <h5 class="fw-bold"><span class="text-danger fw-bolder">Product</span> Inventory</h5>
                         </div>
 
                         <!-- Search Filter -->

@@ -19,14 +19,6 @@ body {
   /* padding: 0 20px; */
   position: relative;
 }
-
-h2 {
-  text-align: center;
-  color: #2c3e50;
-  margin-bottom: 2rem;
-  font-size: 24px;
-}
-
 .table-wrapper {
   background-color: white;
   border-radius: 8px;
@@ -131,17 +123,16 @@ h2 {
   align-items: center;
   justify-content: center;
   gap: 15px;
-  margin-bottom: 25px;
+  margin-bottom: 12px;
   padding: 10px;
   border-radius: 8px;
   position: relative;
 }
 
-.items h2 {
+.items h5 {
   margin: 0;
-  font-size: 24px;
   flex-grow: 1;
-  text-align: left;
+  text-align: start;
 }
 
 .add-btn {
@@ -196,12 +187,14 @@ h2 {
   display: flex;
   align-items: center;
   padding: 15px;
-  background-color: #f8f9fc;
+  background-color: #000000;
   border-bottom: 1px solid #e3e6f0;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
 }
-
+.panel-header h5{
+  color: white;
+}
 .panel-body {
   padding: 15px;
   overflow-y: auto;

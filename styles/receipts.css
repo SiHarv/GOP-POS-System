@@ -20,12 +20,8 @@ body {
 }
 .receipts {
   width: 100%;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-}
-.receipts h2 {
-  font-size: 24px;
-  color: #000000;
+  /* border: 1px solid #ddd; */
+  /* border-radius: 8px; */
 }
 .table-wrapper {
   background-color: white;
@@ -213,7 +209,7 @@ body {
 
 /* Filter Styles */
 .filter-container {
-  margin-top: 15px;
+  margin-top: 6px;
   border-radius: 8px;
   overflow: hidden;
 }
@@ -231,7 +227,7 @@ body {
 
 .filter-container label {
   font-size: 0.85rem;
-  font-weight: 500;
+  font-weight: bolder;
   color: #000000;
 }
 
@@ -380,7 +376,7 @@ body {
     width: 100%;
   }
 
-  .receipts h2 {
+  .receipts h5 {
     font-size: 20px;
   }
 }

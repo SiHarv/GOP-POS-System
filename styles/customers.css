@@ -61,18 +61,16 @@ body {
     align-items: center;
     justify-content: center;
     gap: 15px;
-    margin-bottom: 24px;
+    margin-bottom: 6px;
     padding: 10px;
     border-radius: 8px;
     position: relative;
 }
 
-.customers h2 {
+.customers h5 {
     margin: 0;
-    font-size: 24px;
     flex-grow: 1;
     text-align: start;
-    font-weight: bold;
 }
 
 .add-btn {

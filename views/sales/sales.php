@@ -11,6 +11,7 @@ $currentMonth = date('n');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sales Analytics</title>
+    <link rel="icon" type="image/x-icon" href="../../icon/temporary-icon.png">
     <link rel="stylesheet" href="../../styles/sidebar.css">
     <link rel="stylesheet" href="../../styles/header.css">
     <link rel="stylesheet" href="../../styles/sales.css">

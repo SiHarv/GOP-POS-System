@@ -12,6 +12,7 @@ $items = $chargeController->getAllItems();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Charge Management</title>
+    <link rel="icon" type="image/x-icon" href="../../icon/temporary-icon.png">
     <link rel="stylesheet" href="../../styles/sidebar.css">
     <link rel="stylesheet" href="../../styles/charge.css">
     <link rel="stylesheet" href="../../styles/header.css">
@@ -29,6 +30,9 @@ $items = $chargeController->getAllItems();
     <main class="main-content">
         <div class="container">
             <div class="row">
+                <div class="mb-2">
+                    <h5 class="text-start fw-bold"><span class="text-danger fw-bolder">Charge</span> Management</h5>
+                </div>
                 <!-- Left side - Item Selection -->
                 <div class="col-md-8">
                     <div class="card mb-4">
@@ -37,8 +41,29 @@ $items = $chargeController->getAllItems();
                             <h5 class="card-title mb-0">AVAILABLE ITEMS</h5>
                         </div>
                         <div class="card-body">
+                            <!-- Search Filter Section -->
+                            <div class="search-filter mb-3">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="input-group">
+                                            <span class="input-group-text">
+                                                <span class="iconify" data-icon="solar:magnifer-linear" data-width="16"></span>
+                                            </span>
+                                            <input type="text" class="form-control" id="item-search" placeholder="Search items by name or category...">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 d-flex">
+                                        <button class="btn btn-outline-secondary btn-sm" id="clear-item-search">
+                                            <span class="iconify" data-icon="solar:close-circle-linear" data-width="16"></span>
+                                            Clear
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End Search Filter Section -->
+
                             <div class="table-responsive">
-                                <table class="table table-hover">
+                                <table class="table table-hover" id="items-table">
                                     <thead>
                                         <tr>
                                             <th>Name</th>

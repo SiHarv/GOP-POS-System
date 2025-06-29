@@ -18,6 +18,7 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Receipts Management</title>
+    <link rel="icon" type="image/x-icon" href="../../icon/temporary-icon.png">
     <link rel="stylesheet" href="../../styles/sidebar.css">
     <link rel="stylesheet" href="../../styles/receipts.css">
     <link rel="stylesheet" href="../../styles/header.css">
@@ -36,8 +37,8 @@ try {
         <div class="container">
             <div class="table-header">
                 <div class="receipts d-flex align-items-center">
-                    <span class="iconify me-1 ms-3" data-icon="solar:chat-square-2-broken" data-width="24"></span>
-                    <h2 class="mt-2">Charge History</h2>
+                    <!-- <span class="iconify me-1 ms-3" data-icon="solar:chat-square-2-broken" data-width="24"></span> -->
+                    <h5 class="fw-bold"><span class="fw-bolder text-danger">Charge</span> History</h5>
                 </div>
 
                 <!-- Filter Section -->
@@ -45,7 +46,7 @@ try {
                     <div class="card">
                         <div class="card-header bg-light">
                             <div class="d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0">Filters</h5>
+                                <h5 class="mb-0 fw-bold fs-6">Filters</h5>
                                 <button class="btn btn-sm btn-outline-secondary" id="toggle-filters">
                                     <span class="iconify" data-icon="mdi:filter-outline"></span> Show/Hide
                                 </button>

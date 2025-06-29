@@ -480,4 +480,44 @@ $(document).ready(function () {
 
   // Initialize empty cart
   updateCart();
+
+  // Item search functionality
+  $("#item-search").on("keyup", function () {
+    const searchTerm = $(this).val().toLowerCase();
+    filterItems(searchTerm);
+  });
+
+  $("#clear-item-search").on("click", function () {
+    $("#item-search").val("");
+    filterItems("");
+  });
+
+  function filterItems(searchTerm) {
+    $("#items-table tbody tr").each(function () {
+      const row = $(this);
+      const name = row.find("td:nth-child(1)").text().toLowerCase();
+      const category = row.find("td:nth-child(2)").text().toLowerCase();
+
+      const matches =
+        name.includes(searchTerm) || category.includes(searchTerm);
+
+      if (matches || searchTerm === "") {
+        row.show();
+      } else {
+        row.hide();
+      }
+    });
+
+    // Show/hide "no results" message
+    const visibleRows = $("#items-table tbody tr:visible").length;
+    if (visibleRows === 0 && searchTerm !== "") {
+      if ($("#no-items-found").length === 0) {
+        $("#items-table tbody").append(
+          '<tr id="no-items-found"><td colspan="5" class="text-center text-muted">No items found matching your search.</td></tr>'
+        );
+      }
+    } else {
+      $("#no-items-found").remove();
+    }
+  }
 });
