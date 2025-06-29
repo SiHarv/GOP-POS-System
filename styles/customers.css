@@ -4,7 +4,7 @@
     box-sizing: border-box;
 }
 .main-content {
-    padding-top: 3rem;
+    padding-top: 1rem;
 }
 body {
     font-family: Arial, sans-serif;
@@ -18,13 +18,6 @@ body {
     margin: 4rem auto;
     padding: 0 20px;
     position: relative;
-}
-
-h2 {
-    text-align: center;
-    color: #2c3e50;
-    margin-bottom: 2rem;
-    font-size: 24px;
 }
 
 .table-wrapper {
@@ -48,9 +41,9 @@ h2 {
 }
 
 .customers-table th {
-    background-color: #f8f9fa;
+    background-color: #000000;
+    color: #FFFFFF;
     font-weight: bold;
-    color: #2c3e50;
     text-transform: uppercase;
     font-size: 0.9rem;
 }
@@ -78,7 +71,8 @@ h2 {
     margin: 0;
     font-size: 24px;
     flex-grow: 1;
-    text-align: center;
+    text-align: start;
+    font-weight: bold;
 }
 
 .add-btn {
@@ -86,31 +80,14 @@ h2 {
     right: 0;
     top: 50%;  /* Add this */
     transform: translateY(-50%);  /* Add this */
-    background-color: #4CAF50;
-    color: white;
     border: none;
     padding: 8px 16px;
     border-radius: 4px;
     cursor: pointer;
     display: flex;
+    justify-content: center;
     align-items: center;
     gap: 8px;
-}
-
-.edit-btn {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 4px 8px;
-    border-radius: 4px;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.edit-btn:hover {
-    background-color: #0056b3;
 }
 
 .action-column {

@@ -40,8 +40,8 @@ try {
                 <div class="col-lg-8 col-md-10" style="margin-left: 5em;">
                     <div class="table-header">
                         <div class="items">
-                            <button id="addItemBtn" class="add-btn">
-                                Add Item<span class="iconify" data-icon="solar:add-circle-outline" data-width="24" data-height="24"></span>
+                            <button id="addItemBtn" class="add-btn btn btn-success">
+                                ADD ITEM <span class="iconify" data-icon="solar:add-circle-outline" data-width="24" data-height="24"></span>
                             </button>
                             <h2 style="font-weight: bold;">PRODUCT INVENTORY</h2>
                         </div>
@@ -65,7 +65,7 @@ try {
                                     <tr>
                                         <th>New stock date</th>
                                         <th>New stock</th>
-                                        <th>Current stock</th>
+                                        <th>In stock</th>
                                         <th>Sold by</th>
                                         <th>Name & Description</th>
                                         <th>Category</th>
@@ -84,7 +84,7 @@ try {
                                         }
                                     ?>
                                         <tr class="<?php echo $rowClass; ?>">
-                                            <td><?php echo isset($item['date_added']) ? date('Y-m-d H:i', strtotime($item['date_added'])) : '-'; ?></td>
+                                            <td><?php echo isset($item['date_added']) ? date('Y-m-d (H:i)', strtotime($item['date_added'])) : '-'; ?></td>
                                             <td><?php echo isset($item['quantity_added']) ? $item['quantity_added'] : '0', " (new)"; ?></td>
                                             <td class="stock-value"><?php echo $item['stock']; ?></td>
                                             <td><?php echo $item['sold_by']; ?></td>
@@ -93,7 +93,7 @@ try {
                                             <td>₱<?php echo number_format($item['cost'], 2); ?></td>
                                             <td>₱<?php echo number_format($item['price'], 2); ?></td>
                                             <td>
-                                                <button class="btn btn-sm btn-primary edit-btn"
+                                                <button class="btn btn-sm btn-link edit-btn"
                                                     data-id="<?php echo $item['id']; ?>"
                                                     data-name="<?php echo $item['name']; ?>"
                                                     data-stock="<?php echo $item['stock']; ?>"

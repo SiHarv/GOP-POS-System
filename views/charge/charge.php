@@ -32,9 +32,9 @@ $items = $chargeController->getAllItems();
                 <!-- Left side - Item Selection -->
                 <div class="col-md-8">
                     <div class="card mb-4">
-                        <div class="card-header d-flex align-items-center">
+                        <div class="card-header d-flex align-items-center" style="background-color: #000000; color: white;">
                             <span class="iconify me-1" data-icon="solar:box-linear" data-width="24"></span>
-                            <h5 class="card-title mb-0">Available Items</h5>
+                            <h5 class="card-title mb-0">AVAILABLE ITEMS</h5>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -83,7 +83,7 @@ $items = $chargeController->getAllItems();
                 <!-- Right side - Cart -->
                 <div class="col-md-4">
                     <div class="card">
-                        <div class="card-header d-flex align-items-center">
+                        <div class="card-header d-flex align-items-center" style="background-color: #000000; color: white;">
                             <span class="iconify me-1" data-icon="solar:cart-large-linear" data-width="24"></span>
                             <h5 class="card-title mb-0">Current Charge</h5>
                         </div>

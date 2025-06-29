@@ -10,7 +10,7 @@ body {
   font-family: Arial, sans-serif;
   background-color: #f4f6f9;
   color: #333;
-  padding-top: 50px;
+  padding-top: 3rem;
 }
 
 .container {
@@ -42,10 +42,10 @@ h2 {
 }
 
 .items-table thead th {
-  background-color: #007bff;
+  background-color: #000000;
   color: white;
-  padding: 3px;
-  padding-left: 12px;
+  padding: 15px 3px;
+  padding-left: 8px;
   text-align: left;
   position: sticky;
   top: 0;
@@ -141,7 +141,7 @@ h2 {
   margin: 0;
   font-size: 24px;
   flex-grow: 1;
-  text-align: center;
+  text-align: left;
 }
 
 .add-btn {
@@ -470,9 +470,9 @@ h2 {
 }
 
 .search-filter .input-group-text {
-  background-color: #4e73df;
+  background-color: #000000;
   color: white;
-  border: 1px solid #4e73df;
+  border: 1px solid #000000;
 }
 
 .search-filter .form-control {

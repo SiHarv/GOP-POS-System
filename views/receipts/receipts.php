@@ -112,7 +112,7 @@ try {
                                         <td>₱<?php echo number_format($receipt['total_price'], 2); ?></td>
                                         <td><?php echo date('M d, Y h:i A', strtotime($receipt['charge_date'])); ?></td>
                                         <td>
-                                            <button class="btn btn-sm btn-primary view-receipt"
+                                            <button class="btn btn-sm btn-link view-receipt"
                                                 data-id="<?php echo $receipt['id']; ?>">
                                                 View
                                             </button>

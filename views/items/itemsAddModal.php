@@ -49,8 +49,8 @@
                         <input type="number" class="form-control" id="price" name="price" step="0.01" min="0" placeholder="Enter price in peso" required>
                     </div>
                     <div class="modal-footer px-0 pb-0">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Add Item</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
                     </div>
                 </form>
             </div>

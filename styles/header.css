@@ -7,9 +7,9 @@
     top: 0;
     right: 0;
     width: calc(100% - 60px); /* Account for sidebar width */
-    height: 80px;
-    background-color: #007ACC;
-    color: white;
+    height: 70px;
+    background-color: #FFFFFF;
+    color: #000000;
     z-index: 999;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
@@ -18,7 +18,7 @@
     height: 100%;
     display: flex;
     align-items: center;
-    padding: 0 20px;
+    padding: 0 15px;
     justify-content: center;
 }
 

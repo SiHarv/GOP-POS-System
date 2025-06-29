@@ -52,7 +52,7 @@
                     </div>
                     <div class="modal-footer px-0 pb-0">
                         <button type="submit" class="btn btn-primary">Save Changes</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
                     </div>
                 </form>
             </div>

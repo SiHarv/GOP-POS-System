@@ -25,7 +25,7 @@ body {
 }
 .receipts h2 {
   font-size: 24px;
-  color: #007acc;
+  color: #000000;
 }
 .table-wrapper {
   background-color: white;
@@ -60,13 +60,11 @@ body {
 .receipts-table th {
   background-color: #f8f9fa;
   font-weight: bold;
-  color: #007acc;
   text-transform: uppercase;
   font-size: 0.9rem;
 }
 
 .receipts-table thead th {
-  background-color: #4e73df;
   color: white;
   padding: 12px;
   text-align: left;
@@ -74,10 +72,6 @@ body {
   top: 0;
   z-index: 10;
   height: 53px;
-}
-
-.receipts-table tbody tr {
-  height: 49px; /* Fixed height for rows */
 }
 
 .receipts-table tbody tr:nth-child(odd) {
@@ -137,16 +131,6 @@ body {
   min-width: 60px;
 }
 
-.btn-primary {
-  background-color: #007acc;
-  border-color: #007acc;
-}
-
-.btn-primary:hover {
-  background-color: #0062a3;
-  border-color: #0062a3;
-}
-
 .btn-outline-secondary {
   color: #333333;
   border-color: #d1d1d1;
@@ -173,7 +157,7 @@ body {
 
 .form-control:focus,
 .form-select:focus {
-  border-color: #007acc;
+  border-color: #000000;
   box-shadow: 0 0 0 0.25rem rgba(0, 122, 204, 0.25);
 }
 
@@ -198,23 +182,6 @@ body {
 /* Pagination Styling */
 .pagination-container {
   padding: 15px 0;
-}
-
-.pagination .page-link {
-  color: #007acc;
-  border-color: #dee2e6;
-  padding: 6px 12px;
-}
-
-.pagination .page-item.active .page-link {
-  background-color: #007acc;
-  border-color: #007acc;
-  color: white;
-}
-
-.pagination .page-item.disabled .page-link {
-  color: #6c757d;
-  background-color: #f8f9fa;
 }
 
 /* Receipt ID Badge */
@@ -265,7 +232,7 @@ body {
 .filter-container label {
   font-size: 0.85rem;
   font-weight: 500;
-  color: #4e73df;
+  color: #000000;
 }
 
 #toggle-filters {
@@ -301,7 +268,7 @@ body {
 }
 
 .receipts-table thead th {
-  background-color: #4e73df;
+  background-color: #000000;
   color: white;
   padding: 12px;
   text-align: left;

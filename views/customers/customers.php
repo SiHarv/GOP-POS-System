@@ -33,10 +33,11 @@ try {
         <div class="container">
             <div class="table-header">
                 <div class="customers">
-                    <button id="addCustomerBtn" class="add-btn">
-                        Add Customer<span class="iconify" data-icon="solar:add-circle-outline" data-width="24" data-height="24"></span>
+                    <button id="addCustomerBtn" class="add-btn btn btn-success" data-bs-toggle="modal" data-bs-target="#addCustomerModal">
+                        <span class="iconify" data-icon="solar:add-circle-outline" data-width="24" style="margin-bottom: 2.5px;"></span>
+                        ADD CUSTOMER
                     </button>
-                    <h2>Customers Directory</h2>
+                    <h2>CUSTOMER LISTS</h2>
                 </div>
                 <div class="table-wrapper">
                     <table class="customers-table">
@@ -60,7 +61,7 @@ try {
                                 <td><?php echo $customer['terms']; ?></td>
                                 <td><?php echo $customer['salesman']; ?></td>
                                 <td>
-                                    <button class="btn btn-sm btn-primary edit-btn" 
+                                    <button class="btn btn-sm btn-link edit-btn" 
                                             data-id="<?php echo $customer['id']; ?>"
                                             data-name="<?php echo $customer['name']; ?>"
                                             data-phone="<?php echo $customer['phone_number']; ?>"
