@@ -12,13 +12,6 @@ body {
   color: #333;
   padding-top: 3rem;
 }
-
-.container {
-  /* max-width: 1600px; */
-  /* margin: 4rem auto; */
-  /* padding: 0 20px; */
-  position: relative;
-}
 .table-wrapper {
   background-color: white;
   border-radius: 8px;

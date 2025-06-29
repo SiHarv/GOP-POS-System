@@ -38,7 +38,7 @@ try {
         <div class="container-fluid px-4">
             <div class="row">
                 <!-- Main Content Column (Items Table) -->
-                <div class="col-lg-8 col-md-10" style="margin-left: 5em;">
+                <div class="col-lg-9 col-md-10" style="margin-left: 4.5em;">
                     <div class="table-header">
                         <div class="items">
                             <button id="addItemBtn" class="add-btn btn btn-success">
@@ -114,7 +114,7 @@ try {
                 </div>
 
                 <!-- Low Quantity Items Panel (Right Side) -->
-                <div class="col-lg-3 col-md-5 mt-3 mt-lg-0">
+                <div class="col-lg-2 col-md-6 mt-3 mt-lg-0" style="width: 21%;">
                     <?php require_once 'lowQuantityItems.php'; ?>
                 </div>
             </div>

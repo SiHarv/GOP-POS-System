@@ -23,7 +23,7 @@ usort($lowStockItems, function ($a, $b) {
 <div class="low-quantity-panel">
    <div class="panel-header">
       <span class="iconify text-danger me-2" data-icon="mdi:alert-circle" data-width="24"></span>
-      <h5 class="mb-0">Low stock products</h5>
+      <h5 class="mb-0 fw-bold">Low stock products</h5>
       <?php if ($purchaseNeededCount > 0): ?>
          <span class="badge bg-danger ms-2"><?php echo $purchaseNeededCount; ?></span>
       <?php endif; ?>
