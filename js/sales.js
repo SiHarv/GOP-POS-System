@@ -1,4 +1,6 @@
 $(document).ready(function() {
+    console.log("Sales dashboard initialized");
+    
     let salesChart = null;
     let profitChart = null;
     let categoryChart = null;
@@ -31,65 +33,87 @@ $(document).ready(function() {
 
     // Initialize charts
     function initCharts() {
-        // Sales Overview Chart
-        const salesCtx = document.getElementById('salesChart').getContext('2d');
-        salesChart = new Chart(salesCtx, {
-            type: 'bar',
-            data: {
-                labels: [],
-                datasets: [{
-                    label: 'Sales',
-                    data: [],
-                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: { beginAtZero: true }
+        try {
+            console.log("Initializing charts...");
+            const salesCtx = document.getElementById('salesChart');
+            
+            if (!salesCtx) {
+                console.error("Cannot find salesChart canvas element");
+                return;
+            }
+            
+            salesChart = new Chart(salesCtx.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [{
+                        label: 'Sales',
+                        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
                 }
-            }
-        });
+            });
+            
+            // Profit Chart
+            const profitCtx = document.getElementById('profitChart').getContext('2d');
+            profitChart = new Chart(profitCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Sales', 'Cost'],
+                    datasets: [{
+                        data: [0, 0],
+                        backgroundColor: ['#36A2EB', '#FF6384']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
 
-        // Profit Chart
-        const profitCtx = document.getElementById('profitChart').getContext('2d');
-        profitChart = new Chart(profitCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Sales', 'Cost'],
-                datasets: [{
-                    data: [0, 0],
-                    backgroundColor: ['#36A2EB', '#FF6384']
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false
-            }
-        });
+            // Category Chart
+            const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+            categoryChart = new Chart(categoryCtx, {
+                type: 'pie',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        data: [],
+                        backgroundColor: [
+                            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
+                            '#9966FF', '#FF9F40', '#FF6384', '#C9CBCF'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+            
+            console.log("Charts initialized successfully");
+        } catch (e) {
+            console.error("Error initializing charts:", e);
+        }
+    }
 
-        // Category Chart
-        const categoryCtx = document.getElementById('categoryChart').getContext('2d');
-        categoryChart = new Chart(categoryCtx, {
-            type: 'pie',
-            data: {
-                labels: [],
-                datasets: [{
-                    data: [],
-                    backgroundColor: [
-                        '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
-                        '#9966FF', '#FF9F40', '#FF6384', '#C9CBCF'
-                    ]
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false
-            }
-        });
+    // Debug function to check AJAX responses
+    function debugResponse(action, response) {
+        console.log(`Response from ${action}:`, response);
+        if (response.success && response.data) {
+            console.log(`Data received:`, response.data);
+        } else {
+            console.error(`No data or error in ${action} response`);
+        }
     }
 
     // Load Overview Data
@@ -99,17 +123,10 @@ $(document).ready(function() {
         
         console.log('Loading overview data for year:', year, 'month:', month);
         
-        // Log what data is actually in your database
-        $.ajax({
-            url: '../../controller/backend_sales.php',
-            method: 'POST',
-            data: { action: 'debug_data' },
-            dataType: 'json',
-            success: function(response) {
-                console.log('Database data count:', response.data);
-            }
-        });
-        
+        $('#totalSales, #grossProfit, #totalTransactions, #avgTransaction')
+            .text('Loading...')
+            .addClass('text-muted');
+
         $.ajax({
             url: '../../controller/backend_sales.php',
             method: 'POST',
@@ -120,12 +137,11 @@ $(document).ready(function() {
             },
             dataType: 'json',
             success: function(response) {
-                console.log('Monthly sales response:', response);
-                if (response.success) {
+                debugResponse('get_monthly_sales', response);
+                if (response.success && response.data) {
                     updateSummaryCards(response.data);
                     updateProfitChart(response.data);
-                } else {
-                    console.error('Error in response:', response.message);
+                    console.log("Summary cards updated with data:", response.data);
                 }
             },
             error: function(xhr, status, error) {
@@ -134,7 +150,6 @@ $(document).ready(function() {
             }
         });
 
-        // Load monthly overview
         $.ajax({
             url: '../../controller/backend_sales.php',
             method: 'POST',
@@ -144,11 +159,10 @@ $(document).ready(function() {
             },
             dataType: 'json',
             success: function(response) {
-                console.log('Sales overview response:', response);
-                if (response.success) {
+                debugResponse('get_sales_overview', response);
+                if (response.success && response.data) {
                     updateSalesChart(response.data);
-                } else {
-                    console.error('Error in response:', response.message);
+                    console.log("Sales chart updated with data:", response.data);
                 }
             },
             error: function(xhr, status, error) {
@@ -231,34 +245,112 @@ $(document).ready(function() {
 
     // Update Functions
     function updateSummaryCards(data) {
-        console.log('Updating summary cards with:', data);
-        $('#totalSales').text('₱' + parseFloat(data.total_sales || 0).toLocaleString('en-US', {minimumFractionDigits: 2}));
-        $('#grossProfit').text('₱' + parseFloat(data.gross_profit || 0).toLocaleString('en-US', {minimumFractionDigits: 2}));
-        $('#totalTransactions').text(data.total_transactions || 0);
-        $('#avgTransaction').text('₱' + parseFloat(data.avg_transaction || 0).toLocaleString('en-US', {minimumFractionDigits: 2}));
+        console.log("Updating summary cards with data:", data);
+        try {
+            // Format numbers as Philippine Peso
+            const formatCurrency = (value) => {
+                return '₱' + parseFloat(value).toLocaleString('en-PH', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+            };
+
+            // Check if elements exist
+            if (!$('#totalSales').length || !$('#grossProfit').length || !$('#totalTransactions').length || !$('#avgTransaction').length) {
+                console.error('Summary card elements not found in DOM');
+                return;
+            }
+
+            // Update the summary cards with formatted values
+            $('#totalSales').text(formatCurrency(data.total_sales || 0));
+            $('#grossProfit').text(formatCurrency(data.gross_profit || 0));
+            $('#totalTransactions').text(parseInt(data.total_transactions || 0).toLocaleString('en-PH'));
+            $('#avgTransaction').text(formatCurrency(data.avg_transaction || 0));
+            console.log('Summary cards updated:', {
+                totalSales: $('#totalSales').text(),
+                grossProfit: $('#grossProfit').text(),
+                totalTransactions: $('#totalTransactions').text(),
+                avgTransaction: $('#avgTransaction').text()
+            });
+            // Make sure all values are properly converted to numbers before formatting
+            const totalSales = parseFloat(data.total_sales || 0);
+            const grossProfit = parseFloat(data.gross_profit || 0);
+            const transactions = parseInt(data.total_transactions || 0);
+            const avgTransaction = parseFloat(data.avg_transaction || 0);
+            
+            $('#totalSales').text('₱' + totalSales.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            $('#grossProfit').text('₱' + grossProfit.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            $('#totalTransactions').text(transactions.toLocaleString());
+            $('#avgTransaction').text('₱' + avgTransaction.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+            
+            console.log("Cards updated successfully");
+        } catch (e) {
+            console.error("Error updating summary cards:", e);
+        }
     }
 
     function updateSalesChart(data) {
-        console.log('Updating sales chart with:', data);
-        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        const chartData = new Array(12).fill(0);
-        
-        data.forEach(item => {
-            chartData[item.month - 1] = parseFloat(item.monthly_sales || 0);
-        });
+        console.log("Updating sales chart with data:", data);
+        try {
+            if (!salesChart) {
+                console.error('salesChart is not initialized');
+                return;
+            }
+            // Initialize arrays for labels and data
+            const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const monthlyData = new Array(12).fill(0);
 
-        salesChart.data.labels = months;
-        salesChart.data.datasets[0].data = chartData;
-        salesChart.update();
+            // Fill in the data from the response
+            data.forEach(month => {
+                monthlyData[month.month - 1] = parseFloat(month.monthly_sales || 0);
+            });
+
+            // Update the chart
+            salesChart.data.datasets[0].data = monthlyData;
+            salesChart.update();
+            console.log('Sales chart updated with monthlyData:', monthlyData);
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const chartData = new Array(12).fill(0);
+            
+            if (data && data.length > 0) {
+                data.forEach(item => {
+                    const monthIndex = parseInt(item.month) - 1;
+                    if (monthIndex >= 0 && monthIndex < 12) {
+                        chartData[monthIndex] = parseFloat(item.monthly_sales || 0);
+                    }
+                });
+                
+                console.log("Chart data prepared:", chartData);
+            } else {
+                console.warn("No data received for chart");
+            }
+            
+            // Check if salesChart was initialized properly
+            if (salesChart) {
+                salesChart.data.labels = months;
+                salesChart.data.datasets[0].data = chartData;
+                salesChart.update();
+                console.log("Chart updated successfully");
+            } else {
+                console.error("salesChart object is not initialized");
+            }
+        } catch (e) {
+            console.error("Error updating sales chart:", e);
+        }
     }
 
     function updateProfitChart(data) {
         console.log('Updating profit chart with:', data);
+        if (!profitChart) {
+            console.error('profitChart is not initialized');
+            return;
+        }
         profitChart.data.datasets[0].data = [
             parseFloat(data.total_sales || 0),
             parseFloat(data.total_cost || 0)
         ];
         profitChart.update();
+        console.log('Profit chart updated:', profitChart.data.datasets[0].data);
     }
 
     function updateItemsTable(items) {
@@ -383,7 +475,10 @@ $(document).ready(function() {
     }
 
     // Event Listeners
-    $('#yearSelect, #monthSelect').on('change', loadOverviewData);
+    $('#yearSelect, #monthSelect').on('change', function() {
+        console.log("Year/month selection changed");
+        loadOverviewData();
+    });
     
     $('input[name="itemPeriod"]').on('change', function() {
         const period = $(this).val();
@@ -422,8 +517,12 @@ $(document).ready(function() {
     };
 
     // Initialize
-    initCharts();
-    debugData(); // Check if we have data
-    debugTableStructure();
-    loadOverviewData();
+    try {
+        initCharts();
+        debugData();
+        loadOverviewData();
+        console.log("Dashboard initialization complete");
+    } catch (e) {
+        console.error("Error during dashboard initialization:", e);
+    }
 });

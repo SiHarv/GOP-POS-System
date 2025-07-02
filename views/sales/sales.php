@@ -100,52 +100,32 @@ $currentMonth = date('n');
                         <div class="col-md-3">
                             <div class="card summary-card">
                                 <div class="card-body">
-                                    <div class="d-flex justify-content-between">
-                                        <div>
-                                            <h6 class="card-subtitle text-muted">Total Sales</h6>
-                                            <h4 class="card-title" id="totalSales">₱0.00</h4>
-                                        </div>
-                                        <span class="iconify text-success" data-icon="solar:dollar-outline" data-width="32"></span>
-                                    </div>
+                                    <h6 class="card-subtitle text-muted">Total Sales</h6>
+                                    <h2 class="card-title" id="totalSales">₱0.00</h2>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="card summary-card">
                                 <div class="card-body">
-                                    <div class="d-flex justify-content-between">
-                                        <div>
-                                            <h6 class="card-subtitle text-muted">Gross Profit</h6>
-                                            <h4 class="card-title" id="grossProfit">₱0.00</h4>
-                                        </div>
-                                        <span class="iconify text-info" data-icon="solar:graph-up-outline" data-width="32"></span>
-                                    </div>
+                                    <h6 class="card-subtitle text-muted">Gross Profit</h6>
+                                    <h2 class="card-title" id="grossProfit">₱0.00</h2>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="card summary-card">
                                 <div class="card-body">
-                                    <div class="d-flex justify-content-between">
-                                        <div>
-                                            <h6 class="card-subtitle text-muted">Transactions</h6>
-                                            <h4 class="card-title" id="totalTransactions">0</h4>
-                                        </div>
-                                        <span class="iconify text-warning" data-icon="solar:receipt-outline" data-width="32"></span>
-                                    </div>
+                                    <h6 class="card-subtitle text-muted">Total Transactions</h6>
+                                    <h2 class="card-title" id="totalTransactions">0</h2>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="card summary-card">
                                 <div class="card-body">
-                                    <div class="d-flex justify-content-between">
-                                        <div>
-                                            <h6 class="card-subtitle text-muted">Avg. Transaction</h6>
-                                            <h4 class="card-title" id="avgTransaction">₱0.00</h4>
-                                        </div>
-                                        <span class="iconify text-primary" data-icon="solar:calculator-outline" data-width="32"></span>
-                                    </div>
+                                    <h6 class="card-subtitle text-muted">Average Transaction</h6>
+                                    <h2 class="card-title" id="avgTransaction">₱0.00</h2>
                                 </div>
                             </div>
                         </div>
@@ -159,17 +139,17 @@ $currentMonth = date('n');
                                     <h5>Monthly Sales Overview</h5>
                                 </div>
                                 <div class="card-body">
-                                    <canvas id="salesChart" height="300"></canvas>
+                                    <canvas id="salesChart"></canvas>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="card">
                                 <div class="card-header">
-                                    <h5>Quick Stats</h5>
+                                    <h5>Sales vs Cost</h5>
                                 </div>
                                 <div class="card-body">
-                                    <canvas id="profitChart" height="300"></canvas>
+                                    <canvas id="profitChart"></canvas>
                                 </div>
                             </div>
                         </div>
