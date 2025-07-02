@@ -37,16 +37,16 @@ $currentMonth = date('n');
                     </h2>
                     <div class="d-flex gap-2">
                         <!-- Update your year select to include 2025 explicitly -->
-<select id="yearSelect" class="form-select" style="width: 100px;">
-    <?php 
-    // Make sure 2025 is included since your test data seems to be from 2025
-    $currentYear = date('Y');
-    $years = range(max(2025, $currentYear), $currentYear - 5);
-    foreach ($years as $y): 
-    ?>
-        <option value="<?= $y ?>" <?= $y == 2025 ? 'selected' : '' ?>><?= $y ?></option>
-    <?php endforeach; ?>
-</select>
+                        <select id="yearSelect" class="form-select" style="width: 100px;">
+                            <?php 
+                            // Make sure 2025 is included since your test data seems to be from 2025
+                            $currentYear = date('Y');
+                            $years = range(max(2025, $currentYear), $currentYear - 5);
+                            foreach ($years as $y): 
+                            ?>
+                                <option value="<?= $y ?>" <?= $y == 2025 ? 'selected' : '' ?>><?= $y ?></option>
+                            <?php endforeach; ?>
+                        </select>
                         <button class="btn btn-outline-primary" onclick="exportData()">
                             <span class="iconify me-1" data-icon="solar:download-outline"></span>
                             Export
@@ -82,78 +82,7 @@ $currentMonth = date('n');
                 
                 <!-- Overview Tab -->
                 <div class="tab-pane fade show active" id="overview" role="tabpanel">
-                    <div class="row mb-4">
-                        <div class="col-md-3">
-                            <select id="monthSelect" class="form-select">
-                                <option value="">All Months</option>
-                                <?php for ($m = 1; $m <= 12; $m++): ?>
-                                    <option value="<?= $m ?>" <?= $m == $currentMonth ? 'selected' : '' ?>>
-                                        <?= date('F', mktime(0, 0, 0, $m, 1)) ?>
-                                    </option>
-                                <?php endfor; ?>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Summary Cards -->
-                    <div class="row mb-4">
-                        <div class="col-md-3">
-                            <div class="card summary-card">
-                                <div class="card-body">
-                                    <h6 class="card-subtitle text-muted">Total Sales</h6>
-                                    <h2 class="card-title" id="totalSales">₱0.00</h2>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card summary-card">
-                                <div class="card-body">
-                                    <h6 class="card-subtitle text-muted">Gross Profit</h6>
-                                    <h2 class="card-title" id="grossProfit">₱0.00</h2>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card summary-card">
-                                <div class="card-body">
-                                    <h6 class="card-subtitle text-muted">Total Transactions</h6>
-                                    <h2 class="card-title" id="totalTransactions">0</h2>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card summary-card">
-                                <div class="card-body">
-                                    <h6 class="card-subtitle text-muted">Average Transaction</h6>
-                                    <h2 class="card-title" id="avgTransaction">₱0.00</h2>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Charts -->
-                    <div class="row">
-                        <div class="col-md-8">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h5>Monthly Sales Overview</h5>
-                                </div>
-                                <div class="card-body">
-                                    <canvas id="salesChart"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h5>Sales vs Cost</h5>
-                                </div>
-                                <div class="card-body">
-                                    <canvas id="profitChart"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <?php require_once __DIR__ . '/../overview/overview_analytics.php'; ?>
                 </div>
 
                 <!-- Items Analytics Tab -->

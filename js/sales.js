@@ -207,41 +207,7 @@ $(document).ready(function() {
         });
     }
 
-    // Load Category Analytics
-    function loadCategoryAnalytics() {
-        const period = $('input[name="categoryPeriod"]:checked').val();
-        const year = $('#yearSelect').val();
-        const month = period === 'monthly' ? $('#categoryMonthSelect').val() : null;
-        const week = period === 'weekly' ? $('#categoryWeekSelect').val() : null;
-
-        console.log('Loading category analytics:', { period, year, month, week });
-
-        $.ajax({
-            url: '../../controller/backend_sales.php',
-            method: 'POST',
-            data: {
-                action: 'get_category_analytics',
-                period: period,
-                year: year,
-                month: month,
-                week: week
-            },
-            dataType: 'json',
-            success: function(response) {
-                console.log('Category analytics response:', response);
-                if (response.success) {
-                    updateCategoriesTable(response.data);
-                    updateCategoryChart(response.data);
-                } else {
-                    console.error('Error in response:', response.message);
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error('AJAX Error:', error);
-                console.error('Response:', xhr.responseText);
-            }
-        });
-    }
+    // Category Analytics is handled by category_analytics.js
 
     // Update Functions
     function updateSummaryCards(data) {
@@ -504,11 +470,10 @@ $(document).ready(function() {
         
         if (target === '#items') {
             loadItemAnalytics();
-        } else if (target === '#categories') {
-            loadCategoryAnalytics();
         } else if (target === '#overview') {
             loadOverviewData();
-        }
+        } 
+        // Category Analytics tab is handled by category_analytics.js
     });
 
     // Export function

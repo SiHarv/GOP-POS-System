@@ -51,11 +51,20 @@ $(document).ready(function() {
             `);
         });
     }
-    
+
     let categoryChart = null;
     function updateCategoryChart(categories) {
+        const canvas = document.getElementById('categoryChart');
+        // Completely remove and recreate the canvas to prevent any reuse issues
+        if (categoryChart) {
+            categoryChart.destroy();
+            const parent = canvas.parentNode;
+            parent.removeChild(canvas);
+            const newCanvas = document.createElement('canvas');
+            newCanvas.id = 'categoryChart';
+            parent.appendChild(newCanvas);
+        }
         const ctx = document.getElementById('categoryChart').getContext('2d');
-        if (categoryChart) categoryChart.destroy();
         const labels = categories.map(c => c.category);
         const data = categories.map(c => parseFloat(c.revenue));
         categoryChart = new Chart(ctx, {
@@ -78,14 +87,40 @@ $(document).ready(function() {
     }
 
     // Event listeners
+    function initializeCategoryAnalytics() {
+        // Set default period if none selected
+        if (!$('input[name="categoryPeriod"]:checked').length) {
+            $('#categoryMonthly').prop('checked', true);
+        }
+        
+        const period = $('input[name="categoryPeriod"]:checked').val();
+        $('#monthSelectCategory').toggle(period === 'monthly');
+        $('#weekSelectCategory').toggle(period === 'weekly');
+        
+        loadCategoryAnalytics();
+    }
+
+    // Handle period changes
     $('input[name="categoryPeriod"]').on('change', function() {
         const period = $(this).val();
         $('#monthSelectCategory').toggle(period === 'monthly');
         $('#weekSelectCategory').toggle(period === 'weekly');
         loadCategoryAnalytics();
     });
-    $('#categoryMonthSelect, #categoryWeekSelect, #yearSelect').on('change', loadCategoryAnalytics);
 
-    // Initial load
-    loadCategoryAnalytics();
+    // Handle select changes
+    $('#categoryMonthSelect, #categoryWeekSelect').on('change', loadCategoryAnalytics);
+    
+    // Handle year changes from the main year select
+    $('#yearSelect').on('change', loadCategoryAnalytics);
+
+    // Handle tab activation
+    $('#categories-tab').on('shown.bs.tab', function() {
+        initializeCategoryAnalytics();
+    });
+
+    // Initialize if we start on the categories tab
+    if ($('#categories-tab').hasClass('active')) {
+        initializeCategoryAnalytics();
+    }
 });

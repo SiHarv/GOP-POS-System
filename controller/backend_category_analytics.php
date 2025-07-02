@@ -19,6 +19,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         $where .= ' AND MONTH(c.charge_date) = ?';
         $params[] = $month;
         $types .= 'i';
+    } elseif ($week && $period === 'weekly') {
+        $where .= ' AND WEEK(c.charge_date, 1) = ?';
+        $params[] = $week;
+        $types .= 'i';
     }
 
     $sql = "SELECT i.category AS category,
