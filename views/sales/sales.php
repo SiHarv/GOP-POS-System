@@ -10,100 +10,313 @@ $currentMonth = date('n');
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sales Analytics</title>
+    <title>Sales Analytics Dashboard</title>
     <link rel="icon" type="image/x-icon" href="../../icon/temporary-icon.png">
     <link rel="stylesheet" href="../../styles/sidebar.css">
     <link rel="stylesheet" href="../../styles/header.css">
     <link rel="stylesheet" href="../../styles/sales.css">
-    
-    <!-- Load jQuery first -->
-    <script src="../../js/libraries/jquery-3.7.1.min.js"></script>
-    <!-- Load Chart.js UMD version -->
-    <script src="../../js/libraries/chart.umd.min.js"></script>
-    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
     <link rel="stylesheet" href="../../bootstrap-5.3.6/css/bootstrap.min.css">
+    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="../../bootstrap-5.3.6/js/bootstrap.bundle.min.js"></script>
+    <script src="../../js/libraries/jquery-3.7.1.min.js"></script>
 </head>
+
 <body>
     <?php require_once '../renderParts/header.php'; ?>
     <?php require_once '../renderParts/sidebar.php'; ?>
     
     <main class="main-content">
-        <div class="container">
-            <div class="sales-header">
-                <h2>Sales Analytics</h2>
-                <div class="d-flex gap-3">
-                    <div class="month-selector">
-                        <select id="monthSelect" class="form-select">
-                            <?php
-                            $months = [
-                                1 => 'January', 2 => 'February', 3 => 'March',
-                                4 => 'April', 5 => 'May', 6 => 'June',
-                                7 => 'July', 8 => 'August', 9 => 'September',
-                                10 => 'October', 11 => 'November', 12 => 'December'
-                            ];
-                            foreach ($months as $num => $name) {
-                                $selected = ($num == $currentMonth) ? 'selected' : '';
-                                echo "<option value='$num' $selected>$name</option>";
-                            }
-                            ?>
-                        </select>
-                    </div>
-                    <div class="year-selector">
-                        <select id="yearSelect" class="form-select">
-                            <?php
-                            for ($year = $currentYear; $year >= $currentYear - 5; $year--) {
-                                echo "<option value='$year'>$year</option>";
-                            }
-                            ?>
-                        </select>
+        <div class="container-fluid px-4">
+            <!-- Header Section -->
+            <div class="sales-header mb-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="fw-bold">
+                        <span class="iconify me-2" data-icon="solar:chart-2-outline" data-width="32"></span>
+                        Sales Analytics Dashboard
+                    </h2>
+                    <div class="d-flex gap-2">
+                        <!-- Update your year select to include 2025 explicitly -->
+<select id="yearSelect" class="form-select" style="width: 100px;">
+    <?php 
+    // Make sure 2025 is included since your test data seems to be from 2025
+    $currentYear = date('Y');
+    $years = range(max(2025, $currentYear), $currentYear - 5);
+    foreach ($years as $y): 
+    ?>
+        <option value="<?= $y ?>" <?= $y == 2025 ? 'selected' : '' ?>><?= $y ?></option>
+    <?php endforeach; ?>
+</select>
+                        <button class="btn btn-outline-primary" onclick="exportData()">
+                            <span class="iconify me-1" data-icon="solar:download-outline"></span>
+                            Export
+                        </button>
                     </div>
                 </div>
             </div>
 
-            <div class="row mt-4">
-                <div class="col-md-8">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title mb-3">Sales Overview</h5>
-                            <canvas id="salesChart"></canvas>
+            <!-- Navigation Tabs -->
+            <ul class="nav nav-tabs mb-4" id="salesTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button">
+                        <span class="iconify me-1" data-icon="solar:chart-outline"></span>
+                        Overview
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="items-tab" data-bs-toggle="tab" data-bs-target="#items" type="button">
+                        <span class="iconify me-1" data-icon="solar:box-outline"></span>
+                        Item Analytics
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="categories-tab" data-bs-toggle="tab" data-bs-target="#categories" type="button">
+                        <span class="iconify me-1" data-icon="solar:list-outline"></span>
+                        Category Analytics
+                    </button>
+                </li>
+            </ul>
+
+            <!-- Tab Content -->
+            <div class="tab-content" id="salesTabContent">
+                
+                <!-- Overview Tab -->
+                <div class="tab-pane fade show active" id="overview" role="tabpanel">
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <select id="monthSelect" class="form-select">
+                                <option value="">All Months</option>
+                                <?php for ($m = 1; $m <= 12; $m++): ?>
+                                    <option value="<?= $m ?>" <?= $m == $currentMonth ? 'selected' : '' ?>>
+                                        <?= date('F', mktime(0, 0, 0, $m, 1)) ?>
+                                    </option>
+                                <?php endfor; ?>
+                            </select>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5>Monthly Summary</h5>
-                            <div id="summaryStats">
-                                <div class="stat-item">
-                                    <span class="label">Monthly Sales:</span>
-                                    <span class="value" id="totalSales">₱0.00</span>
+
+                    <!-- Summary Cards -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="card summary-card">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h6 class="card-subtitle text-muted">Total Sales</h6>
+                                            <h4 class="card-title" id="totalSales">₱0.00</h4>
+                                        </div>
+                                        <span class="iconify text-success" data-icon="solar:dollar-outline" data-width="32"></span>
+                                    </div>
                                 </div>
-                                <div class="stat-item">
-                                    <span class="label">Monthly Profit:</span>
-                                    <span class="value" id="totalProfit">₱0.00</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card summary-card">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h6 class="card-subtitle text-muted">Gross Profit</h6>
+                                            <h4 class="card-title" id="grossProfit">₱0.00</h4>
+                                        </div>
+                                        <span class="iconify text-info" data-icon="solar:graph-up-outline" data-width="32"></span>
+                                    </div>
                                 </div>
-                                <div class="stat-item">
-                                    <span class="label">Monthly Transactions:</span>
-                                    <span class="value" id="totalTransactions">0</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card summary-card">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h6 class="card-subtitle text-muted">Transactions</h6>
+                                            <h4 class="card-title" id="totalTransactions">0</h4>
+                                        </div>
+                                        <span class="iconify text-warning" data-icon="solar:receipt-outline" data-width="32"></span>
+                                    </div>
                                 </div>
-                                <div class="stat-item">
-                                    <span class="label">Average Transaction Value:</span>
-                                    <span class="value" id="avgTransaction">₱0.00</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card summary-card">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h6 class="card-subtitle text-muted">Avg. Transaction</h6>
+                                            <h4 class="card-title" id="avgTransaction">₱0.00</h4>
+                                        </div>
+                                        <span class="iconify text-primary" data-icon="solar:calculator-outline" data-width="32"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts -->
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Monthly Sales Overview</h5>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="salesChart" height="300"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Quick Stats</h5>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="profitChart" height="300"></canvas>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Items Analytics Tab -->
+                <div class="tab-pane fade" id="items" role="tabpanel">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="btn-group" role="group">
+                                <input type="radio" class="btn-check" name="itemPeriod" id="itemWeekly" value="weekly">
+                                <label class="btn btn-outline-primary" for="itemWeekly">Weekly</label>
+                                
+                                <input type="radio" class="btn-check" name="itemPeriod" id="itemMonthly" value="monthly" checked>
+                                <label class="btn btn-outline-primary" for="itemMonthly">Monthly</label>
+                                
+                                <input type="radio" class="btn-check" name="itemPeriod" id="itemYearly" value="yearly">
+                                <label class="btn btn-outline-primary" for="itemYearly">Yearly</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3" id="monthSelectItem">
+                            <select class="form-select" id="itemMonthSelect">
+                                <option value="">All Months</option>
+                                <?php for ($m = 1; $m <= 12; $m++): ?>
+                                    <option value="<?= $m ?>" <?= $m == $currentMonth ? 'selected' : '' ?>>
+                                        <?= date('F', mktime(0, 0, 0, $m, 1)) ?>
+                                    </option>
+                                <?php endfor; ?>
+                            </select>
+                        </div>
+                        <div class="col-md-3" id="weekSelectItem" style="display: none;">
+                            <select class="form-select" id="itemWeekSelect">
+                                <?php for ($w = 1; $w <= 52; $w++): ?>
+                                    <option value="<?= $w ?>">Week <?= $w ?></option>
+                                <?php endfor; ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Item Performance Ranking</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="itemsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Rank</th>
+                                            <th>Item Name</th>
+                                            <th>Category</th>
+                                            <th>Qty Sold</th>
+                                            <th>Revenue</th>
+                                            <th>Profit</th>
+                                            <th>Profit %</th>
+                                            <th>Transactions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="itemsTableBody">
+                                        <!-- Data will be loaded here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Categories Analytics Tab -->
+                <div class="tab-pane fade" id="categories" role="tabpanel">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="btn-group" role="group">
+                                <input type="radio" class="btn-check" name="categoryPeriod" id="categoryWeekly" value="weekly">
+                                <label class="btn btn-outline-primary" for="categoryWeekly">Weekly</label>
+                                
+                                <input type="radio" class="btn-check" name="categoryPeriod" id="categoryMonthly" value="monthly" checked>
+                                <label class="btn btn-outline-primary" for="categoryMonthly">Monthly</label>
+                                
+                                <input type="radio" class="btn-check" name="categoryPeriod" id="categoryYearly" value="yearly">
+                                <label class="btn btn-outline-primary" for="categoryYearly">Yearly</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3" id="monthSelectCategory">
+                            <select class="form-select" id="categoryMonthSelect">
+                                <option value="">All Months</option>
+                                <?php for ($m = 1; $m <= 12; $m++): ?>
+                                    <option value="<?= $m ?>" <?= $m == $currentMonth ? 'selected' : '' ?>>
+                                        <?= date('F', mktime(0, 0, 0, $m, 1)) ?>
+                                    </option>
+                                <?php endfor; ?>
+                            </select>
+                        </div>
+                        <div class="col-md-3" id="weekSelectCategory" style="display: none;">
+                            <select class="form-select" id="categoryWeekSelect">
+                                <?php for ($w = 1; $w <= 52; $w++): ?>
+                                    <option value="<?= $w ?>">Week <?= $w ?></option>
+                                <?php endfor; ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Category Performance Ranking</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover" id="categoriesTable">
+                                            <thead>
+                                                <tr>
+                                                    <th>Rank</th>
+                                                    <th>Category</th>
+                                                    <th>Items</th>
+                                                    <th>Qty Sold</th>
+                                                    <th>Revenue</th>
+                                                    <th>Profit</th>
+                                                    <th>Profit %</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="categoriesTableBody">
+                                                <!-- Data will be loaded here -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Category Distribution</h5>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="categoryChart" height="300"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </main>
+
     <script src="../../js/sales.js"></script>
-    <script src="../../js/sidebar.js"></script>
-    <script>
-        console.log('Year:', $('#yearSelect').val());
-        console.log('Month:', $('#monthSelect').val());
-        console.log('Chart object:', typeof Chart !== 'undefined' ? 'Loaded' : 'Not loaded');
-    </script>
 </body>
 </html>
