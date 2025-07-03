@@ -11,28 +11,47 @@ $(document).ready(function () {
     addCustomerModal.show();
   });
 
-
   // Pagination variables
-  let customersRows = $("#customersTableBody tr");
   let customersRowsPerPage = 10;
   let customersCurrentPage = 1;
 
-  function renderCustomersTable(page = 1) {
-    customersRows = $("#customersTableBody tr");
-    const totalRows = customersRows.length;
+  function getFilteredRows(searchTerm) {
+    if (!searchTerm) {
+      return $("#customersTableBody tr");
+    }
+    return $("#customersTableBody tr").filter(function () {
+      const row = $(this);
+      const name = row.find("td:nth-child(2)").text().toLowerCase();
+      const phone = row.find("td:nth-child(3)").text().toLowerCase();
+      const address = row.find("td:nth-child(4)").text().toLowerCase();
+      const salesman = row.find("td:nth-child(6)").text().toLowerCase();
+      return (
+        name.includes(searchTerm) ||
+        phone.includes(searchTerm) ||
+        address.includes(searchTerm) ||
+        salesman.includes(searchTerm)
+      );
+    });
+  }
+
+  function renderFilteredTable(searchTerm, page = 1) {
+    const filteredRows = getFilteredRows(searchTerm);
+    const totalRows = filteredRows.length;
     const totalPages = Math.ceil(totalRows / customersRowsPerPage);
     customersCurrentPage = page;
 
-    // Hide all rows
-    customersRows.hide();
-    // Show only the rows for the current page
+    // Hide all rows first
+    $("#customersTableBody tr").hide();
+
+    // Show only the filtered rows for the current page
     const startIdx = (page - 1) * customersRowsPerPage;
     const endIdx = Math.min(startIdx + customersRowsPerPage, totalRows);
+
     for (let i = startIdx; i < endIdx; i++) {
-      // Add index number as first cell
-      const row = $(customersRows[i]);
+      const row = $(filteredRows[i]);
+      // Add or update the row index
       if (row.find(".row-index").length === 0) {
-        row.prepend(`<td class="row-index"></td>`);
+        row.prepend('<td class="row-index text-center"></td>');
       }
       row.find(".row-index").text(i + 1);
       row.show();
@@ -43,20 +62,46 @@ $(document).ready(function () {
     pag.empty();
     if (totalPages > 1) {
       for (let i = 1; i <= totalPages; i++) {
-        pag.append(`<li class="page-item${i === customersCurrentPage ? ' active' : ''}"><a class="page-link" href="#">${i}</a></li>`);
+        pag.append(
+          `<li class="page-item${
+            i === customersCurrentPage ? " active" : ""
+          }"><a class="page-link" href="#">${i}</a></li>`
+        );
       }
       pag.find("a").on("click", function (e) {
         e.preventDefault();
         const page = parseInt($(this).text());
         if (page !== customersCurrentPage) {
-          renderCustomersTable(page);
+          renderFilteredTable(searchTerm, page);
         }
       });
     }
+
+    // Show/hide "no results" message
+    if (totalRows === 0 && searchTerm !== "") {
+      if ($("#no-results-row").length === 0) {
+        $("#customersTableBody").append(
+          '<tr id="no-results-row"><td colspan="7" class="text-center text-muted">No customers found matching your search.</td></tr>'
+        );
+      }
+    } else {
+      $("#no-results-row").remove();
+    }
   }
 
+  // Search and clear search event handlers
+  $("#customer-search").on("keyup", function () {
+    const searchTerm = $(this).val().toLowerCase();
+    renderFilteredTable(searchTerm, 1);
+  });
+
+  $("#clear-search").on("click", function () {
+    $("#customer-search").val("");
+    renderFilteredTable("", 1);
+  });
+
   // Initial render
-  renderCustomersTable(1);
+  renderFilteredTable("", 1);
 
   // Add click handler for edit buttons (delegated for dynamic rows)
   $(document).on("click", ".edit-btn", function () {
@@ -137,49 +182,4 @@ $(document).ready(function () {
       },
     });
   });
-
-  // Search filter functionality
-  $("#customer-search").on("keyup", function () {
-    const searchTerm = $(this).val().toLowerCase();
-    filterCustomers(searchTerm);
-  });
-
-  $("#clear-search").on("click", function () {
-    $("#customer-search").val("");
-    filterCustomers("");
-  });
-
-  function filterCustomers(searchTerm) {
-    $(".customers-table tbody tr").each(function () {
-      const row = $(this);
-      const name = row.find("td:nth-child(1)").text().toLowerCase();
-      const phone = row.find("td:nth-child(2)").text().toLowerCase();
-      const address = row.find("td:nth-child(3)").text().toLowerCase();
-      const salesman = row.find("td:nth-child(5)").text().toLowerCase();
-
-      const matches =
-        name.includes(searchTerm) ||
-        phone.includes(searchTerm) ||
-        address.includes(searchTerm) ||
-        salesman.includes(searchTerm);
-
-      if (matches || searchTerm === "") {
-        row.show();
-      } else {
-        row.hide();
-      }
-    });
-
-    // Show/hide "no results" message
-    const visibleRows = $(".customers-table tbody tr:visible").length;
-    if (visibleRows === 0 && searchTerm !== "") {
-      if ($("#no-results-row").length === 0) {
-        $(".customers-table tbody").append(
-          '<tr id="no-results-row"><td colspan="6" class="text-center text-muted">No customers found matching your search.</td></tr>'
-        );
-      }
-    } else {
-      $("#no-results-row").remove();
-    }
-  }
 });

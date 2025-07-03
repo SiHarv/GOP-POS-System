@@ -67,18 +67,19 @@ try {
                             <table class="items-table">
                                 <thead>
                                     <tr>
-                                        <th>New stock date</th>
+                                        <th style="width: 3%; min-width: 30px;">#</th>
+                                        <th style="width: 16%; min-width: 160px;">New stock date</th>
                                         <th>New stock</th>
                                         <th>In stock</th>
-                                        <th>Sold by</th>
-                                        <th>Name & Description</th>
-                                        <th>Category</th>
-                                        <th>Cost</th>
-                                        <th>Price</th>
-                                        <th>Action</th>
+                                        <th style="width: 7%; min-width: 70px;">Sold by</th>
+                                        <th style="width: 18%; min-width: 180px;">Name & Description</th>
+                                        <th style="width: 14%; min-width: 120px;">Category</th>
+                                        <th style="width: 7%; min-width: 60px;">Cost</th>
+                                        <th style="width: 6%; min-width: 60px;">Price</th>
+                                        <th style="width: 7%; min-width: 60px;">Action</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="itemsTableBody">
                                     <?php foreach ($items as $item):
                                         $rowClass = '';
                                         if ($item['stock'] <= 5) {
@@ -88,6 +89,7 @@ try {
                                         }
                                     ?>
                                         <tr class="<?php echo $rowClass; ?>">
+                                            <td class="row-index text-center"></td>
                                             <td><?php echo isset($item['date_added']) ? date('Y-m-d (H:i)', strtotime($item['date_added'])) : '-'; ?></td>
                                             <td><?php echo isset($item['quantity_added']) ? $item['quantity_added'] : '0', " (new)"; ?></td>
                                             <td class="stock-value"><?php echo $item['stock']; ?></td>
@@ -111,6 +113,10 @@ try {
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
+                            </table>
+                            <nav>
+                                <ul class="pagination justify-content-center" id="itemsTablePagination" style="padding-top: 1rem;"></ul>
+                            </nav>
                             </table>
                         </div>
                     </div>

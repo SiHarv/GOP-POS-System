@@ -104,7 +104,7 @@ try {
                                 </tbody>
                             </table>
                             <nav>
-                                <ul class="pagination justify-content-end" id="customersTablePagination"></ul>
+                                <ul class="pagination justify-content-center" id="customersTablePagination" style="padding-top: 1rem;"></ul>
                             </nav>
                             </table>
                         </div>
