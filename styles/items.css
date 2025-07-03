@@ -178,7 +178,7 @@ body {
 .panel-header {
   display: flex;
   align-items: center;
-  padding: 15px;
+  padding: 12px;
   background-color: #000000;
   border-bottom: 1px solid #e3e6f0;
   border-top-left-radius: 8px;
