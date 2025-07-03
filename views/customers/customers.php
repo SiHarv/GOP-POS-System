@@ -35,7 +35,8 @@ try {
     <main class="main-content" style="margin-left: 5.5em; margin-top: 4.5em;">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-lg-9">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-8">
                     <div class="table-header">
                         <div class="customers">
                             <button id="addCustomerBtn" class="add-btn btn btn-success" data-bs-toggle="modal" data-bs-target="#addCustomerModal">
@@ -108,7 +109,7 @@ try {
                 </div>
 
                 <!-- Right Sidebar -->
-                <div class="col-lg-3">
+                <div class="col-lg-2">
                     <div class="right-sidebar">
                         <!-- Recent Activity Card -->
                         <div class="card">
@@ -121,8 +122,7 @@ try {
                             <div class="card-body">
                                 <div class="recent-customers">
                                     <?php
-                                    $recentCustomers = array_slice($customers, -8);
-                                    $recentCustomers = array_reverse($recentCustomers);
+                                    $recentCustomers = array_slice($customers, 0);
                                     foreach ($recentCustomers as $customer):
                                     ?>
                                         <div class="recent-item mb-2 p-2 border-bottom">

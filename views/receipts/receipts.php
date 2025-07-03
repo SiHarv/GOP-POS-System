@@ -36,7 +36,8 @@ try {
     <main class="main-content" style="margin-left: 5.5em; margin-top: 4.5em;">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-lg-9">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-8">
                     <div class="table-header">
                         <div class="receipts d-flex align-items-center">
                             <!-- <span class="iconify me-1 ms-3" data-icon="solar:chat-square-2-broken" data-width="24"></span> -->
@@ -141,7 +142,7 @@ try {
                 </div>
 
                 <!-- Right Sidebar -->
-                <div class="col-lg-3">
+                <div class="col-lg-2">
                     <div class="right-sidebar">
                         <!-- Recent Activity Card -->
                         <div class="card">
