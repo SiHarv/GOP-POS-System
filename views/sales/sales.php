@@ -1,6 +1,4 @@
 <?php
-require_once __DIR__ . '/../../controller/backend_sales.php';
-$salesController = new SalesController();
 $currentYear = date('Y');
 $currentMonth = date('n');
 ?>

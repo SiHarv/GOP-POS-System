@@ -59,20 +59,23 @@ $(document).ready(function() {
     }
 
     function updateSalesChart(monthlyData) {
-        const ctx = document.getElementById('salesChart').getContext('2d');
-        
-        // Destroy existing chart if it exists
+        const canvas = document.getElementById('salesChart');
+        // Completely remove and recreate the canvas to prevent any reuse issues
         if (salesChart) {
             salesChart.destroy();
+            const parent = canvas.parentNode;
+            parent.removeChild(canvas);
+            const newCanvas = document.createElement('canvas');
+            newCanvas.id = 'salesChart';
+            parent.appendChild(newCanvas);
         }
-
+        // Get the new context after recreating the canvas
+        const ctx = document.getElementById('salesChart').getContext('2d');
         const labels = monthlyData.map(d => {
             const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
             return monthNames[d.month - 1];
         });
-
         const data = monthlyData.map(d => d.monthly_sales);
-
         salesChart = new Chart(ctx, {
             type: 'line',
             data: {
@@ -107,17 +110,21 @@ $(document).ready(function() {
     }
 
     function updateProfitChart(monthlyData) {
-        const ctx = document.getElementById('profitChart').getContext('2d');
-        
-        // Destroy existing chart if it exists
+        const canvas = document.getElementById('profitChart');
+        // Completely remove and recreate the canvas to prevent any reuse issues
         if (profitChart) {
             profitChart.destroy();
+            const parent = canvas.parentNode;
+            parent.removeChild(canvas);
+            const newCanvas = document.createElement('canvas');
+            newCanvas.id = 'profitChart';
+            parent.appendChild(newCanvas);
         }
-
+        // Get the new context after recreating the canvas
+        const ctx = document.getElementById('profitChart').getContext('2d');
         const totalSales = monthlyData.reduce((sum, d) => sum + parseFloat(d.monthly_sales), 0);
         const totalCost = monthlyData.reduce((sum, d) => sum + parseFloat(d.monthly_cost), 0);
         const profit = totalSales - totalCost;
-
         profitChart = new Chart(ctx, {
             type: 'doughnut',
             data: {
