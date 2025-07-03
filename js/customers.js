@@ -11,8 +11,55 @@ $(document).ready(function () {
     addCustomerModal.show();
   });
 
-  // Add click handler for edit buttons
-  $(".edit-btn").on("click", function () {
+
+  // Pagination variables
+  let customersRows = $("#customersTableBody tr");
+  let customersRowsPerPage = 10;
+  let customersCurrentPage = 1;
+
+  function renderCustomersTable(page = 1) {
+    customersRows = $("#customersTableBody tr");
+    const totalRows = customersRows.length;
+    const totalPages = Math.ceil(totalRows / customersRowsPerPage);
+    customersCurrentPage = page;
+
+    // Hide all rows
+    customersRows.hide();
+    // Show only the rows for the current page
+    const startIdx = (page - 1) * customersRowsPerPage;
+    const endIdx = Math.min(startIdx + customersRowsPerPage, totalRows);
+    for (let i = startIdx; i < endIdx; i++) {
+      // Add index number as first cell
+      const row = $(customersRows[i]);
+      if (row.find(".row-index").length === 0) {
+        row.prepend(`<td class="row-index"></td>`);
+      }
+      row.find(".row-index").text(i + 1);
+      row.show();
+    }
+
+    // Render pagination
+    const pag = $("#customersTablePagination");
+    pag.empty();
+    if (totalPages > 1) {
+      for (let i = 1; i <= totalPages; i++) {
+        pag.append(`<li class="page-item${i === customersCurrentPage ? ' active' : ''}"><a class="page-link" href="#">${i}</a></li>`);
+      }
+      pag.find("a").on("click", function (e) {
+        e.preventDefault();
+        const page = parseInt($(this).text());
+        if (page !== customersCurrentPage) {
+          renderCustomersTable(page);
+        }
+      });
+    }
+  }
+
+  // Initial render
+  renderCustomersTable(1);
+
+  // Add click handler for edit buttons (delegated for dynamic rows)
+  $(document).on("click", ".edit-btn", function () {
     const id = $(this).data("id");
     const name = $(this).data("name");
     const phone = $(this).data("phone");
