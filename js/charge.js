@@ -149,10 +149,7 @@ $(document).ready(function () {
 
     $("#total-amount").text(total.toFixed(2));
 
-    // Fix: Only disable if cart is empty OR no customer selected
-    const customerSelected = $("#customer").val() !== "";
-    const hasItems = cart.length > 0;
-    $("#process-charge").prop("disabled", !hasItems || !customerSelected);
+    // No longer disable the process-charge button
   }
 
   // Handle quantity changes
@@ -183,12 +180,7 @@ $(document).ready(function () {
     updateCartDisplay();
   });
 
-  // Handle customer selection
-  $("#customer").change(function () {
-    const hasItems = cart.length > 0;
-    const customerSelected = $(this).val() !== "";
-    $("#process-charge").prop("disabled", !hasItems || !customerSelected);
-  });
+  // No longer disable the process-charge button on customer selection
 
   // Update process charge success callback
   $("#process-charge").on("click", function () {
@@ -199,6 +191,10 @@ $(document).ready(function () {
 
     // Get P.O. Number from input field
     const poNumber = $("#po_number").val();
+    if (!poNumber || poNumber.trim() === "") {
+      alert("Please enter a P.O. Number before processing the charge.");
+      return;
+    }
 
     $.ajax({
       url: "../../controller/backend_charge.php",
@@ -316,55 +312,7 @@ $(document).ready(function () {
     }
   });
 
-  // Process charge
-  $("#process-charge").on("click", function () {
-    const customerId = $("#customer").val();
-    const poNumber = $("#po_number").val();
-
-    if (!customerId) {
-      alert("Please select a customer");
-      return;
-    }
-
-    if (cart.length === 0) {
-      alert("Your cart is empty");
-      return;
-    }
-
-    // Ensure all items have valid totals before processing
-    cart.forEach((item) => {
-      if (item.discount === undefined || isNaN(item.discount)) {
-        item.discount = 0;
-      }
-      calculateItemTotal(item);
-    });
-
-    // Send data to process charge
-    $.ajax({
-      url: "../../controller/backend_charge.php",
-      type: "POST",
-      data: {
-        action: "process_charge",
-        customer_id: customerId,
-        items: cart,
-        po_number: poNumber,
-      },
-      success: function (response) {
-        if (response.status === "success") {
-          alert("Charge processed successfully!");
-          cart = [];
-          updateCart();
-          $("#customer").val("");
-          $("#po_number").val("");
-        } else {
-          alert("Error: " + response.message);
-        }
-      },
-      error: function () {
-        alert("An error occurred while processing the charge");
-      },
-    });
-  });
+  
 
   // Update the cart display
   function updateCart() {
