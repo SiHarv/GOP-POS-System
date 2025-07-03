@@ -20,6 +20,7 @@ $items = $chargeController->getAllItems();
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
     <script src="../../bootstrap-5.3.6/js/bootstrap.bundle.min.js"></script>
     <script src="../../js/libraries/jquery-3.7.1.min.js"></script>
+    <script src="../../js/libraries/sweetalert2.all.min.js"></script>
     <script src="../../js/charge.js"></script>
 </head>
 

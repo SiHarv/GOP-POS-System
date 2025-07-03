@@ -184,15 +184,26 @@ $(document).ready(function () {
 
   // Update process charge success callback
   $("#process-charge").on("click", function () {
+
     if (cart.length === 0 || !$("#customer").val()) {
-      alert("Please select a customer and add items to cart");
+      Swal.fire({
+        icon: 'warning',
+        title: 'Missing Information',
+        text: 'Please select a customer and add items to cart',
+        confirmButtonColor: '#3085d6'
+      });
       return;
     }
 
     // Get P.O. Number from input field
     const poNumber = $("#po_number").val();
     if (!poNumber || poNumber.trim() === "") {
-      alert("Please enter a P.O. Number before processing the charge.");
+      Swal.fire({
+        icon: 'warning',
+        title: 'Missing P.O. Number',
+        text: 'Please enter a P.O. Number before processing the charge.',
+        confirmButtonColor: '#3085d6'
+      });
       return;
     }
 
@@ -207,7 +218,20 @@ $(document).ready(function () {
       },
       success: function (response) {
         if (response.status === "success") {
-          alert("Charge processed successfully!");
+          Swal.fire({
+            icon: 'success',
+            title: 'Charge processed successfully!',
+            text: 'Transaction Recored Successfully.',
+            showConfirmButton: false,
+            timer: 1700,
+            customClass: {
+              popup: 'swal2-taller-popup'
+            }
+          });
+          // Add custom style for taller SweetAlert2 popup
+          const swalTallerStyle = document.createElement('style');
+          swalTallerStyle.innerHTML = `.swal2-taller-popup { min-height: 180px !important; }`;
+          document.head.appendChild(swalTallerStyle);
           cart = [];
           updateCartDisplay();
           $("#customer").val("");
@@ -215,11 +239,21 @@ $(document).ready(function () {
           // Refresh the items table
           refreshItemsTable();
         } else {
-          alert("Error: " + (response.message || "Failed to process charge"));
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: response.message || 'Failed to process charge',
+            confirmButtonColor: '#d33'
+          });
         }
       },
       error: function () {
-        alert("Error processing charge");
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Error processing charge',
+          confirmButtonColor: '#d33'
+        });
       },
     });
   });
