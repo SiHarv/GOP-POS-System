@@ -3,7 +3,7 @@ $(document).ready(function() {
     // Pagination state
     let itemAnalyticsData = [];
     let itemCurrentPage = 1;
-    const itemRowsPerPage = 7;
+    const itemRowsPerPage = 6;
 
     function loadItemAnalytics(page = 1) {
         const period = $('input[name="itemPeriod"]:checked').val();

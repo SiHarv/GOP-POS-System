@@ -96,7 +96,7 @@ $currentMonth = date('n');
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5 class="mb-0"><span class="fw-bolder text-primary">Overview</span> Analytics</h5>
                     </div>
-                    <?php require_once __DIR__ . '/../overview/overview_analytics.php'; ?>
+                    <?php require_once __DIR__ . '/overview_analytics.php'; ?>
                 </div>
 
 
@@ -105,7 +105,7 @@ $currentMonth = date('n');
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5 class="mb-0"><span class="fw-bolder text-success">Item</span> Analytics</h5>
                     </div>
-                    <?php require_once __DIR__ . '/../items/item_analytics.php'; ?>
+                    <?php require_once __DIR__ . '/item_analytics.php'; ?>
                 </div>
 
 
@@ -114,7 +114,7 @@ $currentMonth = date('n');
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5 class="mb-0"><span class="fw-bolder text-danger">Category</span> Analytics</h5>
                     </div>
-                    <?php require_once __DIR__ . '/../categories/category_analytics.php'; ?>
+                    <?php require_once __DIR__ . '/category_analytics.php'; ?>
                 </div>
             </div>
         </div>
