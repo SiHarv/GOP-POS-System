@@ -26,30 +26,25 @@ $currentMonth = date('n');
     
     <main class="main-content">
         <div class="container-fluid px-4">
-            <!-- Header Section -->
-            <div class="sales-header mb-4">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h2 class="fw-bold">
-                        <span class="iconify me-2" data-icon="solar:chart-2-outline" data-width="32"></span>
-                        Sales Analytics Dashboard
-                    </h2>
-                    <div class="d-flex gap-2">
-                        <!-- Update your year select to include 2025 explicitly -->
-                        <select id="yearSelect" class="form-select" style="width: 100px;">
-                            <?php 
-                            // Make sure 2025 is included since your test data seems to be from 2025
-                            $currentYear = date('Y');
-                            $years = range(max(2025, $currentYear), $currentYear - 5);
-                            foreach ($years as $y): 
-                            ?>
-                                <option value="<?= $y ?>" <?= $y == 2025 ? 'selected' : '' ?>><?= $y ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                        <button class="btn btn-outline-primary" onclick="exportData()">
-                            <span class="iconify me-1" data-icon="solar:download-outline"></span>
-                            Export
-                        </button>
-                    </div>
+            <!-- Page Title with extra spacing for header -->
+
+            <div style="height: 3.5rem;"></div>
+            <div class="mb-4 mt-2 d-flex justify-content-between align-items-center">
+                <h2 class="fw-bold mb-0" style="letter-spacing: 1px;">Sales</h2>
+                <div class="d-flex gap-2">
+                    <select id="yearSelect" class="form-select" style="width: 100px;">
+                        <?php 
+                        $currentYear = date('Y');
+                        $years = range(max(2025, $currentYear), $currentYear - 5);
+                        foreach ($years as $y): 
+                        ?>
+                            <option value="<?= $y ?>" <?= $y == 2025 ? 'selected' : '' ?>><?= $y ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <button class="btn btn-outline-primary" onclick="exportData()">
+                        <span class="iconify me-1" data-icon="solar:download-outline"></span>
+                        Export
+                    </button>
                 </div>
             </div>
 
@@ -77,22 +72,32 @@ $currentMonth = date('n');
 
             <!-- Tab Content -->
             <div class="tab-content" id="salesTabContent">
-                
+
                 <!-- Overview Tab -->
                 <div class="tab-pane fade show active" id="overview" role="tabpanel">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0"><span class="fw-bolder text-primary">Overview</span> Analytics</h5>
+                    </div>
                     <?php require_once __DIR__ . '/../overview/overview_analytics.php'; ?>
                 </div>
 
+
                 <!-- Items Analytics Tab -->
                 <div class="tab-pane fade" id="items" role="tabpanel">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0"><span class="fw-bolder text-success">Item</span> Analytics</h5>
+                    </div>
                     <?php require_once __DIR__ . '/../items/item_analytics.php'; ?>
                 </div>
 
+
                 <!-- Categories Analytics Tab -->
                 <div class="tab-pane fade" id="categories" role="tabpanel">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0"><span class="fw-bolder text-danger">Category</span> Analytics</h5>
+                    </div>
                     <?php require_once __DIR__ . '/../categories/category_analytics.php'; ?>
                 </div>
-
             </div>
         </div>
     </main>

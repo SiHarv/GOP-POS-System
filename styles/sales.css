@@ -2,16 +2,7 @@
     width: 150px;
 }
 
-.sales-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 2rem;
-    border-radius: 10px;
-}
+
 
 .summary-card {
     border: none;
@@ -44,25 +35,39 @@
     margin-bottom: 0.5rem;
 }
 
+
+
+/* Simple, minimal tab design */
+.nav-tabs {
+    border-bottom: 1px solid #d1d5db;
+    background: transparent;
+}
 .nav-tabs .nav-link {
     border: none;
-    color: #64748b;
+    color: #222;
     font-weight: 500;
-    padding: 1rem 1.5rem;
-    margin-right: 0.5rem;
-    border-radius: 8px;
-    transition: all 0.2s;
+    padding: 0.75rem 1.25rem;
+    margin-right: 0.25rem;
+    border-radius: 0;
+    background: none;
+    transition: color 0.15s, background 0.15s;
 }
-
 .nav-tabs .nav-link:hover {
-    background-color: #f1f5f9;
-    color: #475569;
+    background: #f3f4f6;
+    color: #111;
 }
-
 .nav-tabs .nav-link.active {
-    background-color: #3b82f6;
-    color: white;
+    background: #fff;
+    color: #111;
+    border-bottom: 2.5px solid #111;
+    font-weight: 700;
+}
+.tab-content > .tab-pane {
     border: none;
+    background: #fff;
+    padding: 2rem 0 0 0;
+    margin-bottom: 2rem;
+    box-shadow: none;
 }
 
 .card {
@@ -149,6 +154,11 @@
     vertical-align: middle;
 }
 
+/* Consistent top spacing for all analytics tables */
+.analytics-table-container {
+    margin-top: 2rem;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .main-content {
@@ -156,9 +166,7 @@
         padding: 1rem;
     }
     
-    .sales-header {
-        padding: 1rem;
-    }
+
     
     .nav-tabs .nav-link {
         padding: 0.75rem 1rem;

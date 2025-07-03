@@ -30,29 +30,38 @@
             </select>
         </div>
     </div>
-    <div class="card">
-        <div class="card-header">
-            <h5>Item Performance Ranking</h5>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover" id="itemsTable">
-                    <thead>
-                        <tr>
-                            <th>Rank</th>
-                            <th>Item Name</th>
-                            <th>Category</th>
-                            <th>Qty Sold</th>
-                            <th>Revenue</th>
-                            <th>Profit</th>
-                            <th>Profit %</th>
-                            <th>Transactions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="itemsTableBody">
-                        <!-- Data will be loaded here -->
-                    </tbody>
-                </table>
+    <div class="analytics-table-container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Item Performance Ranking</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="itemsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Rank</th>
+                                        <th>Item</th>
+                                        <th>Category</th>
+                                        <th>Qty Sold</th>
+                                        <th>Revenue</th>
+                                        <th>Profit</th>
+                                        <th>Profit %</th>
+                                        <th>Transactions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="itemsTableBody">
+                                    <!-- Data will be loaded here -->
+                                </tbody>
+                            </table>
+                            <nav>
+                                <ul class="pagination justify-content-end" id="itemsTablePagination"></ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -1,5 +1,11 @@
 $(document).ready(function() {
-    function loadItemAnalytics() {
+
+    // Pagination state
+    let itemAnalyticsData = [];
+    let itemCurrentPage = 1;
+    const itemRowsPerPage = 8;
+
+    function loadItemAnalytics(page = 1) {
         const period = $('input[name="itemPeriod"]:checked').val();
         const year = $('#yearSelect').val();
         const month = period === 'monthly' ? $('#itemMonthSelect').val() : null;
@@ -20,24 +26,32 @@ $(document).ready(function() {
             dataType: 'json',
             success: function(response) {
                 if (response.success && response.data.length > 0) {
-                    updateItemsTable(response.data);
+                    itemAnalyticsData = response.data;
+                    itemCurrentPage = page;
+                    updateItemsTable();
                 } else {
+                    itemAnalyticsData = [];
                     $('#itemsTableBody').html('<tr><td colspan="8">No data found.</td></tr>');
+                    $('#itemsTablePagination').empty();
                 }
             },
             error: function(xhr, status, error) {
                 $('#itemsTableBody').html('<tr><td colspan="8">Error loading data.</td></tr>');
+                $('#itemsTablePagination').empty();
             }
         });
     }
 
-    function updateItemsTable(items) {
+    function updateItemsTable() {
         const tbody = $('#itemsTableBody');
         tbody.empty();
-        items.forEach((item, idx) => {
+        const startIdx = (itemCurrentPage - 1) * itemRowsPerPage;
+        const endIdx = Math.min(startIdx + itemRowsPerPage, itemAnalyticsData.length);
+        for (let i = startIdx; i < endIdx; i++) {
+            const item = itemAnalyticsData[i];
             tbody.append(`
                 <tr>
-                    <td>${idx + 1}</td>
+                    <td>${i + 1}</td>
                     <td>${item.item_name}</td>
                     <td>${item.category}</td>
                     <td>${item.qty_sold}</td>
@@ -47,6 +61,26 @@ $(document).ready(function() {
                     <td>${item.transactions}</td>
                 </tr>
             `);
+        }
+        renderItemsPagination();
+    }
+
+    function renderItemsPagination() {
+        const totalPages = Math.ceil(itemAnalyticsData.length / itemRowsPerPage);
+        const pag = $('#itemsTablePagination');
+        pag.empty();
+        if (totalPages <= 1) return;
+        for (let i = 1; i <= totalPages; i++) {
+            pag.append(`<li class="page-item${i === itemCurrentPage ? ' active' : ''}"><a class="page-link" href="#">${i}</a></li>`);
+        }
+        // Click event
+        pag.find('a').on('click', function(e) {
+            e.preventDefault();
+            const page = parseInt($(this).text());
+            if (page !== itemCurrentPage) {
+                itemCurrentPage = page;
+                updateItemsTable();
+            }
         });
     }
 
@@ -55,10 +89,10 @@ $(document).ready(function() {
         const period = $(this).val();
         $('#monthSelectItem').toggle(period === 'monthly');
         $('#weekSelectItem').toggle(period === 'weekly');
-        loadItemAnalytics();
+        loadItemAnalytics(1);
     });
-    $('#itemMonthSelect, #itemWeekSelect, #yearSelect').on('change', loadItemAnalytics);
+    $('#itemMonthSelect, #itemWeekSelect, #yearSelect').on('change', function() { loadItemAnalytics(1); });
 
     // Initial load
-    loadItemAnalytics();
+    loadItemAnalytics(1);
 });

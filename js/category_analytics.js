@@ -1,5 +1,11 @@
 $(document).ready(function() {
-    function loadCategoryAnalytics() {
+
+    // Pagination state
+    let categoryAnalyticsData = [];
+    let categoryCurrentPage = 1;
+    const categoryRowsPerPage = 10;
+
+    function loadCategoryAnalytics(page = 1) {
         const period = $('input[name="categoryPeriod"]:checked').val();
         const year = $('#yearSelect').val();
         const month = period === 'monthly' ? $('#categoryMonthSelect').val() : null;
@@ -20,27 +26,35 @@ $(document).ready(function() {
             dataType: 'json',
             success: function(response) {
                 if (response.success && response.data.length > 0) {
-                    updateCategoriesTable(response.data);
+                    categoryAnalyticsData = response.data;
+                    categoryCurrentPage = page;
+                    updateCategoriesTable();
                     updateCategoryChart(response.data);
                 } else {
+                    categoryAnalyticsData = [];
                     $('#categoriesTableBody').html('<tr><td colspan="7">No data found.</td></tr>');
+                    $('#categoriesTablePagination').empty();
                     updateCategoryChart([]);
                 }
             },
             error: function(xhr, status, error) {
                 $('#categoriesTableBody').html('<tr><td colspan="7">Error loading data.</td></tr>');
+                $('#categoriesTablePagination').empty();
                 updateCategoryChart([]);
             }
         });
     }
 
-    function updateCategoriesTable(categories) {
+    function updateCategoriesTable() {
         const tbody = $('#categoriesTableBody');
         tbody.empty();
-        categories.forEach((cat, idx) => {
+        const startIdx = (categoryCurrentPage - 1) * categoryRowsPerPage;
+        const endIdx = Math.min(startIdx + categoryRowsPerPage, categoryAnalyticsData.length);
+        for (let i = startIdx; i < endIdx; i++) {
+            const cat = categoryAnalyticsData[i];
             tbody.append(`
                 <tr>
-                    <td>${idx + 1}</td>
+                    <td>${i + 1}</td>
                     <td>${cat.category}</td>
                     <td>${cat.items}</td>
                     <td>${cat.qty_sold}</td>
@@ -49,6 +63,26 @@ $(document).ready(function() {
                     <td>${cat.profit_percent}%</td>
                 </tr>
             `);
+        }
+        renderCategoriesPagination();
+    }
+
+    function renderCategoriesPagination() {
+        const totalPages = Math.ceil(categoryAnalyticsData.length / categoryRowsPerPage);
+        const pag = $('#categoriesTablePagination');
+        pag.empty();
+        if (totalPages <= 1) return;
+        for (let i = 1; i <= totalPages; i++) {
+            pag.append(`<li class="page-item${i === categoryCurrentPage ? ' active' : ''}"><a class="page-link" href="#">${i}</a></li>`);
+        }
+        // Click event
+        pag.find('a').on('click', function(e) {
+            e.preventDefault();
+            const page = parseInt($(this).text());
+            if (page !== categoryCurrentPage) {
+                categoryCurrentPage = page;
+                updateCategoriesTable();
+            }
         });
     }
 
@@ -101,18 +135,18 @@ $(document).ready(function() {
     }
 
     // Handle period changes
+
     $('input[name="categoryPeriod"]').on('change', function() {
         const period = $(this).val();
         $('#monthSelectCategory').toggle(period === 'monthly');
         $('#weekSelectCategory').toggle(period === 'weekly');
-        loadCategoryAnalytics();
+        loadCategoryAnalytics(1);
     });
 
     // Handle select changes
-    $('#categoryMonthSelect, #categoryWeekSelect').on('change', loadCategoryAnalytics);
-    
+    $('#categoryMonthSelect, #categoryWeekSelect').on('change', function() { loadCategoryAnalytics(1); });
     // Handle year changes from the main year select
-    $('#yearSelect').on('change', loadCategoryAnalytics);
+    $('#yearSelect').on('change', function() { loadCategoryAnalytics(1); });
 
     // Handle tab activation
     $('#categories-tab').on('shown.bs.tab', function() {

@@ -30,41 +30,46 @@
             </select>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">
-                    <h5>Category Performance Ranking</h5>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover" id="categoriesTable">
-                            <thead>
-                                <tr>
-                                    <th>Rank</th>
-                                    <th>Category</th>
-                                    <th>Items</th>
-                                    <th>Qty Sold</th>
-                                    <th>Revenue</th>
-                                    <th>Profit</th>
-                                    <th>Profit %</th>
-                                </tr>
-                            </thead>
-                            <tbody id="categoriesTableBody">
-                                <!-- Data will be loaded here -->
-                            </tbody>
-                        </table>
+    <div class="analytics-table-container">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Category Performance Ranking</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="categoriesTable">
+                                <thead>
+                                    <tr>
+                                        <th>Rank</th>
+                                        <th>Category</th>
+                                        <th>Items</th>
+                                        <th>Qty Sold</th>
+                                        <th>Revenue</th>
+                                        <th>Profit</th>
+                                        <th>Profit %</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="categoriesTableBody">
+                                    <!-- Data will be loaded here -->
+                                </tbody>
+                            </table>
+                            <nav>
+                                <ul class="pagination justify-content-end" id="categoriesTablePagination"></ul>
+                            </nav>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-header">
-                    <h5>Category Distribution</h5>
-                </div>
-                <div class="card-body">
-                    <canvas id="categoryChart" height="300"></canvas>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Category Distribution</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="categoryChart" height="300"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
