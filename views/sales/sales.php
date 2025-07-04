@@ -43,8 +43,8 @@ $currentMonth = date('n');
     <?php require_once '../renderParts/header.php'; ?>
     <?php require_once '../renderParts/sidebar.php'; ?>
     
-    <main class="main-content">
-        <div class="container px-2" style="max-width: 1700px;">
+    <main class="main-content" >
+        <div class="container px-2" style="max-width: 1500px;">
             <!-- Page Title with reduced spacing for header -->
             <!-- <div style="height: 1.2rem;"></div> -->
             <div class="mb-4 mt-2 d-flex justify-content-between align-items-center">
