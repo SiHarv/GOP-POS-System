@@ -76,7 +76,7 @@ try {
                         </div>
                         <!-- End Search Filter Section -->
 
-                        <div class="table-wrapper" style="max-height: 620px; overflow-y: auto;">
+                        <div class="table-wrapper" style="max-height: 608px; overflow-y: hidden;">
                             <table class="customers-table">
                                 <thead>
                                     <tr>
