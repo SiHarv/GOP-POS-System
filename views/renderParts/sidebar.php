@@ -1,6 +1,8 @@
 <div class="sidebar">
     <div class="sidebar-brand py-3 text-center d-flex flex-column align-items-center">
-        <span class="iconify" data-icon="solar:shop-linear" data-width="32" data-height="32"></span>
+        <span>
+            <img src="../../icon/icon.png" alt="" style="height: 50px; width: 40px;">
+        </span>
         <small class="sidebar-text">GOP-MARKETING</small>
     </div>
 

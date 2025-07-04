@@ -27,7 +27,7 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customers Management</title>
-    <link rel="icon" type="image/x-icon" href="../../icon/temporary-icon.png">
+    <link rel="icon" type="image/x-icon" href="../../icon/icon.png">
     <link rel="stylesheet" href="../../styles/sidebar.css">
     <link rel="stylesheet" href="../../styles/customers.css">
     <link rel="stylesheet" href="../../styles/header.css">
