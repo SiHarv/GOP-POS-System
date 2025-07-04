@@ -75,11 +75,11 @@ try {
                             </div>
                         </div>
 
-                        <div class="table-wrapper scrollable-table" style="max-height: 575px; overflow-y: auto;">
+                        <div class="table-wrapper scrollable-table" style="max-height: 575px; overflow-y: hidden;">
                             <table class="items-table">
                                 <thead>
                                     <tr>
-                                        <th style="width: 3%; min-width: 30px;">#</th>
+                                        <!-- <th style="width: 3%; min-width: 30px;">#</th> -->
                                         <th style="width: 16%; min-width: 160px;">New stock date</th>
                                         <th>New stock</th>
                                         <th>In stock</th>
