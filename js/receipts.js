@@ -17,8 +17,10 @@ $(document).ready(function () {
         // Fill modal with receipt details
         $("#receipt-id").text(response.id);
         $("#receipt-date").text(new Date(response.date).toLocaleString());
-        $("#receipt-customer").text(response.customer_name);
-        $("#receipt-address").text(response.customer_address);
+        $("#receipt-customer").text(response.customer_name || "-");
+        $("#receipt-address").text(response.customer_address || "-");
+        $("#receipt-terms").text(response.customer_terms || "-");
+        $("#receipt-salesman").text(response.customer_salesman || "-");
 
         // Display PO number if available
         if (response.po_number) {
@@ -33,21 +35,32 @@ $(document).ready(function () {
 
         let total = 0;
         response.items.forEach((item) => {
-          total += parseFloat(item.subtotal);
+          // Safely parse values with defaults
+          const quantity = parseInt(item.quantity) || 0;
+          const unitPrice = parseFloat(item.unit_price) || 0;
+          const discountPercentage = parseFloat(item.discount_percentage) || 0;
+          const unit = item.unit || "PCS";
+          const itemName = item.name || "-";
+
+          // Calculate net price (discounted price)
+          const discountAmount = unitPrice * (discountPercentage / 100);
+          const netPrice = unitPrice - discountAmount;
+          const amount = quantity * netPrice;
+
+          total += amount;
 
           // Display discount percentage properly
-          const discountText =
-            parseFloat(item.discount_percentage) > 0
-              ? item.discount_percentage + "%"
-              : "-";
+          const discountText = discountPercentage.toFixed(1) + "%";
 
           itemsBody.append(`
                         <tr>
-                            <td>${item.quantity}</td>
-                            <td>${item.name}</td>
-                            <td>₱${parseFloat(item.unit_price).toFixed(2)}</td>
+                            <td style="text-align: end;">${quantity}</td>
+                            <td>${unit}</td>
+                            <td>${itemName}</td>
+                            <td>₱${unitPrice.toFixed(2)}</td>
                             <td>${discountText}</td>
-                            <td>₱${parseFloat(item.subtotal).toFixed(2)}</td>
+                            <td>₱${netPrice.toFixed(2)}</td>
+                            <td>₱${amount.toFixed(2)}</td>
                         </tr>
                     `);
         });

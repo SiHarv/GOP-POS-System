@@ -63,7 +63,10 @@ class ReceiptsController
             c.po_number,
             cust.name AS customer_name,
             cust.address AS customer_address,
+            cust.terms AS customer_terms,
+            cust.salesman AS customer_salesman,
             i.name AS item_name,
+            i.sold_by AS item_unit,
             ci.quantity,
             ci.price AS unit_price,
             ci.discount_percentage,
@@ -85,20 +88,23 @@ class ReceiptsController
             $receipt = [
                 'id' => $row['id'],
                 'date' => $row['charge_date'],
-                'customer_name' => $row['customer_name'],
-                'customer_address' => $row['customer_address'],
-                'total_price' => $row['total_price'],
-                'po_number' => $row['po_number'],
+                'customer_name' => $row['customer_name'] ?? '',
+                'customer_address' => $row['customer_address'] ?? '',
+                'customer_terms' => $row['customer_terms'] ?? '',
+                'customer_salesman' => $row['customer_salesman'] ?? '',
+                'total_price' => floatval($row['total_price']),
+                'po_number' => $row['po_number'] ?? '',
                 'items' => []
             ];
 
             do {
                 $receipt['items'][] = [
-                    'quantity' => $row['quantity'],
-                    'name' => $row['item_name'],
-                    'unit_price' => $row['unit_price'],
-                    'discount_percentage' => $row['discount_percentage'],
-                    'subtotal' => $row['subtotal']
+                    'quantity' => intval($row['quantity']),
+                    'name' => $row['item_name'] ?? '',
+                    'unit' => $row['item_unit'] ?? 'PCS',
+                    'unit_price' => floatval($row['unit_price']),
+                    'discount_percentage' => floatval($row['discount_percentage']),
+                    'subtotal' => floatval($row['subtotal'])
                 ];
             } while ($row = $result->fetch_assoc());
         }
@@ -114,5 +120,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     if ($_POST['action'] === 'get_details' && isset($_POST['id'])) {
         $result = $controller->getReceiptDetails($_POST['id']);
         echo json_encode($result);
+        exit;
     }
 }

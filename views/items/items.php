@@ -80,11 +80,11 @@ try {
                                 <thead>
                                     <tr>
                                         <!-- <th style="width: 3%; min-width: 30px;">#</th> -->
-                                        <th style="width: 16%; min-width: 160px;">New stock date</th>
+                                        <th style="width: 12%; min-width: 160px;">New stock date</th>
                                         <th>New stock</th>
                                         <th>In stock</th>
                                         <th style="width: 7%; min-width: 70px;">Sold by</th>
-                                        <th style="width: 18%; min-width: 180px;">Name & Description</th>
+                                        <th style="width: 20%; min-width: 180px;">Name & Description</th>
                                         <th style="width: 14%; min-width: 120px;">Category</th>
                                         <th style="width: 7%; min-width: 60px;">Cost</th>
                                         <th style="width: 6%; min-width: 60px;">Price</th>
