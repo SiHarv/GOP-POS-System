@@ -13,7 +13,7 @@
                         top: 0px;
                         margin-left: 10px;
                         ">
-                        <img src="../../icon/icon.png" alt="gop-icon" style="
+                        <img src="../../icon/invoice-icon.png" alt="gop-icon" style="
                         height: 100px; 
                         width: 80px;
                         ">
