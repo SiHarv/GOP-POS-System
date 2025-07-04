@@ -1,17 +1,31 @@
 <?php
 require_once __DIR__ . '/../connection/DBConnection.php';
 
-class CustomersController {
+class CustomersController
+{
     private $conn;
 
-    public function __construct() {
+    public function __construct()
+    {
         $db = new DBConnection();
         $this->conn = $db->getConnection();
     }
 
-    public function getAllCustomers() {
-        $sql = "SELECT * FROM customers ORDER BY id DESC";
-        $result = $this->conn->query($sql);
+    public function getAllCustomers($limit = null, $offset = 0)
+    {
+        $query = "SELECT * FROM customers ORDER BY id DESC";
+
+        if ($limit !== null) {
+            $query .= " LIMIT ? OFFSET ?";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bind_param("ii", $limit, $offset);
+            $stmt->execute();
+        } else {
+            $stmt = $this->conn->prepare($query);
+            $stmt->execute();
+        }
+
+        $result = $stmt->get_result();
         $customers = [];
 
         if ($result->num_rows > 0) {
@@ -22,7 +36,18 @@ class CustomersController {
         return $customers;
     }
 
-    public function addCustomer($data) {
+    public function getTotalCustomersCount()
+    {
+        $query = "SELECT COUNT(*) FROM customers";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_row();
+        return $row[0];
+    }
+
+    public function addCustomer($data)
+    {
         try {
             $sql = "INSERT INTO customers (name, phone_number, address, terms, salesman) VALUES (?, ?, ?, ?, ?)";
             $stmt = $this->conn->prepare($sql);
@@ -55,11 +80,13 @@ class CustomersController {
         }
     }
 
-    public function editCustomer($data) {
+    public function editCustomer($data)
+    {
         try {
             $sql = "UPDATE customers SET name = ?, phone_number = ?, address = ?, terms = ?, salesman = ? WHERE id = ?";
             $stmt = $this->conn->prepare($sql);
-            $stmt->bind_param("sssssi", 
+            $stmt->bind_param(
+                "sssssi",
                 $data['name'],
                 $data['phone_number'],
                 $data['address'],
@@ -92,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     error_log('Received POST request: ' . json_encode($_POST));
     header('Content-Type: application/json');
     $controller = new CustomersController();
-    
+
     if ($_POST['action'] === 'add') {
         error_log('Adding customer with data: ' . json_encode($_POST));
         $result = $controller->addCustomer($_POST);

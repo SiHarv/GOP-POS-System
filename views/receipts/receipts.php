@@ -5,7 +5,16 @@ ini_set('display_errors', 1);
 try {
     require_once __DIR__ . '/../../controller/backend_receipts.php';
     $receiptsController = new ReceiptsController();
-    $receipts = $receiptsController->getAllReceipts();
+
+    // Pagination parameters
+    $receiptsPerPage = 10;
+    $currentPage = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+    $offset = ($currentPage - 1) * $receiptsPerPage;
+
+    // Get paginated receipts and total count
+    $receipts = $receiptsController->getAllReceipts($receiptsPerPage, $offset);
+    $totalReceipts = $receiptsController->getTotalReceiptsCount();
+    $totalPages = ceil($totalReceipts / $receiptsPerPage);
 } catch (Exception $e) {
     die("Error: " . $e->getMessage());
 }
@@ -33,7 +42,7 @@ try {
 <body>
     <?php require_once '../renderParts/header.php'; ?>
     <?php require_once '../renderParts/sidebar.php'; ?>
-    <main class="main-content" style="margin-left: 5.5em; margin-top: 4.5em;">
+    <main class="main-content" style="margin-left: 4.5em; margin-top: 4.5em;">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-1"></div>
@@ -91,7 +100,7 @@ try {
                         </div>
                         <!-- End Filter Section -->
 
-                        <div class="table-wrapper">
+                        <div class="table-wrapper" style="max-height: 615px; overflow-y: auto;">
                             <table class="receipts-table" id="receipts-table">
                                 <thead>
                                     <tr>
@@ -108,8 +117,6 @@ try {
                                     if (empty($receipts)) {
                                         echo '<tr><td colspan="6" class="text-center">No receipts found</td></tr>';
                                     } else {
-                                        $receiptCount = count($receipts);
-
                                         foreach ($receipts as $receipt):
                                     ?>
                                             <tr>
@@ -127,17 +134,37 @@ try {
                                             </tr>
                                     <?php
                                         endforeach;
-
-                                        if ($receiptCount < 10) {
-                                            for ($i = 0; $i < (10 - $receiptCount); $i++) {
-                                                echo '<tr class="empty-row"><td colspan="6">&nbsp;</td></tr>';
-                                            }
-                                        }
                                     }
                                     ?>
                                 </tbody>
                             </table>
                         </div>
+
+                        <!-- Bootstrap Pagination -->
+                        <?php if ($totalPages > 1): ?>
+                            <nav class="mt-4">
+                                <ul class="pagination justify-content-center">
+                                    <li class="page-item <?php echo ($currentPage <= 1) ? 'disabled' : ''; ?>">
+                                        <a class="page-link" href="?page=<?php echo $currentPage - 1; ?>">Previous</a>
+                                    </li>
+
+                                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                                        <li class="page-item <?php echo ($i == $currentPage) ? 'active' : ''; ?>">
+                                            <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                                        </li>
+                                    <?php endfor; ?>
+
+                                    <li class="page-item <?php echo ($currentPage >= $totalPages) ? 'disabled' : ''; ?>">
+                                        <a class="page-link" href="?page=<?php echo $currentPage + 1; ?>">Next</a>
+                                    </li>
+                                </ul>
+                                <div class="text-center">
+                                    <small class="text-muted">
+                                        Showing <?php echo min($offset + 1, $totalReceipts); ?> to <?php echo min($offset + $receiptsPerPage, $totalReceipts); ?> of <?php echo $totalReceipts; ?> receipts
+                                    </small>
+                                </div>
+                            </nav>
+                        <?php endif; ?>
                     </div>
                 </div>
 

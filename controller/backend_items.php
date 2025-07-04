@@ -1,16 +1,19 @@
 <?php
 require_once __DIR__ . '/../connection/DBConnection.php';
 
-class ItemsController {
+class ItemsController
+{
     private $conn;
 
-    public function __construct() {
+    public function __construct()
+    {
         $db = new DBConnection();
         $this->conn = $db->getConnection();
     }
 
-    public function getAllItems() {
-        $sql = "SELECT i.*, 
+    public function getAllItems($limit = null, $offset = 0)
+    {
+        $query = "SELECT i.*, 
                 h.quantity_added,
                 h.date_added
                 FROM items i
@@ -24,8 +27,18 @@ class ItemsController {
                     )
                 ) h ON i.id = h.item_id
                 ORDER BY i.id DESC";
-                
-        $result = $this->conn->query($sql);
+
+        if ($limit !== null) {
+            $query .= " LIMIT ? OFFSET ?";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bind_param("ii", $limit, $offset);
+            $stmt->execute();
+        } else {
+            $stmt = $this->conn->prepare($query);
+            $stmt->execute();
+        }
+
+        $result = $stmt->get_result();
         $items = [];
 
         if ($result->num_rows > 0) {
@@ -36,13 +49,25 @@ class ItemsController {
         return $items;
     }
 
-    public function addItem($data) {
+    public function getTotalItemsCount()
+    {
+        $query = "SELECT COUNT(*) FROM items";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_row();
+        return $row[0];
+    }
+
+    public function addItem($data)
+    {
         try {
             $sql = "INSERT INTO items (name, stock, sold_by, category, cost, price) 
                     VALUES (?, ?, ?, ?, ?, ?)";
-                    
+
             $stmt = $this->conn->prepare($sql);
-            $stmt->bind_param("sissdd", 
+            $stmt->bind_param(
+                "sissdd",
                 $data['name'],
                 $data['stock'],
                 $data['sold_by'],
@@ -79,7 +104,8 @@ class ItemsController {
         }
     }
 
-    public function updateItem($data) {
+    public function updateItem($data)
+    {
         try {
             $this->conn->begin_transaction();
 
@@ -92,9 +118,10 @@ class ItemsController {
                     price = ?,
                     stock = stock + ? 
                     WHERE id = ?";
-            
+
             $stmt = $this->conn->prepare($sql);
-            $stmt->bind_param("sssddii", 
+            $stmt->bind_param(
+                "sssddii",
                 $data['name'],
                 $data['category'],
                 $data['sold_by'],
@@ -120,13 +147,45 @@ class ItemsController {
             throw $e;
         }
     }
+
+    public function getLowStockItems($stockThreshold = 15)
+    {
+        $query = "SELECT i.*, 
+                h.quantity_added,
+                h.date_added
+                FROM items i
+                LEFT JOIN (
+                    SELECT item_id, quantity_added, date_added
+                    FROM item_stock_history
+                    WHERE (item_id, date_added) IN (
+                        SELECT item_id, MAX(date_added)
+                        FROM item_stock_history
+                        GROUP BY item_id
+                    )
+                ) h ON i.id = h.item_id
+                WHERE i.stock <= ?
+                ORDER BY i.stock ASC, i.id DESC";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("i", $stockThreshold);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $items = [];
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $items[] = $row;
+            }
+        }
+        return $items;
+    }
 }
 
 // Handle AJAX requests
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Content-Type: application/json');
     $controller = new ItemsController();
-    
+
     if (isset($_POST['action'])) {
         switch ($_POST['action']) {
             case 'add':
@@ -144,4 +203,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
     $controller = new ItemsController();
     echo json_encode($controller->getAllItems());
 }
-?>

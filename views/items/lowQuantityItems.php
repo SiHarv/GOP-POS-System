@@ -20,56 +20,55 @@ usort($lowStockItems, function ($a, $b) {
 });
 ?>
 
-<div class="low-quantity-panel">
-   <div class="panel-header">
-      <span class="iconify text-danger me-2" data-icon="mdi:alert-circle" data-width="24"></span>
-      <h5 class="mb-0 fw-bold">Low stock products</h5>
-      <?php if ($purchaseNeededCount > 0): ?>
-         <span class="badge bg-danger ms-2"><?php echo $purchaseNeededCount; ?></span>
-      <?php endif; ?>
-   </div>
-
-   <div class="panel-body">
-      <?php if (empty($lowStockItems)): ?>
-         <div class="no-items-message">
-            <span class="iconify mb-2" data-icon="mdi:check-circle" data-width="32" style="color: #28a745;"></span>
-            <p>All items are well-stocked!</p>
-         </div>
-      <?php else: ?>
-         <div class="low-quantity-list">
-            <?php foreach ($lowStockItems as $item): ?>
-               <div class="low-quantity-item <?php echo ($item['stock'] <= $purchaseThreshold) ? 'purchase-needed' : ''; ?>">
-                  <div class="item-details">
-                     <h6><?php echo $item['name']; ?></h6>
-                     <div class="item-meta">
-                        <small><?php echo $item['category']; ?> · <?php echo $item['sold_by']; ?></small>
+<div class="low-quantity-panel" style="height: 0;">
+   <div class="card">
+      <div class="card-header bg-dark text-dark">
+         <h6 class="mb-0 fw-bold text-white text-start">
+            <span class="iconify me-1" data-icon="solar:danger-triangle-linear" data-width="16" style="margin-bottom: 2px;"></span>
+            Low Stock Alert
+         </h6>
+      </div>
+      <div class="card-body p-2" style="max-height: 500px; overflow-y: auto;">
+         <?php if (isset($sidebarItems) && !empty($sidebarItems)): ?>
+            <?php foreach ($sidebarItems as $item):
+               $stockClass = '';
+               $stockIcon = '';
+               if ($item['stock'] <= 5) {
+                  $stockClass = 'text-danger';
+                  $stockIcon = 'solar:danger-triangle-bold';
+               } elseif ($item['stock'] <= 15) {
+                  $stockClass = 'text-warning';
+                  $stockIcon = 'solar:danger-triangle-linear';
+               }
+            ?>
+               <div class="low-stock-item mb-2 p-2 border-bottom">
+                  <div class="d-flex justify-content-between align-items-start">
+                     <div class="flex-grow-1">
+                        <div class="fw-bold text-primary" style="font-size: 0.8rem;">
+                           <?php echo substr($item['name'], 0, 18); ?><?php echo strlen($item['name']) > 18 ? '...' : ''; ?>
+                        </div>
+                        <div class="text-muted" style="font-size: 0.7rem;">
+                           <?php echo $item['category']; ?>
+                        </div>
                      </div>
-                     <div class="stock-status mt-2">
-                        <div class="progress" style="height: 4px;">
-                           <div class="progress-bar <?php echo ($item['stock'] <= 5) ? 'bg-danger' : 'bg-warning'; ?>"
-                              role="progressbar"
-                              style="width: <?php echo min(($item['stock'] / $lowStockThreshold) * 100, 100); ?>%"
-                              aria-valuenow="<?php echo $item['stock']; ?>"
-                              aria-valuemin="0"
-                              aria-valuemax="<?php echo $lowStockThreshold; ?>">
-                           </div>
+                     <div class="text-end">
+                        <div class="<?php echo $stockClass; ?> fw-bold" style="font-size: 0.85rem;">
+                           <span class="iconify" data-icon="<?php echo $stockIcon; ?>" data-width="12"></span>
+                           <?php echo $item['stock']; ?>
                         </div>
                      </div>
                   </div>
-                  <div class="item-actions">
-                     <span class="stock-count <?php echo ($item['stock'] <= 5) ? 'critical' : 'warning'; ?>">
-                        <?php echo $item['stock']; ?>
-                     </span>
-                     <?php if ($item['stock'] <= $purchaseThreshold): ?>
-                        <span class="purchase-indicator mt-2">
-                           <span class="iconify" data-icon="mdi:shopping" data-width="16"></span>
-                           Purchase needed
-                        </span>
-                     <?php endif; ?>
+                  <div class="text-muted mt-1" style="font-size: 0.65rem;">
+                     Sold by: <?php echo $item['sold_by']; ?>
                   </div>
                </div>
             <?php endforeach; ?>
-         </div>
-      <?php endif; ?>
+         <?php else: ?>
+            <div class="text-center text-muted py-3">
+               <span class="iconify" data-icon="solar:check-circle-linear" data-width="32"></span>
+               <div class="mt-2">All items are well stocked</div>
+            </div>
+         <?php endif; ?>
+      </div>
    </div>
 </div>

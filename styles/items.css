@@ -160,40 +160,6 @@ body {
 .edit-btn:hover {
   background-color: #0056b3;
 }
-
-.action-column {
-  width: 100px;
-  text-align: center;
-}
-
-.low-quantity-panel {
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.panel-header {
-  display: flex;
-  align-items: center;
-  padding: 12px;
-  background-color: #000000;
-  border-bottom: 1px solid #e3e6f0;
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
-}
-.panel-header h5{
-  color: white;
-}
-.panel-body {
-  padding: 15px;
-  overflow-y: auto;
-  flex-grow: 1;
-  flex: 1;
-}
-
 .scrollable-table {
   max-height: calc(100vh - 250px);
   overflow-y: auto;
@@ -339,16 +305,6 @@ body {
   flex-direction: column;
   align-items: center;
   min-width: 90px;
-}
-
-#purchaseOrderModal .modal-body {
-  max-height: 60vh;
-  overflow-y: auto;
-}
-
-#purchaseOrderModal .table th {
-  background-color: #f8f9fc;
-  font-size: 0.9rem;
 }
 
 .po-item-quantity {

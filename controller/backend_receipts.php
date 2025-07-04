@@ -11,9 +11,9 @@ class ReceiptsController
         $this->conn = $db->getConnection();
     }
 
-    public function getAllReceipts()
+    public function getAllReceipts($limit = null, $offset = 0)
     {
-        $sql = "SELECT 
+        $query = "SELECT 
             c.id,
             cust.name AS customer_name,
             c.total_price,
@@ -23,7 +23,17 @@ class ReceiptsController
         JOIN customers cust ON c.customer_id = cust.id
         ORDER BY c.charge_date DESC";
 
-        $result = $this->conn->query($sql);
+        if ($limit !== null) {
+            $query .= " LIMIT ? OFFSET ?";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bind_param("ii", $limit, $offset);
+            $stmt->execute();
+        } else {
+            $stmt = $this->conn->prepare($query);
+            $stmt->execute();
+        }
+
+        $result = $stmt->get_result();
         $receipts = [];
 
         if ($result->num_rows > 0) {
@@ -32,6 +42,16 @@ class ReceiptsController
             }
         }
         return $receipts;
+    }
+
+    public function getTotalReceiptsCount()
+    {
+        $query = "SELECT COUNT(*) FROM charges";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_row();
+        return $row[0];
     }
 
     public function getReceiptDetails($id)
