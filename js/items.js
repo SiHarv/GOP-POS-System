@@ -1,8 +1,100 @@
 $(document).ready(function() {
     const editItemModal = new bootstrap.Modal(document.getElementById('editItemModal'));
 
-    // Add click handler for edit buttons
-    $('.edit-btn').on('click', function() {
+    // Pagination variables
+    const itemsRowsPerPage = 10;
+    let currentSearchTerm = '';
+    let currentPage = 1;
+
+    function getAllRows() {
+        return $("#itemsTableBody tr");
+    }
+
+    function getFilteredRows(searchTerm) {
+        if (!searchTerm) {
+            return getAllRows();
+        }
+        return getAllRows().filter(function () {
+            const row = $(this);
+            const name = row.find("td:nth-child(6)").text().toLowerCase();
+            const category = row.find("td:nth-child(7)").text().toLowerCase();
+            const stock = row.find("td:nth-child(4)").text().toLowerCase();
+            return (
+                name.includes(searchTerm) ||
+                category.includes(searchTerm) ||
+                stock.includes(searchTerm)
+            );
+        });
+    }
+
+    function renderTable(searchTerm = currentSearchTerm, page = 1) {
+        currentSearchTerm = searchTerm;
+        currentPage = page;
+
+        const filteredRows = getFilteredRows(searchTerm);
+        const totalRows = filteredRows.length;
+        const totalPages = Math.ceil(totalRows / itemsRowsPerPage);
+
+        // Hide all rows first
+        getAllRows().hide();
+
+        // Show only the filtered rows for the current page
+        const startIdx = (page - 1) * itemsRowsPerPage;
+        const endIdx = Math.min(startIdx + itemsRowsPerPage, totalRows);
+        
+        // Handle no results
+        if (totalRows === 0 && searchTerm !== '') {
+            if ($("#no-results-row").length === 0) {
+                $("#itemsTableBody").append(
+                    '<tr id="no-results-row"><td colspan="10" class="text-center text-muted">No items found matching your search.</td></tr>'
+                );
+            }
+        } else {
+            $("#no-results-row").remove();
+            
+            // Show and update rows for current page
+            for (let i = startIdx; i < endIdx; i++) {
+                const row = $(filteredRows[i]);
+                row.find(".row-index").text(i + 1).addClass('text-center');
+                row.show();
+            }
+        }
+
+        // Update pagination
+        const pag = $("#itemsTablePagination");
+        pag.empty();
+        
+        if (totalPages > 1) {
+            for (let i = 1; i <= totalPages; i++) {
+                pag.append(`<li class="page-item${i === currentPage ? ' active' : ''}"><a class="page-link" href="#">${i}</a></li>`);
+            }
+        }
+
+        // Bind pagination click events
+        pag.find("a").on("click", function (e) {
+            e.preventDefault();
+            const newPage = parseInt($(this).text());
+            if (newPage !== currentPage) {
+                renderTable(currentSearchTerm, newPage);
+            }
+        });
+    }
+
+    // Search and clear search event handlers
+    $("#itemSearchInput").on("keyup", function () {
+        renderTable($(this).val().toLowerCase(), 1);
+    });
+
+    $("#clearSearchBtn").on("click", function () {
+        $("#itemSearchInput").val("");
+        renderTable("", 1);
+    });
+
+    // Initial render
+    renderTable("", 1);
+
+    // Add click handler for edit buttons (delegated for dynamic rows)
+    $(document).on('click', '.edit-btn', function() {
         // Get data from button attributes
         const id = $(this).data('id');
         const name = $(this).data('name');
@@ -78,38 +170,8 @@ $(document).ready(function() {
             dataType: "json",
             success: function(response) {
                 if (response.status === 'success') {
-                    // Create new row and prepend it to the table
-                    const newRow = `
-                        <tr>
-                            <td>${response.item.stock}</td>
-                            <td>${response.item.sold_by}</td>
-                            <td>${response.item.name}</td>
-                            <td>${response.item.category}</td>
-                            <td>₱${parseFloat(response.item.cost).toFixed(2)}</td>
-                            <td>₱${parseFloat(response.item.price).toFixed(2)}</td>
-                            <td>
-                                <button class="btn btn-sm btn-primary edit-btn" 
-                                    data-id="${response.item.id}"
-                                    data-name="${response.item.name}"
-                                    data-stock="${response.item.stock}"
-                                    data-sold-by="${response.item.sold_by}"
-                                    data-category="${response.item.category}"
-                                    data-cost="${response.item.cost}"
-                                    data-price="${response.item.price}">
-                                    <span class="iconify" data-icon="mdi:pencil" data-width="16"></span>
-                                    Edit
-                                </button>
-                            </td>
-                        </tr>
-                    `;
-                    $('.items-table tbody').prepend(newRow);
-                    
-                    // Reset form and close modal
                     $('#addItemForm')[0].reset();
                     modal.hide();
-                    
-                    // Show success message
-                    alert('Item added successfully!');
                     location.reload();
                 } else {
                     alert("Error adding item: " + (response.message || 'Unknown error'));

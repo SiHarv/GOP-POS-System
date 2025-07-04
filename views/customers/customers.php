@@ -80,7 +80,7 @@ try {
                             <table class="customers-table">
                                 <thead>
                                     <tr>
-                                        <!-- <th>Customer ID</th> -->
+                                        <th>Number</th>
                                         <th>Name</th>
                                         <th>Phone Number</th>
                                         <th>Address</th>
@@ -89,7 +89,7 @@ try {
                                         <th>Action</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="customersTableBody">
                                     <?php foreach ($customers as $customer): ?>
                                         <tr>
                                             <td><?php echo $customer['name']; ?></td>
@@ -106,12 +106,15 @@ try {
                                                     data-terms="<?php echo $customer['terms']; ?>"
                                                     data-salesman="<?php echo $customer['salesman']; ?>">
                                                     EDIT
-                                                    <!-- <span class="iconify" data-icon="solar:pen-linear" data-width="16"></span> -->
                                                 </button>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
+                            </table>
+                            <nav>
+                                <ul class="pagination justify-content-center" id="customersTablePagination" style="padding-top: 1rem;"></ul>
+                            </nav>
                             </table>
                         </div>
 

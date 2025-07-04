@@ -14,6 +14,25 @@ $currentMonth = date('n');
     <link rel="stylesheet" href="../../styles/header.css">
     <link rel="stylesheet" href="../../styles/sales.css">
     <link rel="stylesheet" href="../../bootstrap-5.3.6/css/bootstrap.min.css">
+    <style>
+        html, body {
+            overflow: hidden !important;
+            height: 100%;
+        }
+        body {
+            position: relative;
+            height: 100vh;
+        }
+        .main-content {
+            height: 100vh;
+            overflow: hidden;
+        }
+        /* Reduce spacing above h5 titles in tab panes */
+        .tab-pane > .d-flex.mb-3 {
+            margin-top: 0 !important;
+            margin-bottom: 0.7rem !important;
+        }
+    </style>
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="../../bootstrap-5.3.6/js/bootstrap.bundle.min.js"></script>
@@ -25,10 +44,9 @@ $currentMonth = date('n');
     <?php require_once '../renderParts/sidebar.php'; ?>
     
     <main class="main-content">
-        <div class="container-fluid px-4">
-            <!-- Page Title with extra spacing for header -->
-
-            <div style="height: 3.5rem;"></div>
+        <div class="container px-4" style="max-width: 1700px;">
+            <!-- Page Title with reduced spacing for header -->
+            <div style="height: 1.2rem;"></div>
             <div class="mb-4 mt-2 d-flex justify-content-between align-items-center">
                 <h2 class="fw-bold mb-0" style="letter-spacing: 1px;">Sales</h2>
                 <div class="d-flex gap-2">
@@ -78,7 +96,7 @@ $currentMonth = date('n');
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5 class="mb-0"><span class="fw-bolder text-primary">Overview</span> Analytics</h5>
                     </div>
-                    <?php require_once __DIR__ . '/../overview/overview_analytics.php'; ?>
+                    <?php require_once __DIR__ . '/overview_analytics.php'; ?>
                 </div>
 
 
@@ -87,7 +105,7 @@ $currentMonth = date('n');
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5 class="mb-0"><span class="fw-bolder text-success">Item</span> Analytics</h5>
                     </div>
-                    <?php require_once __DIR__ . '/../items/item_analytics.php'; ?>
+                    <?php require_once __DIR__ . '/item_analytics.php'; ?>
                 </div>
 
 
@@ -96,7 +114,7 @@ $currentMonth = date('n');
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5 class="mb-0"><span class="fw-bolder text-danger">Category</span> Analytics</h5>
                     </div>
-                    <?php require_once __DIR__ . '/../categories/category_analytics.php'; ?>
+                    <?php require_once __DIR__ . '/category_analytics.php'; ?>
                 </div>
             </div>
         </div>
