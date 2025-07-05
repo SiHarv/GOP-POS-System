@@ -121,5 +121,6 @@ $currentMonth = date('n');
     </main>
 
     <script src="../../js/sales.js"></script>
+    <script src="../../js/sidebar.js"></script>
 </body>
 </html>
