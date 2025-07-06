@@ -1,7 +1,7 @@
 <?php
 class DBConnection {
     private $host = "localhost";
-        private $username = "root";
+    private $username = "root";
     private $password = "";
     private $database = "gop_marketing_db";
     private $conn;

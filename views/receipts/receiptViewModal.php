@@ -3,14 +3,14 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="receiptModalLabel">Receipt Details</h5>
+                <p class="modal-title" id="receiptModalLabel">Receipt Details</p>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="printable-area">
-                <div class="receipt-header text-center mt-3">
+                <div class="receipt-header text-center mt-5 ">
                     <div class="text-start mt-5"
                         style="position:absolute;
-                        top: 0px;
+                        top: -15px;
                         margin-left: 10px;
                         ">
                         <img src="../../icon/invoice-icon.png" alt="gop-icon" style="
@@ -18,41 +18,41 @@
                         width: 80px;
                         ">
                     </div>
-                    <h5>GOP MARKETING</h5>
-                    <div>Wangag, Damulaan</div>
-                    <div>Albuera, Leyte</div>
-                    <div class="mt-3"><b>Delivery Receipt</b></div>
+                    <div style="font-size: 12px;">GOP GARKETING</div>
+                    <div style="font-size: 12px;">Wangag, Damulaan</div>
+                    <div style="font-size: 12px;">Albuera, Leyte</div>
+                    <div class="mt-3" style="font-size: 12px;"><b>Delivery Receipt</b></div>
                     <!-- <div>Tel: 0987654321</div> -->
                     <div class="text-end me-5"
-                        style="position: absolute; right: 20px; top: 100px;">
+                        style="position: absolute; right: 20px; top: 100px; font-size: 12px;">
                         <strong>Receipt #:</strong> <span id="receipt-id"></span>
                     </div>
                     <hr>
                 </div>
                 <div class="receipt-details mb-4">
                     <div class="d-flex justify-content-between">
-                        <div><strong>Customer:</strong> <span id="receipt-customer"></span></div>
-                        <div><strong>Date:</strong> <span id="receipt-date"></span></div>
+                        <div style="font-size: 12px;"><strong>Customer:</strong> <span id="receipt-customer"></span></div>
+                        <div style="font-size: 12px;"><strong>Date:</strong> <span id="receipt-date"></span></div>
                     </div>
                     <div class="d-flex justify-content-between">
-                        <div><strong>Address:</strong> <span id="receipt-address"></span></div>
-                        <div><strong>Terms:</strong> <span id="receipt-terms"></span></div>
+                        <div style="font-size: 12px;"><strong>Address:</strong> <span id="receipt-address"></span></div>
+                        <div style="font-size: 12px;"><strong>Terms:</strong> <span id="receipt-terms"></span></div>
                     </div>
                     <div class="d-flex justify-content-between">
-                        <div><strong>P.O. Number:</strong> <span id="receipt-po-number">-</span></div>
-                        <div><strong>Salesman:</strong> <span id="receipt-salesman"></span></div>
+                        <div style="font-size: 12px;"><strong>P.O. Number:</strong> <span id="receipt-po-number">-</span></div>
+                        <div style="font-size: 12px;"><strong>Salesman:</strong> <span id="receipt-salesman"></span></div>
                     </div>
                 </div>
-                <table class="table table-bordered">
+                <table class="table table-bordered" style="padding: none; margin:none;">
                     <thead>
                         <tr>
-                            <th>QTY</th>
-                            <th>UNIT</th>
-                            <th style="text-align: center;">ITEM/DESCRIPTION</th>
-                            <th>BASE PRICE</th>
-                            <th>DISC.</th>
-                            <th>NET PRICE</th>
-                            <th style="text-align: center;">AMOUNT</th>
+                            <th class="text-center" style="font-size: 12px; padding: 3px;">QTY</th>
+                            <th class="text-center" style="font-size: 12px; padding: 3px;">UNIT</th>
+                            <th class="text-center" style="text-align: center; width: 30%; font-size:12px; padding: 3px;">ITEM/DESCRIPTION</th>
+                            <th class="text-center" style="font-size: 12px; padding: 3px;">BASE PRICE</th>
+                            <th class="text-center" style="font-size: 12px; padding: 3px;">DISC.</th>
+                            <th class="text-center" style="font-size: 12px; padding: 3px;">NET PRICE</th>
+                            <th class="text-center" style="text-align: center; font-size:12px; padding: 3px;">AMOUNT</th>
                         </tr>
                     </thead>
                     <tbody id="receipt-items">
@@ -60,8 +60,8 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="6" class="text-end"><strong>Total Amount:</strong></td>
-                            <td><strong>₱<span id="receipt-total"></span></strong></td>
+                            <td colspan="6" class="text-end" style="font-size:12px; padding: 3px;"><strong>Total Amount:</strong></td>
+                            <td class="text-end" style="font-size:12px; padding: 3px;"><strong>₱<span id="receipt-total"></span></strong></td>
                         </tr>
                     </tfoot>
                 </table>
@@ -105,6 +105,7 @@
             padding: 20px;
             font-size: 12px;
             line-height: 1.4;
+            border: 2px solid #000000;
         }
 
         /* Hide modal elements */
@@ -172,28 +173,27 @@
         /* Table styling for print */
         .table {
             width: 100%;
-            border-collapse: collapse;
             margin-bottom: 15px;
-            font-size: 10px;
+            font-size: 8px;
+            border: 2px solid #000000;
         }
 
         .table th,
         .table td {
-            border: 1px solid #000;
-            padding: 8px 4px;
-            text-align: left;
+            border: 2px solid #000000;
+            /* padding: 8px 4px; */
             vertical-align: top;
         }
 
         .table th {
             background-color: #f8f9fa;
-            font-weight: bold;
+            /* font-weight: bold; */
             text-align: center;
-            font-size: 9px;
+            font-size: 8px;
         }
 
         .table td {
-            font-size: 10px;
+            font-size: 8px;
         }
 
         /* Adjust column widths */

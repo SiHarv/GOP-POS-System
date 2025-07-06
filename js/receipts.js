@@ -54,18 +54,41 @@ $(document).ready(function () {
 
           itemsBody.append(`
                         <tr>
-                            <td style="text-align: end;">${quantity}</td>
-                            <td>${unit}</td>
-                            <td>${itemName}</td>
-                            <td>₱${unitPrice.toFixed(2)}</td>
-                            <td>${discountText}</td>
-                            <td>₱${netPrice.toFixed(2)}</td>
-                            <td>₱${amount.toFixed(2)}</td>
+                            <td style="text-align: end; font-size: 12px; padding: 3px;">${quantity}</td>
+                            <td style="text-align: start; font-size: 12px; padding: 3px;">${unit}</td>
+                            <td style="font-size: 12px; padding: 3px;">${itemName}</td>
+                            <td style="text-align: end; font-size: 12px; padding: 3px;">${unitPrice.toLocaleString(
+                              "en-US",
+                              {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                              }
+                            )}</td>
+                            <td style="text-align: end; font-size: 12px; padding: 3px;">${discountText}</td>
+                            <td style="text-align: end; font-size: 12px; padding: 3px;">${netPrice.toLocaleString(
+                              "en-US",
+                              {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                              }
+                            )}</td>
+                            <td style="text-align: end; font-size: 12px; padding: 3px;">${amount.toLocaleString(
+                              "en-US",
+                              {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                              }
+                            )}</td>
                         </tr>
                     `);
         });
 
-        $("#receipt-total").text(total.toFixed(2));
+        $("#receipt-total").text(
+          total.toLocaleString("en-US", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })
+        );
 
         // Show modal
         receiptModal.show();

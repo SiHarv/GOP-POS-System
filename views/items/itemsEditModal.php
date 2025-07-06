@@ -27,6 +27,7 @@
                             <option value="PCS">Piece</option>
                             <option value="PCK">Pack</option>
                             <option value="BOX">Box</option>
+                            <option value="KG">Kg</option>
                         </select>
                     </div>
                     <div class="mb-3">

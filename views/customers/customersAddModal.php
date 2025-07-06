@@ -21,12 +21,13 @@
                         <textarea class="form-control" id="address" name="address" rows="3" placeholder="Enter customer's address (delivery address)" required></textarea>
                     </div>
                     <div class="mb-3">
-                        <label for="terms" class="form-label">Terms (COD / monthly payment, etc.)</label>
-                        <select class="form-select" id="terms" name="terms" required>
+                        <label for="terms" class="form-label">Customer Terms</label>
+                        <input type="text" class="form-control" id="terms" name="terms" placeholder="Enter customer's terms" required>
+                        <!-- <select class="form-select" id="terms" name="terms" required>
                             <option value="COD">COD</option>
                             <option value="Monthly payment">Monthly payment</option>
-                            <!-- <option value="BOX">BOX</option> -->
-                        </select>
+                            <option value="BOX">BOX</option>
+                        </select> -->
                     </div>
                     <div class="mb-3">
                         <label for="salesman" class="form-label">Salesman:</label>

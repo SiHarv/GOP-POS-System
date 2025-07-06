@@ -104,7 +104,7 @@ try {
                             <table class="receipts-table" id="receipts-table">
                                 <thead>
                                     <tr>
-                                        <th>Receipt ID</th>
+                                        <th>Receipt NO</th>
                                         <th>Customer Name</th>
                                         <th>P.O. Number</th>
                                         <th>Total Amount</th>

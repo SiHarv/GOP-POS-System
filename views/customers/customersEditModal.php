@@ -22,12 +22,13 @@
                         <textarea class="form-control" id="edit_address" name="address" rows="3" required></textarea>
                     </div>
                     <div class="mb-3">
-                        <label for="edit_terms" class="form-label">Terms (COD / monthly payment, etc.)</label>
-                        <select class="form-select mt-2" id="edit_terms" name="terms" required>
+                        <label for="edit_terms" class="form-label">Customer Terms</label>
+                        <input type="text" class="form-control" id="edit_terms" name="terms" required>
+                        <!-- <select class="form-select mt-2" id="edit_terms" name="terms" required>
                             <option value="COD">COD</option>
                             <option value="Monthly payment">Monthly payment</option>
-                            <!-- <option value="BOX">BOX</option> -->
-                        </select>
+                            <option value="BOX">BOX</option>
+                        </select> -->
                     </div>
                     <!-- <div class="mb-3">
                         <label for="edit_terms" class="form-label">Terms (COD / monthly payment)</label>

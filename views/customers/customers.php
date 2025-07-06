@@ -80,13 +80,13 @@ try {
                             <table class="customers-table">
                                 <thead>
                                     <tr>
-                                        <th>Number</th>
+                                        <th style="width: 5%;">No.</th>
                                         <th>Name</th>
                                         <th>Phone Number</th>
                                         <th>Address</th>
                                         <th>Terms (days)</th>
                                         <th>Salesman</th>
-                                        <th>Action</th>
+                                        <th style="width: 10%;">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody id="customersTableBody">
