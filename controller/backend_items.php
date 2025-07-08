@@ -11,8 +11,39 @@ class ItemsController
         $this->conn = $db->getConnection();
     }
 
-    public function getAllItems($limit = null, $offset = 0)
+    public function getAllItems($limit = null, $offset = 0, $searchParams = [])
     {
+        $whereConditions = [];
+        $params = [];
+        $types = "";
+
+        // Build search conditions
+        if (!empty($searchParams['name'])) {
+            $whereConditions[] = "i.name LIKE ?";
+            $params[] = "%" . $searchParams['name'] . "%";
+            $types .= "s";
+        }
+        if (!empty($searchParams['category'])) {
+            $whereConditions[] = "i.category LIKE ?";
+            $params[] = "%" . $searchParams['category'] . "%";
+            $types .= "s";
+        }
+        if (!empty($searchParams['sold_by'])) {
+            $whereConditions[] = "i.sold_by LIKE ?";
+            $params[] = "%" . $searchParams['sold_by'] . "%";
+            $types .= "s";
+        }
+        if (!empty($searchParams['stock_min'])) {
+            $whereConditions[] = "i.stock >= ?";
+            $params[] = $searchParams['stock_min'];
+            $types .= "i";
+        }
+        if (!empty($searchParams['stock_max'])) {
+            $whereConditions[] = "i.stock <= ?";
+            $params[] = $searchParams['stock_max'];
+            $types .= "i";
+        }
+
         $query = "SELECT i.*, 
                 h.quantity_added,
                 h.date_added
@@ -25,19 +56,28 @@ class ItemsController
                         FROM item_stock_history
                         GROUP BY item_id
                     )
-                ) h ON i.id = h.item_id
-                ORDER BY i.id DESC";
+                ) h ON i.id = h.item_id";
+
+        if (!empty($whereConditions)) {
+            $query .= " WHERE " . implode(" AND ", $whereConditions);
+        }
+
+        $query .= " ORDER BY i.id DESC";
 
         if ($limit !== null) {
             $query .= " LIMIT ? OFFSET ?";
-            $stmt = $this->conn->prepare($query);
-            $stmt->bind_param("ii", $limit, $offset);
-            $stmt->execute();
-        } else {
-            $stmt = $this->conn->prepare($query);
-            $stmt->execute();
+            $types .= "ii";
+            $params[] = $limit;
+            $params[] = $offset;
         }
 
+        $stmt = $this->conn->prepare($query);
+        
+        if (!empty($params)) {
+            $stmt->bind_param($types, ...$params);
+        }
+        
+        $stmt->execute();
         $result = $stmt->get_result();
         $items = [];
 
@@ -49,10 +89,50 @@ class ItemsController
         return $items;
     }
 
-    public function getTotalItemsCount()
+    public function getTotalItemsCount($searchParams = [])
     {
-        $query = "SELECT COUNT(*) FROM items";
+        $whereConditions = [];
+        $params = [];
+        $types = "";
+
+        if (!empty($searchParams['name'])) {
+            $whereConditions[] = "i.name LIKE ?";
+            $params[] = "%" . $searchParams['name'] . "%";
+            $types .= "s";
+        }
+        if (!empty($searchParams['category'])) {
+            $whereConditions[] = "i.category LIKE ?";
+            $params[] = "%" . $searchParams['category'] . "%";
+            $types .= "s";
+        }
+        if (!empty($searchParams['sold_by'])) {
+            $whereConditions[] = "i.sold_by LIKE ?";
+            $params[] = "%" . $searchParams['sold_by'] . "%";
+            $types .= "s";
+        }
+        if (!empty($searchParams['stock_min'])) {
+            $whereConditions[] = "i.stock >= ?";
+            $params[] = $searchParams['stock_min'];
+            $types .= "i";
+        }
+        if (!empty($searchParams['stock_max'])) {
+            $whereConditions[] = "i.stock <= ?";
+            $params[] = $searchParams['stock_max'];
+            $types .= "i";
+        }
+
+        $query = "SELECT COUNT(*) FROM items i";
+        
+        if (!empty($whereConditions)) {
+            $query .= " WHERE " . implode(" AND ", $whereConditions);
+        }
+
         $stmt = $this->conn->prepare($query);
+        
+        if (!empty($params)) {
+            $stmt->bind_param($types, ...$params);
+        }
+
         $stmt->execute();
         $result = $stmt->get_result();
         $row = $result->fetch_row();
@@ -194,6 +274,99 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             case 'edit_item':
                 echo json_encode($controller->updateItem($_POST));
                 break;
+            case 'search_items':
+                $searchParams = [
+                    'name' => $_POST['name'] ?? '',
+                    'category' => $_POST['category'] ?? '',
+                    'sold_by' => $_POST['sold_by'] ?? '',
+                    'stock_min' => $_POST['stock_min'] ?? '',
+                    'stock_max' => $_POST['stock_max'] ?? ''
+                ];
+                
+                $itemsPerPage = 10;
+                $currentPage = isset($_POST['page']) ? max(1, intval($_POST['page'])) : 1;
+                $offset = ($currentPage - 1) * $itemsPerPage;
+                
+                $items = $controller->getAllItems($itemsPerPage, $offset, $searchParams);
+                $totalItems = $controller->getTotalItemsCount($searchParams);
+                $totalPages = ceil($totalItems / $itemsPerPage);
+                
+                // Generate table HTML
+                $tableHtml = '';
+                if (empty($items)) {
+                    $tableHtml = '<tr><td colspan="9" class="text-center">No items found</td></tr>';
+                } else {
+                    foreach ($items as $item) {
+                        $rowClass = '';
+                        if ($item['stock'] <= 5) {
+                            $rowClass = 'critical-stock-row';
+                        } elseif ($item['stock'] < 15) {
+                            $rowClass = 'low-stock-row';
+                        }
+                        
+                        $tableHtml .= '<tr class="' . $rowClass . '">';
+                        $tableHtml .= '<td>' . (isset($item['date_added']) ? date('m-d-Y', strtotime($item['date_added'])) : '-') . '</td>';
+                        $tableHtml .= '<td>' . (isset($item['quantity_added']) ? $item['quantity_added'] : '0') . '</td>';
+                        $tableHtml .= '<td class="stock-value">' . $item['stock'] . '</td>';
+                        $tableHtml .= '<td>' . htmlspecialchars($item['sold_by']) . '</td>';
+                        $tableHtml .= '<td>' . htmlspecialchars($item['name']) . '</td>';
+                        $tableHtml .= '<td>' . htmlspecialchars($item['category']) . '</td>';
+                        $tableHtml .= '<td>₱' . number_format($item['cost'], 2) . '</td>';
+                        $tableHtml .= '<td>₱' . number_format($item['price'], 2) . '</td>';
+                        $tableHtml .= '<td>';
+                        $tableHtml .= '<button class="btn btn-sm btn-link edit-btn" ';
+                        $tableHtml .= 'data-id="' . $item['id'] . '" ';
+                        $tableHtml .= 'data-name="' . htmlspecialchars($item['name']) . '" ';
+                        $tableHtml .= 'data-stock="' . $item['stock'] . '" ';
+                        $tableHtml .= 'data-sold-by="' . htmlspecialchars($item['sold_by']) . '" ';
+                        $tableHtml .= 'data-category="' . htmlspecialchars($item['category']) . '" ';
+                        $tableHtml .= 'data-cost="' . $item['cost'] . '" ';
+                        $tableHtml .= 'data-price="' . $item['price'] . '">';
+                        $tableHtml .= 'EDIT</button>';
+                        $tableHtml .= '</td>';
+                        $tableHtml .= '</tr>';
+                    }
+                }
+                
+                // Generate pagination HTML
+                $paginationHtml = '';
+                if ($totalItems > 0) {
+                    // Always show count info
+                    $paginationHtml .= '<div class="text-center mt-3"><small class="text-muted">';
+                    if ($totalPages > 1) {
+                        $paginationHtml .= 'Showing ' . min($offset + 1, $totalItems) . ' to ' . min($offset + $itemsPerPage, $totalItems) . ' of ' . $totalItems . ' items';
+                    } else {
+                        $paginationHtml .= 'Showing all ' . $totalItems . ' item' . ($totalItems != 1 ? 's' : '');
+                    }
+                    $paginationHtml .= '</small></div>';
+                    
+                    // Add pagination buttons if more than one page
+                    if ($totalPages > 1) {
+                        $paginationHtml = '<nav class="mt-4"><ul class="pagination justify-content-center">' .
+                            '<li class="page-item' . (($currentPage <= 1) ? ' disabled' : '') . '">' .
+                            '<a class="page-link" href="#" data-page="' . ($currentPage - 1) . '">Previous</a></li>';
+                        
+                        for ($i = 1; $i <= $totalPages; $i++) {
+                            $paginationHtml .= '<li class="page-item' . (($i == $currentPage) ? ' active' : '') . '">';
+                            $paginationHtml .= '<a class="page-link" href="#" data-page="' . $i . '">' . $i . '</a></li>';
+                        }
+                        
+                        $paginationHtml .= '<li class="page-item' . (($currentPage >= $totalPages) ? ' disabled' : '') . '">' .
+                            '<a class="page-link" href="#" data-page="' . ($currentPage + 1) . '">Next</a></li>' .
+                            '</ul></nav>' .
+                            '<div class="text-center mt-3"><small class="text-muted">' .
+                            'Showing ' . min($offset + 1, $totalItems) . ' to ' . min($offset + $itemsPerPage, $totalItems) . ' of ' . $totalItems . ' items' .
+                            '</small></div>';
+                    }
+                }
+                
+                echo json_encode([
+                    'success' => true,
+                    'tableHtml' => $tableHtml,
+                    'paginationHtml' => $paginationHtml,
+                    'totalItems' => $totalItems
+                ]);
+                exit;
         }
     }
 }

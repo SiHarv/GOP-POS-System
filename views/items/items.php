@@ -62,21 +62,56 @@ try {
                             <h5 class="fw-bold"><span class="text-danger fw-bolder">Product</span> Inventory</h5>
                         </div>
 
-                        <!-- Search Filter -->
+                        <!-- Search Filter Section -->
                         <div class="search-filter mb-3">
-                            <div class="input-group">
-                                <span class="input-group-text">
-                                    <span class="iconify" data-icon="solar:magnifier-outline" data-width="20"></span>
-                                </span>
-                                <input type="text" id="itemSearchInput" class="form-control" placeholder="Search for items (name, category, stock level...)">
-                                <button class="btn btn-outline-secondary" type="button" id="clearSearchBtn">
-                                    <span class="iconify" data-icon="solar:close-circle-outline" data-width="20"></span> Clear
-                                </button>
+                            <div class="card">
+                                <div class="card-header bg-light">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h5 class="mb-0 fw-bold fs-6">Filters</h5>
+                                        <button class="btn btn-sm btn-outline-secondary" id="toggle-filters">
+                                            <span class="iconify" data-icon="mdi:filter-outline"></span> Show/Hide
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body" id="filter-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-3">
+                                            <label for="name-filter" class="form-label">Item Name</label>
+                                            <input type="text" class="form-control form-control-sm" id="name-filter"
+                                                placeholder="Filter by name">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="category-filter" class="form-label">Category</label>
+                                            <input type="text" class="form-control form-control-sm" id="category-filter"
+                                                placeholder="Filter by category">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="sold-by-filter" class="form-label">Sold By</label>
+                                            <input type="text" class="form-control form-control-sm" id="sold-by-filter"
+                                                placeholder="Filter by unit">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="stock-min-filter" class="form-label">Min Stock</label>
+                                            <input type="number" class="form-control form-control-sm" id="stock-min-filter"
+                                                placeholder="Min stock">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="stock-max-filter" class="form-label">Max Stock</label>
+                                            <input type="number" class="form-control form-control-sm" id="stock-max-filter"
+                                                placeholder="Max stock">
+                                        </div>
+                                        <div class="col-12 text-end">
+                                            <button class="btn btn-primary btn-sm" id="apply-filter">Apply Filter</button>
+                                            <button class="btn btn-secondary btn-sm" id="reset-filter">Reset</button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        <!-- End Search Filter Section -->
 
                         <div class="table-wrapper scrollable-table" style="max-height: 575px; overflow-y: hidden;">
-                            <table class="items-table">
+                            <table class="items-table" id="items-table">
                                 <thead>
                                     <tr>
                                         <!-- <th style="width: 3%; min-width: 30px;">#</th> -->
@@ -92,70 +127,75 @@ try {
                                     </tr>
                                 </thead>
                                 <tbody id="itemsTableBody">
-                                    <?php foreach ($items as $item):
-                                        $rowClass = '';
-                                        if ($item['stock'] <= 5) {
-                                            $rowClass = 'critical-stock-row';
-                                        } elseif ($item['stock'] < 15) {
-                                            $rowClass = 'low-stock-row';
-                                        }
+                                    <?php
+                                    if (empty($items)) {
+                                        echo '<tr><td colspan="9" class="text-center">No items found</td></tr>';
+                                    } else {
+                                        foreach ($items as $item):
+                                            $rowClass = '';
+                                            if ($item['stock'] <= 5) {
+                                                $rowClass = 'critical-stock-row';
+                                            } elseif ($item['stock'] < 15) {
+                                                $rowClass = 'low-stock-row';
+                                            }
                                     ?>
                                         <tr class="<?php echo $rowClass; ?>">
                                             <td><?php echo isset($item['date_added']) ? date('m-d-Y', strtotime($item['date_added'])) : '-'; ?></td>
                                             <td><?php echo isset($item['quantity_added']) ? $item['quantity_added'] : '0'; ?></td>
                                             <td class="stock-value"><?php echo $item['stock']; ?></td>
-                                            <td><?php echo $item['sold_by']; ?></td>
-                                            <td><?php echo $item['name']; ?></td>
-                                            <td><?php echo $item['category']; ?></td>
+                                            <td><?php echo htmlspecialchars($item['sold_by']); ?></td>
+                                            <td><?php echo htmlspecialchars($item['name']); ?></td>
+                                            <td><?php echo htmlspecialchars($item['category']); ?></td>
                                             <td>₱<?php echo number_format($item['cost'], 2); ?></td>
                                             <td>₱<?php echo number_format($item['price'], 2); ?></td>
                                             <td>
                                                 <button class="btn btn-sm btn-link edit-btn"
                                                     data-id="<?php echo $item['id']; ?>"
-                                                    data-name="<?php echo $item['name']; ?>"
+                                                    data-name="<?php echo htmlspecialchars($item['name']); ?>"
                                                     data-stock="<?php echo $item['stock']; ?>"
-                                                    data-sold-by="<?php echo $item['sold_by']; ?>"
-                                                    data-category="<?php echo $item['category']; ?>"
+                                                    data-sold-by="<?php echo htmlspecialchars($item['sold_by']); ?>"
+                                                    data-category="<?php echo htmlspecialchars($item['category']); ?>"
                                                     data-cost="<?php echo $item['cost']; ?>"
                                                     data-price="<?php echo $item['price']; ?>">
                                                     EDIT
                                                 </button>
                                             </td>
                                         </tr>
-                                    <?php endforeach; ?>
+                                    <?php
+                                        endforeach;
+                                    }
+                                    ?>
                                 </tbody>
-                            </table>
-                            <nav>
-                                <ul class="pagination justify-content-center" id="itemsTablePagination" style="padding-top: 1rem;"></ul>
-                            </nav>
                             </table>
                         </div>
 
                         <!-- Bootstrap Pagination -->
-                        <?php if ($totalPages > 1): ?>
-                            <nav class="mt-4">
-                                <ul class="pagination justify-content-center">
-                                    <li class="page-item <?php echo ($currentPage <= 1) ? 'disabled' : ''; ?>">
-                                        <a class="page-link" href="?page=<?php echo $currentPage - 1; ?>">Previous</a>
-                                    </li>
-
-                                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                                        <li class="page-item <?php echo ($i == $currentPage) ? 'active' : ''; ?>">
-                                            <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                        <div id="pagination-container">
+                            <?php if ($totalPages > 1): ?>
+                                <nav class="mt-4">
+                                    <ul class="pagination justify-content-center">
+                                        <li class="page-item <?php echo ($currentPage <= 1) ? 'disabled' : ''; ?>">
+                                            <a class="page-link" href="#" data-page="<?php echo $currentPage - 1; ?>">Previous</a>
                                         </li>
-                                    <?php endfor; ?>
 
-                                    <li class="page-item <?php echo ($currentPage >= $totalPages) ? 'disabled' : ''; ?>">
-                                        <a class="page-link" href="?page=<?php echo $currentPage + 1; ?>">Next</a>
-                                    </li>
-                                </ul>
-                                <div class="text-center">
-                                    <small class="text-muted">
-                                        Showing <?php echo min($offset + 1, $totalItems); ?> to <?php echo min($offset + $itemsPerPage, $totalItems); ?> of <?php echo $totalItems; ?> items
-                                    </small>
-                                </div>
-                            </nav>
-                        <?php endif; ?>
+                                        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                                            <li class="page-item <?php echo ($i == $currentPage) ? 'active' : ''; ?>">
+                                                <a class="page-link" href="#" data-page="<?php echo $i; ?>"><?php echo $i; ?></a>
+                                            </li>
+                                        <?php endfor; ?>
+
+                                        <li class="page-item <?php echo ($currentPage >= $totalPages) ? 'disabled' : ''; ?>">
+                                            <a class="page-link" href="#" data-page="<?php echo $currentPage + 1; ?>">Next</a>
+                                        </li>
+                                    </ul>
+                                    <div class="text-center">
+                                        <small class="text-muted">
+                                            Showing <?php echo min($offset + 1, $totalItems); ?> to <?php echo min($offset + $itemsPerPage, $totalItems); ?> of <?php echo $totalItems; ?> items
+                                        </small>
+                                    </div>
+                                </nav>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 </div>
 

@@ -422,6 +422,13 @@ body {
   padding: 0.6rem;
 }
 
+/* Override for filter form controls to maintain consistent sizing */
+.search-filter .form-control-sm {
+  font-size: 0.875rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+}
+
 .search-filter .form-control:focus {
   border-color: #bac8f3;
   box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.25);

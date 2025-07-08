@@ -1,121 +1,125 @@
 $(document).ready(function() {
     const editItemModal = new bootstrap.Modal(document.getElementById('editItemModal'));
+    const addItemModal = new bootstrap.Modal(document.getElementById('addItemModal'));
 
-    // Pagination variables
-    const itemsRowsPerPage = 10;
-    let currentSearchTerm = '';
-    let currentPage = 1;
+    // Toggle filter section
+    $("#toggle-filters").click(function() {
+        $("#filter-body").slideToggle();
+    });
 
-    function getAllRows() {
-        return $("#itemsTableBody tr");
-    }
+    // Function to perform search with AJAX
+    function performSearch(page = 1) {
+        const searchData = {
+            action: 'search_items',
+            name: $('#name-filter').val(),
+            category: $('#category-filter').val(),
+            sold_by: $('#sold-by-filter').val(),
+            stock_min: $('#stock-min-filter').val(),
+            stock_max: $('#stock-max-filter').val(),
+            page: page
+        };
 
-    function getFilteredRows(searchTerm) {
-        if (!searchTerm) {
-            return getAllRows();
-        }
-        return getAllRows().filter(function () {
-            const row = $(this);
-            const name = row.find("td:nth-child(6)").text().toLowerCase();
-            const category = row.find("td:nth-child(7)").text().toLowerCase();
-            const stock = row.find("td:nth-child(4)").text().toLowerCase();
-            return (
-                name.includes(searchTerm) ||
-                category.includes(searchTerm) ||
-                stock.includes(searchTerm)
-            );
+        $.ajax({
+            url: '../../controller/backend_items.php',
+            method: 'POST',
+            data: searchData,
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    // Update table body
+                    $('#itemsTableBody').html(response.tableHtml);
+                    
+                    // Update pagination container
+                    $('#pagination-container').html(response.paginationHtml);
+                    
+                    // Re-bind pagination click events
+                    bindPaginationEvents();
+                    
+                    // Re-bind edit button events
+                    bindEditButtonEvents();
+                }
+            },
+            error: function() {
+                alert('Error performing search');
+            }
         });
     }
 
-    function renderTable(searchTerm = currentSearchTerm, page = 1) {
-        currentSearchTerm = searchTerm;
-        currentPage = page;
-
-        const filteredRows = getFilteredRows(searchTerm);
-        const totalRows = filteredRows.length;
-        const totalPages = Math.ceil(totalRows / itemsRowsPerPage);
-
-        // Hide all rows first
-        getAllRows().hide();
-
-        // Show only the filtered rows for the current page
-        const startIdx = (page - 1) * itemsRowsPerPage;
-        const endIdx = Math.min(startIdx + itemsRowsPerPage, totalRows);
-        
-        // Handle no results
-        if (totalRows === 0 && searchTerm !== '') {
-            if ($("#no-results-row").length === 0) {
-                $("#itemsTableBody").append(
-                    '<tr id="no-results-row"><td colspan="10" class="text-center text-muted">No items found matching your search.</td></tr>'
-                );
-            }
-        } else {
-            $("#no-results-row").remove();
-            
-            // Show and update rows for current page
-            for (let i = startIdx; i < endIdx; i++) {
-                const row = $(filteredRows[i]);
-                row.find(".row-index").text(i + 1).addClass('text-center');
-                row.show();
-            }
-        }
-
-        // Update pagination
-        const pag = $("#itemsTablePagination");
-        pag.empty();
-        
-        if (totalPages > 1) {
-            for (let i = 1; i <= totalPages; i++) {
-                pag.append(`<li class="page-item${i === currentPage ? ' active' : ''}"><a class="page-link" href="#">${i}</a></li>`);
-            }
-        }
-
-        // Bind pagination click events
-        pag.find("a").on("click", function (e) {
+    // Function to bind pagination events
+    function bindPaginationEvents() {
+        $(document).off('click', '.page-link').on('click', '.page-link', function(e) {
             e.preventDefault();
-            const newPage = parseInt($(this).text());
-            if (newPage !== currentPage) {
-                renderTable(currentSearchTerm, newPage);
+            if (!$(this).parent().hasClass('disabled')) {
+                const page = $(this).data('page');
+                if (page && page > 0) {
+                    performSearch(page);
+                }
             }
         });
     }
 
-    // Search and clear search event handlers
-    $("#itemSearchInput").on("keyup", function () {
-        renderTable($(this).val().toLowerCase(), 1);
+    // Function to bind edit button events
+    function bindEditButtonEvents() {
+        $(document).off('click', '.edit-btn').on('click', '.edit-btn', function() {
+            // Get data from button attributes
+            const id = $(this).data('id');
+            const name = $(this).data('name');
+            const stock = $(this).data('stock');
+            const soldBy = $(this).data('sold-by');
+            const category = $(this).data('category');
+            const cost = $(this).data('cost');
+            const price = $(this).data('price');
+
+            // Populate form fields
+            $('#edit_item_id').val(id);
+            $('#edit_name').val(name);
+            $('#edit_stock').val(stock);
+            $('#edit_sold_by').val(soldBy);
+            $('#edit_category').val(category);
+            $('#edit_cost').val(cost);
+            $('#edit_price').val(price);
+
+            // Show modal
+            editItemModal.show();
+        });
+    }
+
+    // Auto-search with debounce for text inputs
+    let searchTimeout;
+    $('#name-filter, #category-filter, #sold-by-filter').on('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(function() {
+            performSearch(1);
+        }, 300); // Wait 300ms after user stops typing
     });
 
-    $("#clearSearchBtn").on("click", function () {
-        $("#itemSearchInput").val("");
-        renderTable("", 1);
+    // Auto-search immediately for number inputs
+    $('#stock-min-filter, #stock-max-filter').on('change', function() {
+        performSearch(1);
     });
 
-    // Initial render
-    renderTable("", 1);
-
-    // Add click handler for edit buttons (delegated for dynamic rows)
-    $(document).on('click', '.edit-btn', function() {
-        // Get data from button attributes
-        const id = $(this).data('id');
-        const name = $(this).data('name');
-        const stock = $(this).data('stock');
-        const soldBy = $(this).data('sold-by');
-        const category = $(this).data('category');
-        const cost = $(this).data('cost');
-        const price = $(this).data('price');
-
-        // Populate form fields
-        $('#edit_item_id').val(id);
-        $('#edit_name').val(name);
-        $('#edit_stock').val(stock);
-        $('#edit_sold_by').val(soldBy);
-        $('#edit_category').val(category);
-        $('#edit_cost').val(cost);
-        $('#edit_price').val(price);
-
-        // Show modal
-        editItemModal.show();
+    // Apply filter button (still available if needed)
+    $('#apply-filter').click(function() {
+        performSearch(1);
     });
+
+    // Reset filter button
+    $('#reset-filter').click(function() {
+        $('#name-filter, #category-filter, #sold-by-filter, #stock-min-filter, #stock-max-filter').val('');
+        performSearch(1);
+    });
+
+    // Search on Enter key (for quick search)
+    $('#name-filter, #category-filter, #sold-by-filter').keypress(function(e) {
+        if (e.which == 13) {
+            clearTimeout(searchTimeout); // Cancel debounced search
+            performSearch(1); // Search immediately
+        }
+    });
+
+    // Initial binding
+    bindPaginationEvents();
+    bindEditButtonEvents();
 
     // Handle edit form submission
     $('#editItemForm').on('submit', function(e) {
@@ -153,11 +157,10 @@ $(document).ready(function() {
     });
 
     // Add item functionality
-    const modal = new bootstrap.Modal(document.getElementById('addItemModal'));
     const addBtn = $("#addItemBtn");
 
     addBtn.on("click", function() {
-        modal.show();
+        addItemModal.show();
     });
 
     $("#addItemForm").on("submit", function(e) {
@@ -171,7 +174,7 @@ $(document).ready(function() {
             success: function(response) {
                 if (response.status === 'success') {
                     $('#addItemForm')[0].reset();
-                    modal.hide();
+                    addItemModal.hide();
                     location.reload();
                 } else {
                     alert("Error adding item: " + (response.message || 'Unknown error'));
