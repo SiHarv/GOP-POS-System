@@ -213,7 +213,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             'date_to' => $_POST['date_to'] ?? ''
         ];
         
-        $receiptsPerPage = 8;
+        $receiptsPerPage = 9;
         $currentPage = isset($_POST['page']) ? max(1, intval($_POST['page'])) : 1;
         $offset = ($currentPage - 1) * $receiptsPerPage;
         

@@ -7,7 +7,7 @@ try {
     $customersController = new CustomersController();
     
     // Pagination parameters
-    $customersPerPage = 10;
+    $customersPerPage = 9;
     $currentPage = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
     $offset = ($currentPage - 1) * $customersPerPage;
     
@@ -89,7 +89,7 @@ try {
                                                 placeholder="Filter by salesman">
                                         </div>
                                         <div class="col-12 text-end">
-                                            <button class="btn btn-secondary btn-sm" id="reset-filter">Reset</button>
+                                            <button class="btn btn-danger btn-sm" id="reset-filter">Reset</button>
                                         </div>
                                     </div>
                                 </div>

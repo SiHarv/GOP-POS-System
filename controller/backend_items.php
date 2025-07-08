@@ -283,7 +283,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'stock_max' => $_POST['stock_max'] ?? ''
                 ];
                 
-                $itemsPerPage = 10;
+                $itemsPerPage = 9;
                 $currentPage = isset($_POST['page']) ? max(1, intval($_POST['page'])) : 1;
                 $offset = ($currentPage - 1) * $itemsPerPage;
                 

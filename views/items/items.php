@@ -9,7 +9,7 @@ try {
     $itemsController = new ItemsController();
 
     // Pagination parameters
-    $itemsPerPage = 10;
+    $itemsPerPage = 9;
     $currentPage = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
     $offset = ($currentPage - 1) * $itemsPerPage;
 
@@ -100,8 +100,14 @@ try {
                                             <input type="number" class="form-control form-control-sm" id="stock-max-filter"
                                                 placeholder="Max stock">
                                         </div>
-                                        <div class="col-12 text-end">
-                                            <button class="btn btn-secondary btn-sm" id="reset-filter">Reset</button>
+                                        <div class="col-md-3 d-flex align-items-end">
+                                           
+                                        </div>
+                                        <div class="col-md-3 d-flex align-items-end">
+                                           
+                                        </div>
+                                        <div class="col-md-3 d-flex align-items-end">
+                                            <button class="btn btn-danger btn-sm ms-auto" id="reset-filter">Reset</button>
                                         </div>
                                     </div>
                                 </div>
@@ -109,7 +115,7 @@ try {
                         </div>
                         <!-- End Search Filter Section -->
 
-                        <div class="table-wrapper scrollable-table" style="max-height: 575px; overflow-y: hidden;">
+                        <div class="table-wrapper">
                             <table class="items-table" id="items-table">
                                 <thead>
                                     <tr>

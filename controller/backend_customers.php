@@ -207,7 +207,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             'salesman' => $_POST['salesman'] ?? ''
         ];
         
-        $customersPerPage = 10;
+        $customersPerPage = 9;
         $currentPage = isset($_POST['page']) ? max(1, intval($_POST['page'])) : 1;
         $offset = ($currentPage - 1) * $customersPerPage;
         

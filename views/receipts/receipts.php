@@ -7,7 +7,7 @@ try {
     $receiptsController = new ReceiptsController();
 
     // Pagination parameters
-    $receiptsPerPage = 8;
+    $receiptsPerPage = 9;
     $currentPage = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
     $offset = ($currentPage - 1) * $receiptsPerPage;
 
@@ -90,8 +90,14 @@ try {
                                             <label for="date-to-filter" class="form-label">Date To</label>
                                             <input type="date" class="form-control form-control-sm" id="date-to-filter">
                                         </div>
-                                        <div class="col-12 text-end">
-                                            <button class="btn btn-secondary btn-sm" id="reset-filter">Reset</button>
+                                        <div class="col-md-3 d-flex align-items-end">
+                                            
+                                        </div>
+                                        <div class="col-md-3 d-flex align-items-end">
+                                            
+                                        </div>
+                                        <div class="col-md-3 d-flex align-items-end">
+                                            <button class="btn btn-danger btn-sm ms-auto" id="reset-filter">Reset</button>
                                         </div>
                                     </div>
                                 </div>
