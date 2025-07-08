@@ -91,7 +91,6 @@ try {
                                             <input type="date" class="form-control form-control-sm" id="date-to-filter">
                                         </div>
                                         <div class="col-12 text-end">
-                                            <button class="btn btn-primary btn-sm" id="apply-filter">Apply Filter</button>
                                             <button class="btn btn-secondary btn-sm" id="reset-filter">Reset</button>
                                         </div>
                                     </div>
