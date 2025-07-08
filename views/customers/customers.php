@@ -5,12 +5,12 @@ ini_set('display_errors', 1);
 try {
     require_once __DIR__ . '/../../controller/backend_customers.php';
     $customersController = new CustomersController();
-
+    
     // Pagination parameters
     $customersPerPage = 10;
     $currentPage = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
     $offset = ($currentPage - 1) * $customersPerPage;
-
+    
     // Get paginated customers and total count
     $customers = $customersController->getAllCustomers($customersPerPage, $offset);
     $totalCustomers = $customersController->getTotalCustomersCount();
@@ -27,7 +27,7 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customers Management</title>
-    <link rel="icon" type="image/x-icon" href="../../icon/icon.png">
+    <link rel="icon" type="image/x-icon" href="../../icon/temporary-icon.png">
     <link rel="stylesheet" href="../../styles/sidebar.css">
     <link rel="stylesheet" href="../../styles/customers.css">
     <link rel="stylesheet" href="../../styles/header.css">
@@ -41,7 +41,7 @@ try {
 <body>
     <?php require_once '../renderParts/header.php'; ?>
     <?php require_once '../renderParts/sidebar.php'; ?>
-    <main class="main-content" style="margin-left: 4.5em; margin-top: 4.5em;">
+    <main class="main-content" style="margin-left: 5.5em; margin-top: 4.5em;">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-1"></div>
@@ -57,92 +57,121 @@ try {
 
                         <!-- Search Filter Section -->
                         <div class="search-filter mb-3">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="input-group">
-                                        <span class="input-group-text">
-                                            <span class="iconify" data-icon="solar:magnifer-linear" data-width="16"></span>
-                                        </span>
-                                        <input type="text" class="form-control" id="customer-search" placeholder="Search customers by name, phone, address, or salesman...">
+                            <div class="card">
+                                <div class="card-header bg-light">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h5 class="mb-0 fw-bold fs-6">Filters</h5>
+                                        <button class="btn btn-sm btn-outline-secondary" id="toggle-filters">
+                                            <span class="iconify" data-icon="mdi:filter-outline"></span> Show/Hide
+                                        </button>
                                     </div>
                                 </div>
-                                <div class="col-md-6 d-flex">
-                                    <button class="btn btn-outline-secondary btn-sm" id="clear-search">
-                                        <span class="iconify" data-icon="solar:close-circle-linear" data-width="16"></span>
-                                        Clear
-                                    </button>
+                                <div class="card-body" id="filter-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-3">
+                                            <label for="name-filter" class="form-label">Customer Name</label>
+                                            <input type="text" class="form-control form-control-sm" id="name-filter"
+                                                placeholder="Filter by name">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="phone-filter" class="form-label">Phone Number</label>
+                                            <input type="text" class="form-control form-control-sm" id="phone-filter"
+                                                placeholder="Filter by phone">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="address-filter" class="form-label">Address</label>
+                                            <input type="text" class="form-control form-control-sm" id="address-filter"
+                                                placeholder="Filter by address">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="salesman-filter" class="form-label">Salesman</label>
+                                            <input type="text" class="form-control form-control-sm" id="salesman-filter"
+                                                placeholder="Filter by salesman">
+                                        </div>
+                                        <div class="col-12 text-end">
+                                            <button class="btn btn-primary btn-sm" id="apply-filter">Apply Filter</button>
+                                            <button class="btn btn-secondary btn-sm" id="reset-filter">Reset</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <!-- End Search Filter Section -->
 
-                        <div class="table-wrapper" style="max-height: 608px; overflow-y: hidden;">
-                            <table class="customers-table">
+                        <div class="table-wrapper">
+                            <table class="customers-table" id="customers-table">
                                 <thead>
                                     <tr>
-                                        <th style="width: 5%;">No.</th>
+                                        <!-- <th>Customer ID</th> -->
                                         <th>Name</th>
                                         <th>Phone Number</th>
                                         <th>Address</th>
                                         <th>Terms (days)</th>
                                         <th>Salesman</th>
-                                        <th style="width: 10%;">Action</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody id="customersTableBody">
-                                    <?php foreach ($customers as $customer): ?>
+                                    <?php
+                                    if (empty($customers)) {
+                                        echo '<tr><td colspan="6" class="text-center">No customers found</td></tr>';
+                                    } else {
+                                        foreach ($customers as $customer):
+                                    ?>
                                         <tr>
-                                            <td><?php echo $customer['name']; ?></td>
-                                            <td><?php echo $customer['phone_number']; ?></td>
-                                            <td><?php echo $customer['address']; ?></td>
-                                            <td><?php echo $customer['terms']; ?></td>
-                                            <td><?php echo $customer['salesman']; ?></td>
+                                            <td><?php echo htmlspecialchars($customer['name']); ?></td>
+                                            <td><?php echo htmlspecialchars($customer['phone_number']); ?></td>
+                                            <td><?php echo htmlspecialchars($customer['address']); ?></td>
+                                            <td><?php echo htmlspecialchars($customer['terms']); ?></td>
+                                            <td><?php echo htmlspecialchars($customer['salesman']); ?></td>
                                             <td>
                                                 <button class="btn btn-sm btn-link edit-btn"
                                                     data-id="<?php echo $customer['id']; ?>"
-                                                    data-name="<?php echo $customer['name']; ?>"
-                                                    data-phone="<?php echo $customer['phone_number']; ?>"
-                                                    data-address="<?php echo $customer['address']; ?>"
-                                                    data-terms="<?php echo $customer['terms']; ?>"
-                                                    data-salesman="<?php echo $customer['salesman']; ?>">
+                                                    data-name="<?php echo htmlspecialchars($customer['name']); ?>"
+                                                    data-phone="<?php echo htmlspecialchars($customer['phone_number']); ?>"
+                                                    data-address="<?php echo htmlspecialchars($customer['address']); ?>"
+                                                    data-terms="<?php echo htmlspecialchars($customer['terms']); ?>"
+                                                    data-salesman="<?php echo htmlspecialchars($customer['salesman']); ?>">
                                                     EDIT
+                                                    <!-- <span class="iconify" data-icon="solar:pen-linear" data-width="16"></span> -->
                                                 </button>
                                             </td>
                                         </tr>
-                                    <?php endforeach; ?>
+                                    <?php
+                                        endforeach;
+                                    }
+                                    ?>
                                 </tbody>
-                            </table>
-                            <nav>
-                                <ul class="pagination justify-content-center" id="customersTablePagination" style="padding-top: 1rem;"></ul>
-                            </nav>
                             </table>
                         </div>
 
                         <!-- Bootstrap Pagination -->
-                        <?php if ($totalPages > 1): ?>
-                            <nav class="mt-4">
-                                <ul class="pagination justify-content-center">
-                                    <li class="page-item <?php echo ($currentPage <= 1) ? 'disabled' : ''; ?>">
-                                        <a class="page-link" href="?page=<?php echo $currentPage - 1; ?>">Previous</a>
-                                    </li>
-
-                                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                                        <li class="page-item <?php echo ($i == $currentPage) ? 'active' : ''; ?>">
-                                            <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                        <div id="pagination-container">
+                            <?php if ($totalPages > 1): ?>
+                                <nav class="mt-4">
+                                    <ul class="pagination justify-content-center">
+                                        <li class="page-item <?php echo ($currentPage <= 1) ? 'disabled' : ''; ?>">
+                                            <a class="page-link" href="#" data-page="<?php echo $currentPage - 1; ?>">Previous</a>
                                         </li>
-                                    <?php endfor; ?>
 
-                                    <li class="page-item <?php echo ($currentPage >= $totalPages) ? 'disabled' : ''; ?>">
-                                        <a class="page-link" href="?page=<?php echo $currentPage + 1; ?>">Next</a>
-                                    </li>
-                                </ul>
-                                <div class="text-center">
-                                    <small class="text-muted">
-                                        Showing <?php echo min($offset + 1, $totalCustomers); ?> to <?php echo min($offset + $customersPerPage, $totalCustomers); ?> of <?php echo $totalCustomers; ?> customers
-                                    </small>
-                                </div>
-                            </nav>
-                        <?php endif; ?>
+                                        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                                            <li class="page-item <?php echo ($i == $currentPage) ? 'active' : ''; ?>">
+                                                <a class="page-link" href="#" data-page="<?php echo $i; ?>"><?php echo $i; ?></a>
+                                            </li>
+                                        <?php endfor; ?>
+
+                                        <li class="page-item <?php echo ($currentPage >= $totalPages) ? 'disabled' : ''; ?>">
+                                            <a class="page-link" href="#" data-page="<?php echo $currentPage + 1; ?>">Next</a>
+                                        </li>
+                                    </ul>
+                                    <div class="text-center">
+                                        <small class="text-muted">
+                                            Showing <?php echo min($offset + 1, $totalCustomers); ?> to <?php echo min($offset + $customersPerPage, $totalCustomers); ?> of <?php echo $totalCustomers; ?> customers
+                                        </small>
+                                    </div>
+                                </nav>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 </div>
 

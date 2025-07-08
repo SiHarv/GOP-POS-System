@@ -11,118 +11,115 @@ $(document).ready(function () {
     addCustomerModal.show();
   });
 
-  // Pagination variables
-  let customersRowsPerPage = 10;
-  let customersCurrentPage = 1;
+  // Toggle filter section
+  $("#toggle-filters").click(function() {
+    $("#filter-body").slideToggle();
+  });
 
-  function getFilteredRows(searchTerm) {
-    if (!searchTerm) {
-      return $("#customersTableBody tr");
-    }
-    return $("#customersTableBody tr").filter(function () {
-      const row = $(this);
-      const name = row.find("td:nth-child(2)").text().toLowerCase();
-      const phone = row.find("td:nth-child(3)").text().toLowerCase();
-      const address = row.find("td:nth-child(4)").text().toLowerCase();
-      const salesman = row.find("td:nth-child(6)").text().toLowerCase();
-      return (
-        name.includes(searchTerm) ||
-        phone.includes(searchTerm) ||
-        address.includes(searchTerm) ||
-        salesman.includes(searchTerm)
-      );
+  // Function to perform search with AJAX
+  function performSearch(page = 1) {
+    const searchData = {
+      action: 'search_customers',
+      name: $('#name-filter').val(),
+      phone: $('#phone-filter').val(),
+      address: $('#address-filter').val(),
+      salesman: $('#salesman-filter').val(),
+      page: page
+    };
+
+    $.ajax({
+      url: '../../controller/backend_customers.php',
+      method: 'POST',
+      data: searchData,
+      dataType: 'json',
+      success: function(response) {
+        if (response.success) {
+          // Update table body
+          $('#customersTableBody').html(response.tableHtml);
+          
+          // Update pagination container
+          $('#pagination-container').html(response.paginationHtml);
+          
+          // Re-bind pagination click events
+          bindPaginationEvents();
+          
+          // Re-bind edit button events
+          bindEditButtonEvents();
+        }
+      },
+      error: function() {
+        alert('Error performing search');
+      }
     });
   }
 
-  function renderFilteredTable(searchTerm, page = 1) {
-    const filteredRows = getFilteredRows(searchTerm);
-    const totalRows = filteredRows.length;
-    const totalPages = Math.ceil(totalRows / customersRowsPerPage);
-    customersCurrentPage = page;
-
-    // Hide all rows first
-    $("#customersTableBody tr").hide();
-
-    // Show only the filtered rows for the current page
-    const startIdx = (page - 1) * customersRowsPerPage;
-    const endIdx = Math.min(startIdx + customersRowsPerPage, totalRows);
-
-    for (let i = startIdx; i < endIdx; i++) {
-      const row = $(filteredRows[i]);
-      // Add or update the row index
-      if (row.find(".row-index").length === 0) {
-        row.prepend('<td class="row-index text-center"></td>');
-      }
-      row.find(".row-index").text(i + 1);
-      row.show();
-    }
-
-    // Render pagination
-    const pag = $("#customersTablePagination");
-    pag.empty();
-    if (totalPages > 1) {
-      for (let i = 1; i <= totalPages; i++) {
-        pag.append(
-          `<li class="page-item${
-            i === customersCurrentPage ? " active" : ""
-          }"><a class="page-link" href="#">${i}</a></li>`
-        );
-      }
-      pag.find("a").on("click", function (e) {
-        e.preventDefault();
-        const page = parseInt($(this).text());
-        if (page !== customersCurrentPage) {
-          renderFilteredTable(searchTerm, page);
+  // Function to bind pagination events
+  function bindPaginationEvents() {
+    $(document).off('click', '.page-link').on('click', '.page-link', function(e) {
+      e.preventDefault();
+      if (!$(this).parent().hasClass('disabled')) {
+        const page = $(this).data('page');
+        if (page && page > 0) {
+          performSearch(page);
         }
-      });
-    }
-
-    // Show/hide "no results" message
-    if (totalRows === 0 && searchTerm !== "") {
-      if ($("#no-results-row").length === 0) {
-        $("#customersTableBody").append(
-          '<tr id="no-results-row"><td colspan="7" class="text-center text-muted">No customers found matching your search.</td></tr>'
-        );
       }
-    } else {
-      $("#no-results-row").remove();
-    }
+    });
   }
 
-  // Search and clear search event handlers
-  $("#customer-search").on("keyup", function () {
-    const searchTerm = $(this).val().toLowerCase();
-    renderFilteredTable(searchTerm, 1);
+  // Function to bind edit button events
+  function bindEditButtonEvents() {
+    $(document).off('click', '.edit-btn').on('click', '.edit-btn', function () {
+      const id = $(this).data("id");
+      const name = $(this).data("name");
+      const phone = $(this).data("phone");
+      const address = $(this).data("address");
+      const terms = $(this).data("terms");
+      const salesman = $(this).data("salesman");
+
+      // Populate form fields
+      $("#edit_customer_id").val(id);
+      $("#edit_name").val(name);
+      $("#edit_phone_number").val(phone);
+      $("#edit_address").val(address);
+      $("#edit_terms").val(terms);
+      $("#edit_salesman").val(salesman);
+
+      // Show modal
+      editCustomerModal.show();
+    });
+  }
+
+  // Auto-search with debounce for text inputs
+  let searchTimeout;
+  $('#name-filter, #phone-filter, #address-filter, #salesman-filter').on('input', function() {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(function() {
+      performSearch(1);
+    }, 300); // Wait 300ms after user stops typing
   });
 
-  $("#clear-search").on("click", function () {
-    $("#customer-search").val("");
-    renderFilteredTable("", 1);
+  // Apply filter button (still available if needed)
+  $('#apply-filter').click(function() {
+    performSearch(1);
   });
 
-  // Initial render
-  renderFilteredTable("", 1);
-
-  // Add click handler for edit buttons (delegated for dynamic rows)
-  $(document).on("click", ".edit-btn", function () {
-    const id = $(this).data("id");
-    const name = $(this).data("name");
-    const phone = $(this).data("phone");
-    const address = $(this).data("address");
-    const terms = $(this).data("terms");
-    const salesman = $(this).data("salesman");
-
-    // Populate form fields
-    $("#edit_customer_id").val(id);
-    $("#edit_name").val(name);
-    $("#edit_phone_number").val(phone);
-    $("#edit_address").val(address);
-    $("#edit_terms").val(terms);
-    $("#edit_salesman").val(salesman);
-
-    // Show modal
-    editCustomerModal.show();
+  // Reset filter button
+  $('#reset-filter').click(function() {
+    $('#name-filter, #phone-filter, #address-filter, #salesman-filter').val('');
+    performSearch(1);
   });
+
+  // Search on Enter key (for quick search)
+  $('#name-filter, #phone-filter, #address-filter, #salesman-filter').keypress(function(e) {
+    if (e.which == 13) {
+      clearTimeout(searchTimeout); // Cancel debounced search
+      performSearch(1); // Search immediately
+    }
+  });
+
+  // Initial binding
+  bindPaginationEvents();
+  bindEditButtonEvents();
 
   // Handle edit form submission
   $("#editCustomerForm").submit(function (e) {

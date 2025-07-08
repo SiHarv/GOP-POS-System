@@ -11,20 +11,56 @@ class CustomersController
         $this->conn = $db->getConnection();
     }
 
-    public function getAllCustomers($limit = null, $offset = 0)
+    public function getAllCustomers($limit = null, $offset = 0, $searchParams = [])
     {
-        $query = "SELECT * FROM customers ORDER BY id DESC";
+        $whereConditions = [];
+        $params = [];
+        $types = "";
+
+        // Build search conditions
+        if (!empty($searchParams['name'])) {
+            $whereConditions[] = "name LIKE ?";
+            $params[] = "%" . $searchParams['name'] . "%";
+            $types .= "s";
+        }
+        if (!empty($searchParams['phone'])) {
+            $whereConditions[] = "phone_number LIKE ?";
+            $params[] = "%" . $searchParams['phone'] . "%";
+            $types .= "s";
+        }
+        if (!empty($searchParams['address'])) {
+            $whereConditions[] = "address LIKE ?";
+            $params[] = "%" . $searchParams['address'] . "%";
+            $types .= "s";
+        }
+        if (!empty($searchParams['salesman'])) {
+            $whereConditions[] = "salesman LIKE ?";
+            $params[] = "%" . $searchParams['salesman'] . "%";
+            $types .= "s";
+        }
+
+        $query = "SELECT * FROM customers";
+        
+        if (!empty($whereConditions)) {
+            $query .= " WHERE " . implode(" AND ", $whereConditions);
+        }
+        
+        $query .= " ORDER BY id DESC";
 
         if ($limit !== null) {
             $query .= " LIMIT ? OFFSET ?";
-            $stmt = $this->conn->prepare($query);
-            $stmt->bind_param("ii", $limit, $offset);
-            $stmt->execute();
-        } else {
-            $stmt = $this->conn->prepare($query);
-            $stmt->execute();
+            $types .= "ii";
+            $params[] = $limit;
+            $params[] = $offset;
         }
 
+        $stmt = $this->conn->prepare($query);
+        
+        if (!empty($params)) {
+            $stmt->bind_param($types, ...$params);
+        }
+        
+        $stmt->execute();
         $result = $stmt->get_result();
         $customers = [];
 
@@ -36,10 +72,45 @@ class CustomersController
         return $customers;
     }
 
-    public function getTotalCustomersCount()
+    public function getTotalCustomersCount($searchParams = [])
     {
+        $whereConditions = [];
+        $params = [];
+        $types = "";
+
+        if (!empty($searchParams['name'])) {
+            $whereConditions[] = "name LIKE ?";
+            $params[] = "%" . $searchParams['name'] . "%";
+            $types .= "s";
+        }
+        if (!empty($searchParams['phone'])) {
+            $whereConditions[] = "phone_number LIKE ?";
+            $params[] = "%" . $searchParams['phone'] . "%";
+            $types .= "s";
+        }
+        if (!empty($searchParams['address'])) {
+            $whereConditions[] = "address LIKE ?";
+            $params[] = "%" . $searchParams['address'] . "%";
+            $types .= "s";
+        }
+        if (!empty($searchParams['salesman'])) {
+            $whereConditions[] = "salesman LIKE ?";
+            $params[] = "%" . $searchParams['salesman'] . "%";
+            $types .= "s";
+        }
+
         $query = "SELECT COUNT(*) FROM customers";
+        
+        if (!empty($whereConditions)) {
+            $query .= " WHERE " . implode(" AND ", $whereConditions);
+        }
+
         $stmt = $this->conn->prepare($query);
+        
+        if (!empty($params)) {
+            $stmt->bind_param($types, ...$params);
+        }
+
         $stmt->execute();
         $result = $stmt->get_result();
         $row = $result->fetch_row();
@@ -128,5 +199,86 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     } elseif ($_POST['action'] === 'edit_customer') {
         $result = $controller->editCustomer($_POST);
         echo json_encode($result);
+    } elseif ($_POST['action'] === 'search_customers') {
+        $searchParams = [
+            'name' => $_POST['name'] ?? '',
+            'phone' => $_POST['phone'] ?? '',
+            'address' => $_POST['address'] ?? '',
+            'salesman' => $_POST['salesman'] ?? ''
+        ];
+        
+        $customersPerPage = 10;
+        $currentPage = isset($_POST['page']) ? max(1, intval($_POST['page'])) : 1;
+        $offset = ($currentPage - 1) * $customersPerPage;
+        
+        $customers = $controller->getAllCustomers($customersPerPage, $offset, $searchParams);
+        $totalCustomers = $controller->getTotalCustomersCount($searchParams);
+        $totalPages = ceil($totalCustomers / $customersPerPage);
+        
+        // Generate table HTML
+        $tableHtml = '';
+        if (empty($customers)) {
+            $tableHtml = '<tr><td colspan="6" class="text-center">No customers found</td></tr>';
+        } else {
+            foreach ($customers as $customer) {
+                $tableHtml .= '<tr>';
+                $tableHtml .= '<td>' . htmlspecialchars($customer['name']) . '</td>';
+                $tableHtml .= '<td>' . htmlspecialchars($customer['phone_number']) . '</td>';
+                $tableHtml .= '<td>' . htmlspecialchars($customer['address']) . '</td>';
+                $tableHtml .= '<td>' . htmlspecialchars($customer['terms']) . '</td>';
+                $tableHtml .= '<td>' . htmlspecialchars($customer['salesman']) . '</td>';
+                $tableHtml .= '<td>';
+                $tableHtml .= '<button class="btn btn-sm btn-link edit-btn" ';
+                $tableHtml .= 'data-id="' . $customer['id'] . '" ';
+                $tableHtml .= 'data-name="' . htmlspecialchars($customer['name']) . '" ';
+                $tableHtml .= 'data-phone="' . htmlspecialchars($customer['phone_number']) . '" ';
+                $tableHtml .= 'data-address="' . htmlspecialchars($customer['address']) . '" ';
+                $tableHtml .= 'data-terms="' . htmlspecialchars($customer['terms']) . '" ';
+                $tableHtml .= 'data-salesman="' . htmlspecialchars($customer['salesman']) . '">';
+                $tableHtml .= 'EDIT</button>';
+                $tableHtml .= '</td>';
+                $tableHtml .= '</tr>';
+            }
+        }
+        
+        // Generate pagination HTML
+        $paginationHtml = '';
+        if ($totalCustomers > 0) {
+            // Always show count info
+            $paginationHtml .= '<div class="text-center mt-3"><small class="text-muted">';
+            if ($totalPages > 1) {
+                $paginationHtml .= 'Showing ' . min($offset + 1, $totalCustomers) . ' to ' . min($offset + $customersPerPage, $totalCustomers) . ' of ' . $totalCustomers . ' customers';
+            } else {
+                $paginationHtml .= 'Showing all ' . $totalCustomers . ' customer' . ($totalCustomers != 1 ? 's' : '');
+            }
+            $paginationHtml .= '</small></div>';
+            
+            // Add pagination buttons if more than one page
+            if ($totalPages > 1) {
+                $paginationHtml = '<nav class="mt-4"><ul class="pagination justify-content-center">' .
+                    '<li class="page-item' . (($currentPage <= 1) ? ' disabled' : '') . '">' .
+                    '<a class="page-link" href="#" data-page="' . ($currentPage - 1) . '">Previous</a></li>';
+                
+                for ($i = 1; $i <= $totalPages; $i++) {
+                    $paginationHtml .= '<li class="page-item' . (($i == $currentPage) ? ' active' : '') . '">';
+                    $paginationHtml .= '<a class="page-link" href="#" data-page="' . $i . '">' . $i . '</a></li>';
+                }
+                
+                $paginationHtml .= '<li class="page-item' . (($currentPage >= $totalPages) ? ' disabled' : '') . '">' .
+                    '<a class="page-link" href="#" data-page="' . ($currentPage + 1) . '">Next</a></li>' .
+                    '</ul></nav>' .
+                    '<div class="text-center mt-3"><small class="text-muted">' .
+                    'Showing ' . min($offset + 1, $totalCustomers) . ' to ' . min($offset + $customersPerPage, $totalCustomers) . ' of ' . $totalCustomers . ' customers' .
+                    '</small></div>';
+            }
+        }
+        
+        echo json_encode([
+            'success' => true,
+            'tableHtml' => $tableHtml,
+            'paginationHtml' => $paginationHtml,
+            'totalCustomers' => $totalCustomers
+        ]);
+        exit;
     }
 }
