@@ -7,7 +7,7 @@ try {
     $receiptsController = new ReceiptsController();
 
     // Pagination parameters
-    $receiptsPerPage = 10;
+    $receiptsPerPage = 8;
     $currentPage = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
     $offset = ($currentPage - 1) * $receiptsPerPage;
 
@@ -141,30 +141,32 @@ try {
                         </div>
 
                         <!-- Bootstrap Pagination -->
-                        <?php if ($totalPages > 1): ?>
-                            <nav class="mt-4">
-                                <ul class="pagination justify-content-center">
-                                    <li class="page-item <?php echo ($currentPage <= 1) ? 'disabled' : ''; ?>">
-                                        <a class="page-link" href="?page=<?php echo $currentPage - 1; ?>">Previous</a>
-                                    </li>
-
-                                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                                        <li class="page-item <?php echo ($i == $currentPage) ? 'active' : ''; ?>">
-                                            <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                        <div id="pagination-container">
+                            <?php if ($totalPages > 1): ?>
+                                <nav class="mt-4">
+                                    <ul class="pagination justify-content-center">
+                                        <li class="page-item <?php echo ($currentPage <= 1) ? 'disabled' : ''; ?>">
+                                            <a class="page-link" href="#" data-page="<?php echo $currentPage - 1; ?>">Previous</a>
                                         </li>
-                                    <?php endfor; ?>
 
-                                    <li class="page-item <?php echo ($currentPage >= $totalPages) ? 'disabled' : ''; ?>">
-                                        <a class="page-link" href="?page=<?php echo $currentPage + 1; ?>">Next</a>
-                                    </li>
-                                </ul>
-                                <div class="text-center">
-                                    <small class="text-muted">
-                                        Showing <?php echo min($offset + 1, $totalReceipts); ?> to <?php echo min($offset + $receiptsPerPage, $totalReceipts); ?> of <?php echo $totalReceipts; ?> receipts
-                                    </small>
-                                </div>
-                            </nav>
-                        <?php endif; ?>
+                                        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                                            <li class="page-item <?php echo ($i == $currentPage) ? 'active' : ''; ?>">
+                                                <a class="page-link" href="#" data-page="<?php echo $i; ?>"><?php echo $i; ?></a>
+                                            </li>
+                                        <?php endfor; ?>
+
+                                        <li class="page-item <?php echo ($currentPage >= $totalPages) ? 'disabled' : ''; ?>">
+                                            <a class="page-link" href="#" data-page="<?php echo $currentPage + 1; ?>">Next</a>
+                                        </li>
+                                    </ul>
+                                    <div class="text-center">
+                                        <small class="text-muted">
+                                            Showing <?php echo min($offset + 1, $totalReceipts); ?> to <?php echo min($offset + $receiptsPerPage, $totalReceipts); ?> of <?php echo $totalReceipts; ?> receipts
+                                        </small>
+                                    </div>
+                                </nav>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 </div>
 
