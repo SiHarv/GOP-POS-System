@@ -113,7 +113,7 @@ body {
 .items {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   gap: 15px;
   margin-bottom: 12px;
   padding: 10px;
@@ -127,9 +127,13 @@ body {
   text-align: start;
 }
 
+.items .button-group {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
 .add-btn {
-  position: absolute;
-  right: 0;
   background-color: #4caf50;
   color: white;
   border: none;

@@ -55,11 +55,17 @@ try {
                 <div class="col-lg-8 col-md-10" style="margin-left: 3.5em;">
                     <div class="table-header">
                         <div class="items">
-                            <button id="addItemBtn" class="add-btn btn btn-success">
-                                <span class="iconify" data-icon="solar:add-circle-outline" data-width="24" data-height="24" style="margin-bottom: 2.5px;"></span>
-                                ADD ITEM
-                            </button>
                             <h5 class="fw-bold"><span class="text-danger fw-bolder">Product</span> Inventory</h5>
+                            <div class="button-group">
+                                <button id="printItemsBtn" class="add-btn btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#printItemsModal">
+                                    <span class="iconify" data-icon="solar:printer-outline" data-width="24" data-height="24" style="margin-bottom: 2.5px;"></span>
+                                    PRINT ITEMS
+                                </button>
+                                <button id="addItemBtn" class="add-btn btn btn-success">
+                                    <span class="iconify" data-icon="solar:add-circle-outline" data-width="24" data-height="24" style="margin-bottom: 2.5px;"></span>
+                                    ADD ITEM
+                                </button>
+                            </div>
                         </div>
 
                         <!-- Search Filter Section -->
@@ -217,8 +223,10 @@ try {
     </main>
     <?php require_once 'itemsAddModal.php'; ?>
     <?php require_once 'itemsEditModal.php'; ?>
+    <?php require_once 'itemPrintModal.php'; ?>
     <script src="../../js/sidebar.js"></script>
     <script src="../../js/lowstock.js"></script>
+    <script src="../../js/print_item.js"></script>
 </body>
 
 </html>
