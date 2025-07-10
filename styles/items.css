@@ -36,6 +36,26 @@ body {
   z-index: 10;
 }
 
+/* Header alignment overrides */
+.items-table thead th:nth-child(4) {
+  text-align: center; /* Sold By header */
+}
+.items-table thead th:nth-child(5) {
+  text-align: center; /* Name/Description header */
+}
+.items-table thead th:nth-child(6) {
+  text-align: center; /* Category header */
+}
+.items-table thead th:nth-child(7) {
+  text-align: right; /* Cost header */
+}
+.items-table thead th:nth-child(8) {
+  text-align: right; /* Price header */
+}
+.items-table thead th:nth-child(9) {
+  text-align: center; /* Action header */
+}
+
 .items-table tbody tr {
   border-bottom: 1px solid #e3e6f0;
 }
@@ -53,7 +73,7 @@ body {
   vertical-align: middle;
 }
 
-/* Column widths */
+/* Column widths and alignment */
 .items-table th:nth-child(1),
 .items-table td:nth-child(1) {
   width: 12%;
@@ -69,27 +89,33 @@ body {
 .items-table th:nth-child(4),
 .items-table td:nth-child(4) {
   width: 8%;
-} /* Sold By */
+  text-align: center;
+} /* Sold By - centered */
 .items-table th:nth-child(5),
 .items-table td:nth-child(5) {
   width: 23%;
-} /* Name/Description */
+  text-align: center;
+} /* Name/Description - centered */
 .items-table th:nth-child(6),
 .items-table td:nth-child(6) {
   width: 10%;
-} /* Category */
+  text-align: center;
+} /* Category - centered */
 .items-table th:nth-child(7),
 .items-table td:nth-child(7) {
   width: 8%;
-} /* Cost */
+  text-align: right;
+} /* Cost - right aligned */
 .items-table th:nth-child(8),
 .items-table td:nth-child(8) {
   width: 8%;
-} /* Price */
+  text-align: right;
+} /* Price - right aligned */
 .items-table th:nth-child(9),
 .items-table td:nth-child(9) {
   width: 15%;
-} /* Action */
+  text-align: center;
+} /* Action - centered */
 
 /* Scrollbar styling */
 .scrollable-table::-webkit-scrollbar {

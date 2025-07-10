@@ -29,6 +29,34 @@
                     </div>
                     <p class="mt-2">Loading items...</p>
                 </div>
+
+<style>
+/* Modal table styling */
+#printItemsTable {
+    table-layout: fixed;
+}
+
+#printItemsTable th:nth-child(1),
+#printItemsTable td:nth-child(1) {
+    width: 8%;
+    text-align: center;
+} /* Item ID - centered and reduced width */
+
+#printItemsTable th:nth-child(2),
+#printItemsTable td:nth-child(2) {
+    text-align: center;
+} /* Item Name - centered */
+
+#printItemsTable th:nth-child(3),
+#printItemsTable td:nth-child(3) {
+    text-align: center;
+} /* Category - centered */
+
+#printItemsTable th:nth-child(4),
+#printItemsTable td:nth-child(4) {
+    text-align: center;
+} /* Sold By - centered */
+</style>
                 
                 <!-- Items table container -->
                 <div id="itemsTableContainer" style="display: none;">
@@ -36,10 +64,10 @@
                         <table class="table table-striped table-hover" id="printItemsTable">
                             <thead class="table-dark">
                                 <tr>
-                                    <th class="fw-bold">Item ID</th>
-                                    <th class="fw-bold">Item Name</th>
-                                    <th class="fw-bold">Category</th>
-                                    <th class="fw-bold">Sold By</th>
+                                    <th class="fw-bold text-center" style="width: 8%;">Item ID</th>
+                                    <th class="fw-bold text-center">Item Name</th>
+                                    <th class="fw-bold text-center">Category</th>
+                                    <th class="fw-bold text-center">Sold By</th>
                                     <th class="fw-bold text-end">Cost</th>
                                     <th class="fw-bold text-end">Price</th>
                                     <th class="fw-bold text-end">Stock</th>
@@ -126,10 +154,12 @@
     }
     
     .print-table {
-        width: 100%;
+        width: calc(100% - 2in);
+        margin: 0 1in;
         border-collapse: collapse;
         font-size: 11px;
-        margin: 20px 0;
+        margin-top: 20px;
+        margin-bottom: 20px;
     }
     
     .print-table th,
@@ -140,14 +170,20 @@
     }
     
     .print-table th {
-        background-color: #f0f0f0 !important;
-        font-weight: bold;
-        text-align: center;
+        background-color: transparent !important;
+        color: #000000 !important;
+        font-weight: 900 !important;
+        text-align: center !important;
+        font-size: 12px !important;
+        padding: 4px 3px !important;
+        border: 2px solid #000 !important;
     }
     
     /* Make sure headers are bold in print */
     .print-table th {
-        font-weight: bold !important;
+        font-weight: 900 !important;
+        background: none !important;
+        color: #000000 !important;
     }
     
     /* Right align price and stock columns in print */
@@ -155,7 +191,9 @@
     .print-table th:nth-child(6),
     .print-table th:nth-child(7) {
         text-align: right !important;
-        font-weight: bold !important;
+        font-weight: 900 !important;
+        background-color: transparent !important;
+        color: #000000 !important;
     }
     
     .print-table td:nth-child(5),
@@ -176,15 +214,42 @@
     
     /* Ensure all table headers are bold */
     .print-table thead th {
-        font-weight: bold !important;
-        background-color: #f0f0f0 !important;
-        border: 1px solid #000 !important;
+        font-weight: 900 !important;
+        background-color: transparent !important;
+        color: #000000 !important;
+        border: 2px solid #000 !important;
+        font-size: 12px !important;
+        padding: 4px 3px !important;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
     
     /* Ensure table data styling */
     .print-table tbody td {
         border: 1px solid #000 !important;
-        padding: 6px !important;
+        padding: 3px 2px !important;
+    }
+    
+    /* Fallback for printers that don't support background colors */
+    .print-table th {
+        border: 2px solid #000 !important;
+        font-weight: 900 !important;
+        color: #000000 !important;
+    }
+    
+    /* Alternative header styling if background colors fail */
+    @media print {
+        .print-table th {
+            background: transparent !important;
+            color: #000000 !important;
+        }
+        
+        /* Force black text */
+        .print-table thead th {
+            background: none !important;
+            color: #000000 !important;
+            font-weight: 900 !important;
+        }
     }
     
     .print-table tbody tr:nth-child(even) {
