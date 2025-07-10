@@ -61,6 +61,10 @@ $(document).ready(function() {
         categories.forEach(function(category) {
             select.append(`<option value="${category}">${category}</option>`);
         });
+        
+        // Auto-select "All Items" and load items automatically
+        select.val('all');
+        loadItems();
     }
 
     function loadItems() {
@@ -120,7 +124,7 @@ $(document).ready(function() {
             const row = `
                 <tr>
                     <td>${item.item_id}</td>
-                    <td>${item.item_name}</td>
+                    <td class="text-dark">${item.item_name}</td>
                     <td>${item.category || 'N/A'}</td>
                     <td>${item.sold_by || 'N/A'}</td>
                     <td class="text-end">₱${parseFloat(item.cost || 0).toFixed(2)}</td>

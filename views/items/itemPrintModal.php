@@ -164,7 +164,7 @@
     
     .print-table th,
     .print-table td {
-        border: 1px solid #000;
+        border: 1px solid #666;
         padding: 6px;
         text-align: left;
     }
@@ -172,26 +172,20 @@
     .print-table th {
         background-color: transparent !important;
         color: #000000 !important;
-        font-weight: 900 !important;
+        font-weight: 600 !important;
         text-align: center !important;
         font-size: 12px !important;
         padding: 4px 3px !important;
-        border: 2px solid #000 !important;
+        border: 1px solid #666 !important;
     }
     
-    /* Make sure headers are bold in print */
-    .print-table th {
-        font-weight: 900 !important;
-        background: none !important;
-        color: #000000 !important;
-    }
     
     /* Right align price and stock columns in print */
     .print-table th:nth-child(5),
     .print-table th:nth-child(6),
     .print-table th:nth-child(7) {
         text-align: right !important;
-        font-weight: 900 !important;
+        font-weight: 600 !important;
         background-color: transparent !important;
         color: #000000 !important;
     }
@@ -214,10 +208,10 @@
     
     /* Ensure all table headers are bold */
     .print-table thead th {
-        font-weight: 900 !important;
+        font-weight: 600 !important;
         background-color: transparent !important;
         color: #000000 !important;
-        border: 2px solid #000 !important;
+        border: 1px solid #666 !important;
         font-size: 12px !important;
         padding: 4px 3px !important;
         text-transform: uppercase;
@@ -226,16 +220,11 @@
     
     /* Ensure table data styling */
     .print-table tbody td {
-        border: 1px solid #000 !important;
+        border: 1px solid #666 !important;
         padding: 3px 2px !important;
     }
     
-    /* Fallback for printers that don't support background colors */
-    .print-table th {
-        border: 2px solid #000 !important;
-        font-weight: 900 !important;
-        color: #000000 !important;
-    }
+    
     
     /* Alternative header styling if background colors fail */
     @media print {
@@ -248,7 +237,7 @@
         .print-table thead th {
             background: none !important;
             color: #000000 !important;
-            font-weight: 900 !important;
+            font-weight: 600 !important;
         }
     }
     
