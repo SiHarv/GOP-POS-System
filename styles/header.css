@@ -19,13 +19,61 @@
     display: flex;
     align-items: center;
     padding: 0 15px;
-    justify-content: center;
+    justify-content: center; /* Center the main content */
+    position: relative; /* Allow absolute positioning of children */
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    position: absolute; /* Position absolutely */
+    right: 15px; /* Stick to the right edge */
 }
 
 .header-content h1 {
     font-size: 1.5rem;
     font-weight: 600;
     margin: 0;
+}
+
+.ip-display {
+    display: flex;
+    align-items: center;
+    background-color: #f8f9fa;
+    padding: 8px 12px;
+    border-radius: 20px;
+    border: 1px solid #dee2e6;
+    font-size: 0.85rem;
+    color: #495057;
+    gap: 8px;
+}
+
+.ip-display iconify-icon {
+    color: #6c757d;
+}
+
+.ip-text {
+    font-family: 'Courier New', monospace;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.ip-label, .gateway-label {
+    font-weight: 600;
+    color: #6c757d;
+    font-size: 0.8rem;
+}
+
+.gateway-separator {
+    color: #adb5bd;
+    margin: 0 2px;
 }
 
 /* Adjust container to account for header height */
