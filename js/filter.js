@@ -1,4 +1,5 @@
 $(document).ready(function () {
+  preventDefault();
   initFilterPanel();
 
   $("#apply-filter").click(function () {

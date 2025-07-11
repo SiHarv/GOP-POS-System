@@ -91,10 +91,10 @@ try {
                                             <input type="date" class="form-control form-control-sm" id="date-to-filter">
                                         </div>
                                         <div class="col-md-3 d-flex align-items-end">
-                                            
+
                                         </div>
                                         <div class="col-md-3 d-flex align-items-end">
-                                            
+
                                         </div>
                                         <div class="col-md-3 d-flex align-items-end">
                                             <button class="btn btn-danger btn-sm ms-auto" id="reset-filter">Reset</button>
