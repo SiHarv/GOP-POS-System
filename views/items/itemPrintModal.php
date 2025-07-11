@@ -1,12 +1,12 @@
 <!-- Print Items Modal -->
-<div class="modal fade" id="printItemsModal" tabindex="-1" aria-labelledby="printItemsModalLabel" aria-hidden="true">
+<div class="modal fade" id="printItemsModal" tabindex="-1" aria-labelledby="printItemsModalLabel" aria-hidden="true" style="max-height: 90vh; overflow-y: auto;">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="printItemsModalLabel">Print Items</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" style="padding-bottom: 90px;">
                 <div class="row mb-3">
                     <div class="col-md-4">
                         <label for="categorySelect" class="form-label">Select Category:</label>
@@ -91,19 +91,24 @@
                     <p class="text-muted">No items found for the selected category.</p>
                 </div>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer" style="position: sticky; bottom: 0; right: 0; background: #fff; border: none; z-index: 10; display: flex; gap: 10px; box-shadow: 0 -2px 8px rgba(0,0,0,0.05);">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-success" id="printBtn" style="display: none;">
                     <span class="iconify" data-icon="solar:printer-outline" data-width="20" data-height="20"></span>
                     Print
                 </button>
             </div>
+            
         </div>
     </div>
 </div>
 
 <!-- Print-specific styles -->
 <style>
+    
+.modal-footer .btn {
+    min-width: 120px;
+}
 #printArea {
     display: none;
 }
