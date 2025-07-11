@@ -1,3 +1,20 @@
+<?php
+// Function to convert image to base64 for reliable PDF printing
+function getImageAsBase64($imagePath) {
+    if (file_exists($imagePath)) {
+        $imageData = file_get_contents($imagePath);
+        $imageType = pathinfo($imagePath, PATHINFO_EXTENSION);
+        $base64 = base64_encode($imageData);
+        return "data:image/{$imageType};base64,{$base64}";
+    }
+    return '';
+}
+
+// Get the logo as base64 for reliable printing
+$logoPath = __DIR__ . '/../../icon/invoice-icon.png';
+$logoBase64 = getImageAsBase64($logoPath);
+?>
+
 <!-- Receipt Details Modal -->
 <div class="modal fade" id="receiptModal" tabindex="-1" aria-labelledby="receiptModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg " style="max-height: 90vh; overflow-y: auto;">
@@ -13,7 +30,7 @@
                         top: -15px;
                         margin-left: 10px;
                         ">
-                        <img src="../../icon/invoice-icon.png" alt="gop-icon" style="
+                        <img src="<?php echo $logoBase64; ?>" alt="gop-icon" style="
                         height: 100px; 
                         width: 80px;
                         ">
@@ -82,6 +99,14 @@
         min-width: 120px;
     }
 
+    /* Ensure logo displays properly in both screen and print */
+    .receipt-header .text-start img {
+        max-width: 100%;
+        height: auto;
+        object-fit: contain;
+        display: block;
+    }
+
     @media print {
         /* Hide everything except the printable area */
         body * {
@@ -146,6 +171,11 @@
         .receipt-header .text-start img {
             height: 60px !important;
             width: 48px !important;
+            /* Ensure base64 images print properly */
+            max-width: 48px !important;
+            max-height: 60px !important;
+            object-fit: contain;
+            display: block !important;
         }
 
         /* Receipt number positioning */
