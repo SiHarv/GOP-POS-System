@@ -169,11 +169,11 @@ $logoBase64 = getImageAsBase64($logoPath);
         }
 
         .receipt-header .text-start img {
-            height: 60px !important;
-            width: 48px !important;
+            height: 32px !important;
+            width: 32px !important;
             /* Ensure base64 images print properly */
-            max-width: 48px !important;
-            max-height: 60px !important;
+            max-width: 32px !important;
+            max-height: 32px !important;
             object-fit: contain;
             display: block !important;
         }
