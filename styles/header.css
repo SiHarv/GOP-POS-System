@@ -49,12 +49,12 @@
     border-radius: 20px;
     border: 1px solid #dee2e6;
     font-size: 0.85rem;
-    color: #495057;
+    color: #202224;
     gap: 8px;
 }
 
 .ip-display iconify-icon {
-    color: #6c757d;
+    color: #202224;
 }
 
 .ip-text {
@@ -67,12 +67,12 @@
 
 .ip-label, .gateway-label {
     font-weight: 600;
-    color: #6c757d;
+    color: #202224;
     font-size: 0.8rem;
 }
 
 .gateway-separator {
-    color: #adb5bd;
+    color: #202224;
     margin: 0 2px;
 }
 

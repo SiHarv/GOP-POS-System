@@ -103,7 +103,6 @@ $networkInfo = getNetworkInfo();
         </div>
         <div class="header-right">
             <span class="ip-display">
-                <iconify-icon icon="mdi:earth" style="font-size: 14px;"></iconify-icon>
                 <span class="ip-text">
                     <span class="ip-label">IP:</span> <?php echo htmlspecialchars($networkInfo['ip']); ?>
                     <span class="gateway-separator">|</span>
