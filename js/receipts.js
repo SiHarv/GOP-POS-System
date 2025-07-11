@@ -156,6 +156,12 @@ $(document).ready(function () {
 
           // Show modal
           receiptModal.show();
+          
+          // Set current receipt ID for printing functionality
+          if (typeof setCurrentReceiptId === 'function') {
+            setCurrentReceiptId(receiptId);
+          }
+          
           // Append signature and note section to the printable area
           const bottomSection = `\n<!-- Additional receipt information container -->\n
           <div class=\"receipt-bottom-container mt-4\" style=\"border: none;\">\n    <div class=\"d-flex justify-content-between mb-4\">\n        
@@ -215,13 +221,12 @@ $(document).ready(function () {
   bindPaginationEvents();
   bindViewReceiptEvents();
 
-  $("#print-receipt").on("click", function () {
-    const printContents = document.getElementById("printable-area").innerHTML;
-    const originalContents = document.body.innerHTML;
-
-    document.body.innerHTML = printContents;
-    window.print();
-    document.body.innerHTML = originalContents;
-    location.reload();
+  // Clear receipt ID when modal is closed
+  $('#receiptModal').on('hidden.bs.modal', function () {
+    if (typeof clearCurrentReceiptId === 'function') {
+      clearCurrentReceiptId();
+    }
   });
+
+  // Remove the old print receipt handler - this will be handled by receipt_print.js
 });

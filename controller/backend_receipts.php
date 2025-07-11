@@ -136,60 +136,10 @@ class ReceiptsController
 
     public function getReceiptDetails($id)
     {
-        $sql = "SELECT 
-            c.id,
-            c.charge_date,
-            c.total_price,
-            c.po_number,
-            cust.name AS customer_name,
-            cust.address AS customer_address,
-            cust.terms AS customer_terms,
-            cust.salesman AS customer_salesman,
-            i.name AS item_name,
-            i.sold_by AS item_unit,
-            ci.quantity,
-            ci.price AS unit_price,
-            ci.discount_percentage,
-            (ci.quantity * ci.price * (1 - ci.discount_percentage/100)) AS subtotal
-        FROM charges c
-        JOIN customers cust ON c.customer_id = cust.id
-        JOIN charge_items ci ON c.id = ci.charge_id
-        JOIN items i ON ci.item_id = i.id
-        WHERE c.id = ?";
-
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("i", $id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        $receipt = null;
-
-        if ($row = $result->fetch_assoc()) {
-            $receipt = [
-                'id' => $row['id'],
-                'date' => $row['charge_date'],
-                'customer_name' => $row['customer_name'] ?? '',
-                'customer_address' => $row['customer_address'] ?? '',
-                'customer_terms' => $row['customer_terms'] ?? '',
-                'customer_salesman' => $row['customer_salesman'] ?? '',
-                'total_price' => floatval($row['total_price']),
-                'po_number' => $row['po_number'] ?? '',
-                'items' => []
-            ];
-
-            do {
-                $receipt['items'][] = [
-                    'quantity' => intval($row['quantity']),
-                    'name' => $row['item_name'] ?? '',
-                    'unit' => $row['item_unit'] ?? 'PCS',
-                    'unit_price' => floatval($row['unit_price']),
-                    'discount_percentage' => floatval($row['discount_percentage']),
-                    'subtotal' => floatval($row['subtotal'])
-                ];
-            } while ($row = $result->fetch_assoc());
-        }
-
-        return $receipt;
+        // This method now delegates to the ReceiptPrintController for better separation
+        require_once __DIR__ . '/backend_receipt_print.php';
+        $printController = new ReceiptPrintController();
+        return $printController->getReceiptDetails($id);
     }
 }
 

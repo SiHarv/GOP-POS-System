@@ -220,18 +220,21 @@ $(document).ready(function () {
         if (response.status === "success") {
           Swal.fire({
             icon: 'success',
-            title: 'Charge processed successfully!',
-            text: 'Transaction Recored Successfully.',
-            showConfirmButton: false,
-            timer: 1700,
-            customClass: {
-              popup: 'swal2-taller-popup'
+            title: 'Receipt Created Successfully!',
+            text: 'Receipt has been created. Stock will be subtracted when you print the receipt.',
+            showCancelButton: true,
+            confirmButtonText: 'View Receipt',
+            cancelButtonText: 'Create Another',
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#6c757d'
+          }).then((result) => {
+            if (result.isConfirmed && response.charge_id) {
+              // Redirect to receipts page and open the specific receipt
+              window.location.href = `../receipts/receipts.php?open_receipt=${response.charge_id}`;
             }
           });
-          // Add custom style for taller SweetAlert2 popup
-          const swalTallerStyle = document.createElement('style');
-          swalTallerStyle.innerHTML = `.swal2-taller-popup { min-height: 180px !important; }`;
-          document.head.appendChild(swalTallerStyle);
+          
+          // Clear the form
           cart = [];
           updateCartDisplay();
           $("#customer").val("");

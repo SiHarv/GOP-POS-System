@@ -35,6 +35,7 @@ try {
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
     <script src="../../bootstrap-5.3.6/js/bootstrap.bundle.min.js"></script>
     <script src="../../js/libraries/jquery-3.7.1.min.js"></script>
+    <script src="../../js/libraries/sweetalert2.all.min.js"></script>
     <script src="../../js/receipts.js"></script>
     <script src="../../js/filter.js"></script>
 </head>
@@ -222,6 +223,27 @@ try {
     </main>
     <?php require_once 'receiptViewModal.php'; ?>
     <script src="../../js/sidebar.js"></script>
+    
+    <script>
+        // Check if we need to open a specific receipt
+        $(document).ready(function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const receiptId = urlParams.get('open_receipt');
+            
+            if (receiptId) {
+                // Trigger click on the receipt to open it
+                setTimeout(function() {
+                    // Find and click the view button for this receipt
+                    $(`.view-receipt[data-id="${receiptId}"]`).click();
+                    
+                    // Remove the parameter from URL without refreshing the page
+                    const url = new URL(window.location);
+                    url.searchParams.delete('open_receipt');
+                    window.history.replaceState({}, document.title, url.toString());
+                }, 500);
+            }
+        });
+    </script>
 </body>
 
 </html>

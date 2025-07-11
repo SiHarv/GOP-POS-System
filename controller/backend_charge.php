@@ -54,8 +54,8 @@ class ChargeController
                 return $sum + $itemTotal;
             }, 0);
 
-            // Modified SQL to include po_number field
-            $sql = "INSERT INTO charges (customer_id, total_price, po_number) VALUES (?, ?, ?)";
+            // Modified SQL to include po_number field and finalized status (0 = not finalized, 1 = finalized)
+            $sql = "INSERT INTO charges (customer_id, total_price, po_number, finalized) VALUES (?, ?, ?, 0)";
             $stmt = $this->conn->prepare($sql);
             $stmt->bind_param("ids", $customerId, $totalAmount, $poNumber);
 
@@ -65,15 +65,12 @@ class ChargeController
 
             $chargeId = $this->conn->insert_id;
 
-            // 2. Insert charge items and update stock
+            // 2. Insert charge items only (NO stock update - this will be done on print)
             $insertItemSql = "INSERT INTO charge_items (charge_id, item_id, quantity, price, discount_percentage) VALUES (?, ?, ?, ?, ?)";
-            $updateStockSql = "UPDATE items SET stock = stock - ? WHERE id = ? AND stock >= ?";
-
             $insertStmt = $this->conn->prepare($insertItemSql);
-            $updateStmt = $this->conn->prepare($updateStockSql);
 
             foreach ($items as $item) {
-                // Check stock availability first
+                // Check stock availability first (but don't subtract yet)
                 $currentStock = $this->getItemStock($item['id']);
                 if ($currentStock < $item['quantity']) {
                     throw new Exception("Insufficient stock for item: " . $item['name']);
@@ -96,22 +93,10 @@ class ChargeController
                 if (!$insertStmt->execute()) {
                     throw new Exception("Error adding charge item");
                 }
-
-                // Update stock
-                $updateStmt->bind_param(
-                    "iii",
-                    $item['quantity'],
-                    $item['id'],
-                    $item['quantity']
-                );
-
-                if (!$updateStmt->execute() || $updateStmt->affected_rows === 0) {
-                    throw new Exception("Error updating stock for item: " . $item['name']);
-                }
             }
 
             $this->conn->commit();
-            return ['status' => 'success'];
+            return ['status' => 'success', 'charge_id' => $chargeId];
         } catch (Exception $e) {
             $this->conn->rollback();
             return [

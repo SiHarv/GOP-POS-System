@@ -274,3 +274,6 @@
         }
     }
 </style>
+
+<!-- Include the receipt print functionality script -->
+<script src="../../js/receipt_print.js"></script>
