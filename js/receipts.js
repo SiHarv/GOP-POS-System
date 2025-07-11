@@ -128,7 +128,24 @@ $(document).ready(function () {
                 })}</td>
               </tr>
             `);
+
           });
+          // Add empty rows to ensure the table fills the bond paper
+          const minRows = 20;
+          const currentRows = response.items.length;
+          for (let i = currentRows; i < minRows; i++) {
+            itemsBody.append(`
+              <tr>
+                <td style="text-align: end; font-size: 12px; padding: 3px;">&nbsp;</td>
+                <td style="text-align: start; font-size: 12px; padding: 3px;">&nbsp;</td>
+                <td style="font-size: 12px; padding: 3px;">&nbsp;</td>
+                <td style="text-align: end; font-size: 12px; padding: 3px;">&nbsp;</td>
+                <td style="text-align: end; font-size: 12px; padding: 3px;">&nbsp;</td>
+                <td style="text-align: end; font-size: 12px; padding: 3px;">&nbsp;</td>
+                <td style="text-align: end; font-size: 12px; padding: 3px;">&nbsp;</td>
+              </tr>
+            `);
+          }
 
           $("#receipt-total").text(
             total.toLocaleString("en-US", {
@@ -139,6 +156,20 @@ $(document).ready(function () {
 
           // Show modal
           receiptModal.show();
+          // Append signature and note section to the printable area
+          const bottomSection = `\n<!-- Additional receipt information container -->\n
+          <div class=\"receipt-bottom-container mt-4\" style=\"border: none;\">\n    <div class=\"d-flex justify-content-between mb-4\">\n        
+          <div style=\"font-size: 12px;\">\n            
+          Note: Make all checks payable to <span style=\"color: red; font-weight: bold;\">GOP MARKETING</span>\n        
+          </div>\n        <div style=\"font-size: 12px;\">\n            Received the above items in good order and condition.\n        </div>
+          \n    </div>\n    <div class=\"d-flex justify-content-between\">\n        
+          <div style=\"font-size: 12px;\">\n            <!-- Left side blank for now -->\n        
+          </div>\n        <div style=\"font-size: 12px;\">\n            
+          By:_____________________________________<br>\n            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Printed Name & Signature/ Date\n        
+          </div>\n    </div>\n</div>\n`;
+          // Remove any previous bottom section to avoid duplicates
+          $("#printable-area .receipt-bottom-container").remove();
+          $("#printable-area").append(bottomSection);
         },
         error: function () {
           alert("Error fetching receipt details");

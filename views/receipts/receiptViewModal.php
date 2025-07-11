@@ -1,12 +1,12 @@
 <!-- Receipt Details Modal -->
 <div class="modal fade" id="receiptModal" tabindex="-1" aria-labelledby="receiptModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg " style="max-height: 90vh; overflow-y: auto;">
         <div class="modal-content">
             <div class="modal-header">
                 <p class="modal-title" id="receiptModalLabel">Receipt Details</p>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body" id="printable-area">
+            <div class="modal-body" id="printable-area" style="padding-bottom: 90px;">
                 <div class="receipt-header text-center mt-5 ">
                     <div class="text-start mt-5"
                         style="position:absolute;
@@ -66,11 +66,10 @@
                     </tfoot>
                 </table>
                 <div class="footer text-center mt-4">
-                    <p>Thank you for your business!</p>
                     <small>This is a computer-generated receipt</small>
                 </div>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer" style="position: sticky; bottom: 0; right: 0; background: #fff; border: none; z-index: 10; display: flex; gap: 10px; box-shadow: 0 -2px 8px rgba(0,0,0,0.05);">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary" id="print-receipt">Print Receipt</button>
             </div>
@@ -79,6 +78,10 @@
 </div>
 
 <style>
+    .modal-footer .btn {
+        min-width: 120px;
+    }
+
     @media print {
         /* Hide everything except the printable area */
         body * {
@@ -227,12 +230,32 @@
         .footer {
             margin-top: 20px;
             text-align: center;
-            font-size: 10px;
+            font-size: 12px;
             color: #666;
         }
 
-        .footer p {
+        .footer p,
+        .footer small {
+            font-size: 12px !important;
             margin: 5px 0;
+        }
+
+        /* Receipt bottom container styling */
+        .receipt-bottom-container {
+            margin-top: 20px;
+            font-size: 10px;
+            border: none !important;
+        }
+
+        .receipt-bottom-container .d-flex {
+            display: flex !important;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .receipt-bottom-container span {
+            color: red !important;
+            font-weight: bold !important;
         }
 
         /* Ensure proper spacing */
