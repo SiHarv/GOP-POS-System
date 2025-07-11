@@ -1,6 +1,7 @@
 $(document).ready(function () {
-    // Global variable to store current receipt ID
+    // Global variable to store current receipt ID and data
     let currentReceiptId = null;
+    let currentReceiptData = null;
 
     // Handle print receipt button click
     $(document).on('click', '#print-receipt', function () {
@@ -14,21 +15,27 @@ $(document).ready(function () {
             return;
         }
 
-        // Show confirmation dialog
-        Swal.fire({
-            title: 'Confirm Print Receipt',
-            text: 'This will finalize the receipt and subtract items from stock. This action cannot be undone.',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, Print Receipt',
-            cancelButtonText: 'Cancel'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                finalizeAndPrintReceipt(currentReceiptId);
-            }
-        });
+        // Check if receipt is already finalized
+        if (currentReceiptData && currentReceiptData.finalized == 1) {
+            // Receipt is already finalized, print directly without confirmation
+            printReceipt();
+        } else {
+            // Receipt not finalized, show confirmation dialog
+            Swal.fire({
+                title: 'Confirm Print Receipt',
+                text: 'This will finalize the receipt and subtract items from stock. This action cannot be undone.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, Print Receipt',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    finalizeAndPrintReceipt(currentReceiptId);
+                }
+            });
+        }
     });
 
     // Function to finalize receipt and print
@@ -58,6 +65,12 @@ $(document).ready(function () {
                 if (response.status === 'success') {
                     // Close loading dialog
                     Swal.close();
+                    
+                    // Update current receipt data to reflect finalized status
+                    if (currentReceiptData) {
+                        currentReceiptData.finalized = 1;
+                        currentReceiptData.finalized_date = new Date().toISOString();
+                    }
                     
                     // Directly trigger the print without showing success message
                     printReceipt();
@@ -106,13 +119,36 @@ $(document).ready(function () {
         location.reload();
     }
 
-    // Function to set current receipt ID (called from receipts.js when viewing a receipt)
+    // Function to set current receipt ID and data (called from receipts.js when viewing a receipt)
     window.setCurrentReceiptId = function(receiptId) {
         currentReceiptId = receiptId;
+        // Fetch receipt data to check finalization status
+        fetchReceiptData(receiptId);
     };
 
-    // Function to clear current receipt ID
+    // Function to clear current receipt ID and data
     window.clearCurrentReceiptId = function() {
         currentReceiptId = null;
+        currentReceiptData = null;
+    };
+
+    // Function to fetch receipt data including finalization status
+    function fetchReceiptData(receiptId) {
+        $.ajax({
+            url: '../../controller/backend_receipt_print.php',
+            method: 'POST',
+            data: {
+                action: 'get_receipt_details',
+                id: receiptId
+            },
+            dataType: 'json',
+            success: function (response) {
+                currentReceiptData = response;
+            },
+            error: function (xhr, status, error) {
+                console.error('Error fetching receipt data:', error);
+                currentReceiptData = null;
+            }
+        });
     };
 });
