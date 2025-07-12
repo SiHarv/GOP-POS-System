@@ -1,4 +1,6 @@
 <?php
+session_start();
+require_once __DIR__ . '/../../auth/check_auth.php';
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 ini_set('log_errors', 1);
@@ -107,10 +109,10 @@ try {
                                                 placeholder="Max stock">
                                         </div>
                                         <div class="col-md-3 d-flex align-items-end">
-                                           
+
                                         </div>
                                         <div class="col-md-3 d-flex align-items-end">
-                                           
+
                                         </div>
                                         <div class="col-md-3 d-flex align-items-end">
                                             <button class="btn btn-danger btn-sm ms-auto" id="reset-filter">Reset</button>
@@ -150,28 +152,28 @@ try {
                                                 $rowClass = 'low-stock-row';
                                             }
                                     ?>
-                                        <tr class="<?php echo $rowClass; ?>">
-                                            <td><?php echo isset($item['date_added']) ? date('m-d-Y', strtotime($item['date_added'])) : '-'; ?></td>
-                                            <td><?php echo isset($item['quantity_added']) ? $item['quantity_added'] : '0'; ?></td>
-                                            <td class="stock-value"><?php echo $item['stock']; ?></td>
-                                            <td><?php echo htmlspecialchars($item['sold_by']); ?></td>
-                                            <td><?php echo htmlspecialchars($item['name']); ?></td>
-                                            <td><?php echo htmlspecialchars($item['category']); ?></td>
-                                            <td>₱<?php echo number_format($item['cost'], 2); ?></td>
-                                            <td>₱<?php echo number_format($item['price'], 2); ?></td>
-                                            <td>
-                                                <button class="btn btn-sm btn-link edit-btn"
-                                                    data-id="<?php echo $item['id']; ?>"
-                                                    data-name="<?php echo htmlspecialchars($item['name']); ?>"
-                                                    data-stock="<?php echo $item['stock']; ?>"
-                                                    data-sold-by="<?php echo htmlspecialchars($item['sold_by']); ?>"
-                                                    data-category="<?php echo htmlspecialchars($item['category']); ?>"
-                                                    data-cost="<?php echo $item['cost']; ?>"
-                                                    data-price="<?php echo $item['price']; ?>">
-                                                    EDIT
-                                                </button>
-                                            </td>
-                                        </tr>
+                                            <tr class="<?php echo $rowClass; ?>">
+                                                <td><?php echo isset($item['date_added']) ? date('m-d-Y', strtotime($item['date_added'])) : '-'; ?></td>
+                                                <td><?php echo isset($item['quantity_added']) ? $item['quantity_added'] : '0'; ?></td>
+                                                <td class="stock-value"><?php echo $item['stock']; ?></td>
+                                                <td><?php echo htmlspecialchars($item['sold_by']); ?></td>
+                                                <td><?php echo htmlspecialchars($item['name']); ?></td>
+                                                <td><?php echo htmlspecialchars($item['category']); ?></td>
+                                                <td>₱<?php echo number_format($item['cost'], 2); ?></td>
+                                                <td>₱<?php echo number_format($item['price'], 2); ?></td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-link edit-btn"
+                                                        data-id="<?php echo $item['id']; ?>"
+                                                        data-name="<?php echo htmlspecialchars($item['name']); ?>"
+                                                        data-stock="<?php echo $item['stock']; ?>"
+                                                        data-sold-by="<?php echo htmlspecialchars($item['sold_by']); ?>"
+                                                        data-category="<?php echo htmlspecialchars($item['category']); ?>"
+                                                        data-cost="<?php echo $item['cost']; ?>"
+                                                        data-price="<?php echo $item['price']; ?>">
+                                                        EDIT
+                                                    </button>
+                                                </td>
+                                            </tr>
                                     <?php
                                         endforeach;
                                     }

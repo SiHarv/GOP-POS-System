@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 require_once __DIR__ . '/../../controller/backend_charge.php';
 $chargeController = new ChargeController();
 $customers = $chargeController->getAllCustomers();
@@ -27,6 +29,7 @@ $items = $chargeController->getAllItems();
 <body>
     <?php require_once '../renderParts/header.php'; ?>
     <?php require_once '../renderParts/sidebar.php'; ?>
+    <?php require_once '../../auth/check_auth.php';?>
 
     <main class="main-content">
         <div class="container">

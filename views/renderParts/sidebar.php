@@ -30,7 +30,7 @@
     </div>
 
     <div class="sidebar-footer mt-auto">
-        <a href="#" id="logout-btn" class="sidebar-icon d-flex flex-column align-items-center" title="Logout">
+        <a href="#" id="logout-btn" name="logout" class="sidebar-icon d-flex flex-column align-items-center" title="Logout">
             <span class="iconify" data-icon="solar:logout-2-outline" data-width="24" data-height="24"></span>
             <small class="sidebar-text">Logout</small>
         </a>

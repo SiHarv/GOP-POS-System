@@ -1,16 +1,18 @@
 <?php
+session_start();
+require_once __DIR__ . '/../../auth/check_auth.php';
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 try {
     require_once __DIR__ . '/../../controller/backend_customers.php';
     $customersController = new CustomersController();
-    
+
     // Pagination parameters
     $customersPerPage = 9;
     $currentPage = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
     $offset = ($currentPage - 1) * $customersPerPage;
-    
+
     // Get paginated customers and total count
     $customers = $customersController->getAllCustomers($customersPerPage, $offset);
     $totalCustomers = $customersController->getTotalCustomersCount();
@@ -117,25 +119,25 @@ try {
                                     } else {
                                         foreach ($customers as $customer):
                                     ?>
-                                        <tr>
-                                            <td><?php echo htmlspecialchars($customer['name']); ?></td>
-                                            <td><?php echo htmlspecialchars($customer['phone_number']); ?></td>
-                                            <td><?php echo htmlspecialchars($customer['address']); ?></td>
-                                            <td><?php echo htmlspecialchars($customer['terms']); ?></td>
-                                            <td><?php echo htmlspecialchars($customer['salesman']); ?></td>
-                                            <td>
-                                                <button class="btn btn-sm btn-link edit-btn"
-                                                    data-id="<?php echo $customer['id']; ?>"
-                                                    data-name="<?php echo htmlspecialchars($customer['name']); ?>"
-                                                    data-phone="<?php echo htmlspecialchars($customer['phone_number']); ?>"
-                                                    data-address="<?php echo htmlspecialchars($customer['address']); ?>"
-                                                    data-terms="<?php echo htmlspecialchars($customer['terms']); ?>"
-                                                    data-salesman="<?php echo htmlspecialchars($customer['salesman']); ?>">
-                                                    EDIT
-                                                    <!-- <span class="iconify" data-icon="solar:pen-linear" data-width="16"></span> -->
-                                                </button>
-                                            </td>
-                                        </tr>
+                                            <tr>
+                                                <td><?php echo htmlspecialchars($customer['name']); ?></td>
+                                                <td><?php echo htmlspecialchars($customer['phone_number']); ?></td>
+                                                <td><?php echo htmlspecialchars($customer['address']); ?></td>
+                                                <td><?php echo htmlspecialchars($customer['terms']); ?></td>
+                                                <td><?php echo htmlspecialchars($customer['salesman']); ?></td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-link edit-btn"
+                                                        data-id="<?php echo $customer['id']; ?>"
+                                                        data-name="<?php echo htmlspecialchars($customer['name']); ?>"
+                                                        data-phone="<?php echo htmlspecialchars($customer['phone_number']); ?>"
+                                                        data-address="<?php echo htmlspecialchars($customer['address']); ?>"
+                                                        data-terms="<?php echo htmlspecialchars($customer['terms']); ?>"
+                                                        data-salesman="<?php echo htmlspecialchars($customer['salesman']); ?>">
+                                                        EDIT
+                                                        <!-- <span class="iconify" data-icon="solar:pen-linear" data-width="16"></span> -->
+                                                    </button>
+                                                </td>
+                                            </tr>
                                     <?php
                                         endforeach;
                                     }

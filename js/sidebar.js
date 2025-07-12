@@ -24,7 +24,7 @@ $(document).ready(function() {
     $('#logout-btn').on('click', function(e) {
         e.preventDefault();
         if (confirm('Are you sure you want to logout?')) {
-            window.location.href = '../auth/logout.php'; 
+            window.location.href = '../../auth/logout.php'; 
         }
     });
 

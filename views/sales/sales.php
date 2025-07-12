@@ -1,4 +1,8 @@
 <?php
+session_start();
+
+require_once __DIR__ . '/../../auth/check_auth.php';
+
 $currentYear = date('Y');
 $currentMonth = date('n');
 ?>
@@ -42,7 +46,7 @@ $currentMonth = date('n');
 <body>
     <?php require_once '../renderParts/header.php'; ?>
     <?php require_once '../renderParts/sidebar.php'; ?>
-    
+
     <main class="main-content" >
         <div class="container px-2" style="max-width: 1500px;">
             <!-- Page Title with reduced spacing for header -->

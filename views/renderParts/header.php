@@ -1,5 +1,5 @@
 <?php
-// Get server's network IP address and Default Gateway from ACTIVE adapter
+session_start();
 function getNetworkInfo() {
     $info = ['ip' => 'Unable to detect', 'gateway' => 'Unable to detect'];
     

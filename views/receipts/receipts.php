@@ -1,4 +1,6 @@
 <?php
+session_start();
+require_once __DIR__ . '/../../auth/check_auth.php';
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -223,19 +225,19 @@ try {
     </main>
     <?php require_once 'receiptViewModal.php'; ?>
     <script src="../../js/sidebar.js"></script>
-    
+
     <script>
         // Check if we need to open a specific receipt
         $(document).ready(function() {
             const urlParams = new URLSearchParams(window.location.search);
             const receiptId = urlParams.get('open_receipt');
-            
+
             if (receiptId) {
                 // Trigger click on the receipt to open it
                 setTimeout(function() {
                     // Find and click the view button for this receipt
                     $(`.view-receipt[data-id="${receiptId}"]`).click();
-                    
+
                     // Remove the parameter from URL without refreshing the page
                     const url = new URL(window.location);
                     url.searchParams.delete('open_receipt');
