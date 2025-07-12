@@ -29,34 +29,51 @@
                     </div>
                     <p class="mt-2">Loading items...</p>
                 </div>
+                <style>
+                /* Modal table styling */
+                #printItemsTable {
+                    table-layout: fixed;
+                    width: 100%;
+                    min-width: 900px;
+                }
 
-<style>
-/* Modal table styling */
-#printItemsTable {
-    table-layout: fixed;
-}
+                #printItemsTable th:nth-child(1),
+                #printItemsTable td:nth-child(1) {
+                    width: 10%;
+                    text-align: center;
+                } /* Item ID - centered and slightly wider */
 
-#printItemsTable th:nth-child(1),
-#printItemsTable td:nth-child(1) {
-    width: 8%;
-    text-align: center;
-} /* Item ID - centered and reduced width */
+                #printItemsTable th:nth-child(2),
+                #printItemsTable td:nth-child(2) {
+                    width: 26%;
+                    text-align: center;
+                } /* Item Name - slightly reduced for balance */
 
-#printItemsTable th:nth-child(2),
-#printItemsTable td:nth-child(2) {
-    text-align: center;
-} /* Item Name - centered */
+                #printItemsTable th:nth-child(3),
+                #printItemsTable td:nth-child(3) {
+                    width: 15%;
+                    text-align: center;
+                } /* Category - slightly reduced for balance */
 
-#printItemsTable th:nth-child(3),
-#printItemsTable td:nth-child(3) {
-    text-align: center;
-} /* Category - centered */
+                #printItemsTable th:nth-child(4),
+                #printItemsTable td:nth-child(4) {
+                    width: 10%;
+                    text-align: center;
+                } /* Sold By - centered and wider */
 
-#printItemsTable th:nth-child(4),
-#printItemsTable td:nth-child(4) {
-    text-align: center;
-} /* Sold By - centered */
-</style>
+                #printItemsTable th:nth-child(5),
+                #printItemsTable td:nth-child(5) {
+                    width: 13%;
+                }
+                #printItemsTable th:nth-child(6),
+                #printItemsTable td:nth-child(6) {
+                    width: 13%;
+                }
+                #printItemsTable th:nth-child(7),
+                #printItemsTable td:nth-child(7) {
+                    width: 13%;
+                }
+                </style>
                 
                 <!-- Items table container -->
                 <div id="itemsTableContainer" style="display: none;">
@@ -159,8 +176,8 @@
     }
     
     .print-table {
-        width: calc(100% - 2in);
-        margin: 0 1in;
+        width: 100%;
+        margin: 0;
         border-collapse: collapse;
         font-size: 11px;
         margin-top: 20px;
