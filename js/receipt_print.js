@@ -170,14 +170,28 @@ $(document).ready(function () {
                     height: 90px !important;
                     width: 82px !important;
                     object-fit: contain !important;
+                    padding-right: 24px;
+                }
+                !
+                .receipt-header .d-flex {
+                    display: flex !important;
+                    justify-content: space-between !important;
+                    align-items: center !important;
+                    font-size: 14px !important;
                 }
                 
-                .receipt-header .text-end {
-                    position: absolute !important;
-                    right: 0 !important;
-                    top: 70px !important;
-                    margin: 0 !important;
-                    font-size: 12px !important;
+                .receipt-header .d-flex > div:first-child {
+                    flex: 1 !important;
+                }
+                
+                .receipt-header .d-flex > div:nth-child(2) {
+                    flex: 1 !important;
+                    text-align: center !important;
+                }
+                
+                .receipt-header .d-flex > div:last-child {
+                    flex: 1 !important;
+                    text-align: right !important;
                 }
                 
                 .receipt-details {
@@ -201,19 +215,23 @@ $(document).ready(function () {
                 
                 .table th, .table td {
                     border: 1px solid #000000 !important;
-                    font-size: 11px !important;
-                    vertical-align: top !important;
+                    font-size: 12px !important;
+                    vertical-align: middle !important;
+                    padding: 2px 6px !important;
+                    line-height: 1.2 !important;
                 }
                 
                 .table th {
                     background-color: #f8f9fa !important;
                     text-align: center !important;
                     font-weight: bold !important;
+                    padding: 2px 6px !important;
                 }
                 
                 .table tfoot td {
                     border-top: 1px solid #000000 !important;
                     font-weight: bold !important;
+                    padding: 2px 6px !important;
                 }
                 
                 .footer {
@@ -240,10 +258,6 @@ $(document).ready(function () {
                     font-weight: bold !important;
                 }
                 
-                hr {
-                    border: 1px solid #000000 !important;
-                    margin: 10px 0 !important;
-                }
                 
                 .text-center { text-align: center !important; }
                 .text-start { text-align: left !important; }

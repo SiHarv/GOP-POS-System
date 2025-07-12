@@ -25,25 +25,25 @@ $logoBase64 = getImageAsBase64($logoPath);
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="printable-area" style="padding-bottom: 90px;">
-                <div class="receipt-header text-center mt-5 ">
-                    <div class="text-start mt-5"
-                        style="position:absolute;
-                        top: -15px;
-                        margin-left: 10px;
-                        ">
+                <div class="receipt-header text-center mt-5">
+                    <div style="position: relative;">
                         <img src="<?php echo $logoBase64; ?>" alt="gop-icon" style="
-                        height: 100px; 
+                        position: absolute;
+                        left: 0;
+                        top: 0;
+                        height: 75px; 
                         width: 90px;
                         ">
+                        <div>
+                            <div style="font-size: 15px; font-weight: bold;">GOP MARKETING</div>
+                            <div style="font-size: 14px;">Wangag, Damulaan</div>
+                            <div style="font-size: 14px; margin-bottom: 10px;">Albuera, Leyte</div>
+                        </div>
                     </div>
-                    <div style="font-size: 15px; font-weight: bold;">GOP GARKETING</div>
-                    <div style="font-size: 14px;">Wangag, Damulaan</div>
-                    <div style="font-size: 14px;">Albuera, Leyte</div>
-                    <div class="mt-3" style="font-size: 14px;"><b>Delivery Receipt</b></div>
-                    <!-- <div>Tel: 0987654321</div> -->
-                    <div class="text-end me-5"
-                        style="position: absolute; right: 20px; top: 100px; font-size: 14px;">
-                        <strong>Receipt #:</strong> <span id="receipt-id"></span>
+                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px; position: relative;">
+                        <div style="flex: 1;"></div>
+                        <div style="flex: 1; text-align: center;"><b>Delivery Receipt</b></div>
+                        <div style="flex: 1; text-align: right;"><strong>Receipt #:</strong> <span id="receipt-id"></span></div>
                     </div>
                     <hr>
                 </div>
@@ -84,7 +84,7 @@ $logoBase64 = getImageAsBase64($logoPath);
                     </tfoot>
                 </table>
                 <div class="footer text-center mt-4">
-                    <small style="font-style: italic;">This is a computer-generated receipt</small>
+                    <small style="font-style: italic; font-size: 12px">This is a computer-generated receipt</small>
                 </div>
             </div>
             <div class="modal-footer" style="position: sticky; bottom: 0; right: 0; background: #fff; border: none; z-index: 10; display: flex; gap: 10px; box-shadow: 0 -2px 8px rgba(0,0,0,0.05);">

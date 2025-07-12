@@ -146,7 +146,7 @@ $(document).ready(function () {
             `);
             });
             // Add empty rows to ensure the table fills the bond paper
-            const minRows = 20;
+            const minRows = 28;
             const currentRows = response.items.length;
             for (let i = currentRows; i < minRows; i++) {
               itemsBody.append(`
