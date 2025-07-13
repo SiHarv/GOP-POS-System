@@ -107,77 +107,78 @@ $(document).ready(function () {
         <style>
             @media print {
                 @page {
-                    margin: 0.75in !important;
-                    size: A4 !important;
+                  margin: 0.5in !important;
+                  size: A4 !important;
                 }
                 
                 /* Hide browser default headers and footers */
                 @page {
-                    margin: 0.75in !important;
-                    size: A4 !important;
-                    @top-left { content: ""; }
-                    @top-center { content: ""; }
-                    @top-right { content: ""; }
-                    @bottom-left { content: ""; }
-                    @bottom-center { content: ""; }
-                    @bottom-right { content: ""; }
+                  margin: 0.5in !important;
+                  size: A4 !important;
+                  @top-left { content: ""; }
+                  @top-center { content: ""; }
+                  @top-right { content: ""; }
+                  @bottom-left { content: ""; }
+                  @bottom-center { content: ""; }
+                  @bottom-right { content: ""; }
                 }
                 
                 /* Hide default browser print elements */
                 body {
-                    -webkit-print-color-adjust: exact !important;
-                    color-adjust: exact !important;
+                  -webkit-print-color-adjust: exact !important;
+                  color-adjust: exact !important;
                 }
                 
                 /* Remove default print styles */
                 * {
-                    -webkit-print-color-adjust: exact !important;
-                    print-color-adjust: exact !important;
+                  -webkit-print-color-adjust: exact !important;
+                  print-color-adjust: exact !important;
                 }
                 
                 body, html {
-                    margin: 0 !important;
-                    padding: 0 !important;
-                    width: 100% !important;
-                    height: 100% !important;
-                    font-family: Arial, sans-serif !important;
+                  margin: 0 !important;
+                  padding: 0 !important;
+                  width: 100% !important;
+                  height: 100% !important;
+                  font-family: Arial, sans-serif !important;
                 }
                 
                 body {
-                    box-sizing: border-box !important;
-                    border: none !important;
-                    min-height: calc(100vh - 1.5in) !important;
-                    display: flex !important;
-                    flex-direction: column !important;
+                  box-sizing: border-box !important;
+                  border: none !important;
+                  min-height: calc(100vh - 1.5in) !important;
+                  display: flex !important;
+                  flex-direction: column !important;
                 }
                 
                 .receipt-header {
-                    text-align: center !important;
-                    margin-bottom: px !important;
-                    position: relative !important;
-                    padding-top: 0px !important;
-                    flex-shrink: 0 !important;
+                  text-align: center !important;
+                  margin-bottom: px !important;
+                  position: relative !important;
+                  padding-top: 0px !important;
+                  flex-shrink: 0 !important;
                 }
                 
                 .receipt-header .text-start {
-                    position: absolute !important;
-                    left: 0 !important;
-                    top: 0 !important;
-                    margin: 0 !important;
+                  position: absolute !important;
+                  left: 0 !important;
+                  top: 0 !important;
+                  margin: 0 !important;
                 }
                 
                 .receipt-header .text-start img {
-                    height: 90px !important;
-                    width: 82px !important;
-                    object-fit: contain !important;
-                    padding-right: 24px;
+                  height: 90px !important;
+                  width: 82px !important;
+                  object-fit: contain !important;
+                  padding-right: 24px;
                 }
                 !
                 .receipt-header .d-flex {
-                    display: flex !important;
-                    justify-content: space-between !important;
-                    align-items: center !important;
-                    font-size: 14px !important;
+                  display: flex !important;
+                  justify-content: space-between !important;
+                  align-items: center !important;
+                  font-size: 14px !important;
+                  margin-top: 0px !important;
                 }
                 
                 .receipt-header .d-flex > div:first-child {
@@ -185,92 +186,92 @@ $(document).ready(function () {
                 }
                 
                 .receipt-header .d-flex > div:nth-child(2) {
-                    flex: 1 !important;
-                    text-align: center !important;
+                  flex: 1 !important;
+                  text-align: center !important;
                 }
                 
                 .receipt-header .d-flex > div:last-child {
-                    flex: 1 !important;
-                    text-align: right !important;
+                  flex: 1 !important;
+                  text-align: right !important;
                 }
                 
                 .receipt-details {
-                    margin-bottom: 10px !important;
-                    font-size: 14px !important;
-                    flex-shrink: 0 !important;
+                  margin-bottom: 10px !important;
+                  font-size: 14px !important;
+                  flex-shrink: 0 !important;
                 }
                 
                 .receipt-details .d-flex {
-                    display: flex !important;
-                    justify-content: space-between !important;
-                    margin-bottom: 4px !important;
+                  display: flex !important;
+                  justify-content: space-between !important;
+                  margin-bottom: 8px !important;
                 }
                 
                 .table {
-                    width: 100% !important;
-                    border-collapse: collapse !important;
-                    border: 1px solid #000000 !important;
-                    flex-grow: 1 !important;
+                  width: 100% !important;
+                  border-collapse: collapse !important;
+                  border: 1px solid #000000 !important;
+                  flex-grow: 1 !important;
                 }
                 
                 .table th, .table td {
-                    border: 1px solid #000000 !important;
-                    font-size: 12px !important;
-                    vertical-align: middle !important;
-                    padding: 2px 2px !important;
+                  border: 1px solid #000000 !important;
+                  font-size: 12px !important;
+                  vertical-align: middle !important;
+                  padding: 2px 2px !important;
                 }
                 
                 .table th {
-                    background-color: #f8f9fa !important;
-                    text-align: center !important;
-                    font-weight: bold !important;
-                    padding: 2px 8px !important;
+                  background-color: #f8f9fa !important;
+                  text-align: center !important;
+                  font-weight: bold !important;
+                  padding: 2px 8px !important;
                 }
                 
                 .table tfoot td {
-                    border-top: 1px solid #000000 !important;
-                    font-weight: bold !important;
-                    padding: 2px 2px !important;
+                  border-top: 1px solid #000000 !important;
+                  font-weight: bold !important;
+                  padding: 2px 2px !important;
                 }
-                
+               
                 .footer {
-                    margin-top: 15px !important;
-                    text-align: center !important;
-                    font-size: 11px !important;
-                    flex-shrink: 0 !important;
+                  margin-top: 15px !important;
+                  text-align: center !important;
+                  font-size: 11px !important;
+                  flex-shrink: 0 !important;
                 }
                 
                 .receipt-bottom-container {
-                    margin-top: 15px !important;
-                    font-size: 11px !important;
-                    flex-shrink: 0 !important;
+                  margin-top: 15px !important;
+                  font-size: 11px !important;
+                  flex-shrink: 0 !important;
                 }
-                
+              
                 .receipt-bottom-container .d-flex {
-                    display: flex !important;
-                    justify-content: space-between !important;
-                    margin-bottom: 8px !important;
-                }
-                
+                  display: flex !important;
+                  justify-content: space-between !important;
+                  margin-bottom: 0px !important;
+                }      
+
                 .receipt-bottom-container span {
-                    color: red !important;
-                    font-weight: bold !important;
+                  color: red !important;
+                  font-weight: bold !important;
                 }
                 
                 
                 .text-center { text-align: center !important; }
                 .text-start { text-align: left !important; }
                 .text-end { text-align: right !important; }
-                .mt-3 { margin-top: 12px !important; }
-                .mt-4 { margin-top: 15px !important; }
-                .mt-5 { margin-top: 20px !important; }
-                .mb-4 { margin-bottom: 15px !important; }
+                .mt-3 { margin-top: 0px !important; }
+                .mt-4 { margin-top: 10px !important; }
+                .mt-5 { margin-top: 10px !important; }
+                .mb-4 { margin-bottom: 0px !important; }
                 
                 /* Ensure table fills available space */
                 .table-container {
-                    flex-grow: 1 !important;
-                    display: flex !important;
-                    flex-direction: column !important;
+                  flex-grow: 1 !important;
+                  display: flex !important;
+                  flex-direction: column !important;
                 }
                 
                 /* Column width adjustments for better space utilization */
