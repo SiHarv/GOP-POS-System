@@ -1,7 +1,7 @@
 <div class="sidebar">
     <div class="sidebar-brand py-3 text-center d-flex flex-column align-items-center">
         <span>
-            <img src="../../icon/icon.png" alt="" style="height: 50px; width: 40px;">
+            <img src="../../icon/icon.png" alt="" style="height: 60px; width: 55px;">
         </span>
         <small class="sidebar-text">GOP-MARKETING</small>
     </div>

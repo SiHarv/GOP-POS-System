@@ -217,21 +217,20 @@ $(document).ready(function () {
                     border: 1px solid #000000 !important;
                     font-size: 12px !important;
                     vertical-align: middle !important;
-                    padding: 2px 6px !important;
-                    line-height: 1.2 !important;
+                    padding: 2px 2px !important;
                 }
                 
                 .table th {
                     background-color: #f8f9fa !important;
                     text-align: center !important;
                     font-weight: bold !important;
-                    padding: 2px 6px !important;
+                    padding: 2px 8px !important;
                 }
                 
                 .table tfoot td {
                     border-top: 1px solid #000000 !important;
                     font-weight: bold !important;
-                    padding: 2px 6px !important;
+                    padding: 2px 2px !important;
                 }
                 
                 .footer {
