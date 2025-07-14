@@ -35,7 +35,7 @@ $logoBase64 = getImageAsBase64($logoPath);
                         width: 90px;
                         ">
                         <div>
-                            <div style="font-size: 15px; font-weight: bold;">GOP MARKETING</div>
+                            <div style="font-size: 20px; font-weight: bold;">GOP MARKETING</div>
                             <div style="font-size: 14px;">Wangag, Damulaan</div>
                             <div style="font-size: 14px; margin-bottom: 10px;">Albuera, Leyte</div>
                         </div>
@@ -43,7 +43,7 @@ $logoBase64 = getImageAsBase64($logoPath);
                     <div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px; position: relative;">
                         <div style="flex: 1;"></div>
                         <div style="flex: 1; text-align: center;"><b>Delivery Receipt</b></div>
-                        <div style="flex: 1; text-align: right;"><strong>Receipt #:</strong> <span id="receipt-id"></span></div>
+                        <div style="flex: 1; text-align: right;"><strong>Receipt #:</strong> <span id="receipt-id" style="color: red;"></span></div>
                     </div>
                     <hr>
                 </div>

@@ -107,13 +107,13 @@ $(document).ready(function () {
         <style>
             @media print {
                 @page {
-                  margin: 0.5in !important;
+                  margin: 0.75in !important;
                   size: A4 !important;
                 }
                 
                 /* Hide browser default headers and footers */
                 @page {
-                  margin: 0.5in !important;
+                  margin: 0.75in !important;
                   size: A4 !important;
                   @top-left { content: ""; }
                   @top-center { content: ""; }
@@ -153,7 +153,7 @@ $(document).ready(function () {
                 
                 .receipt-header {
                   text-align: center !important;
-                  margin-bottom: px !important;
+                  margin-bottom: 5px !important;
                   position: relative !important;
                   padding-top: 0px !important;
                   flex-shrink: 0 !important;
@@ -196,7 +196,7 @@ $(document).ready(function () {
                 }
                 
                 .receipt-details {
-                  margin-bottom: 10px !important;
+                  margin-bottom: 5px !important;
                   font-size: 14px !important;
                   flex-shrink: 0 !important;
                 }
@@ -204,7 +204,7 @@ $(document).ready(function () {
                 .receipt-details .d-flex {
                   display: flex !important;
                   justify-content: space-between !important;
-                  margin-bottom: 8px !important;
+                  margin-bottom: 3px !important;
                 }
                 
                 .table {
