@@ -276,12 +276,12 @@ $(document).ready(function () {
                 
                 /* Column width adjustments for better space utilization */
                 .table th:nth-child(1), .table td:nth-child(1) { width: 5% !important; }
-                .table th:nth-child(2), .table td:nth-child(2) { width: 5% !important; }
-                .table th:nth-child(3), .table td:nth-child(3) { width: 34% !important; }
-                .table th:nth-child(4), .table td:nth-child(4) { width: 14% !important; }
-                .table th:nth-child(5), .table td:nth-child(5) { width: 9% !important; }
-                .table th:nth-child(6), .table td:nth-child(6) { width: 14% !important; }
-                .table th:nth-child(7), .table td:nth-child(7) { width: 14% !important; }
+                .table th:nth-child(2), .table td:nth-child(2) { width: 4% !important; }
+                .table th:nth-child(3), .table td:nth-child(3) { width: 45% !important; }
+                .table th:nth-child(4), .table td:nth-child(4) { width: 10% !important; }
+                .table th:nth-child(5), .table td:nth-child(5) { width: 7% !important; }
+                .table th:nth-child(6), .table td:nth-child(6) { width: 10% !important; }
+                .table th:nth-child(7), .table td:nth-child(7) { width: 10% !important; }
             }
         </style>
         `;
