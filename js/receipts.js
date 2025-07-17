@@ -183,9 +183,9 @@ $(document).ready(function () {
           <div style=\"font-size: 12px;\">\n            
           Note: Make all checks payable to <span style=\"color: red; font-weight: bold;\">GOP MARKETING</span>\n        
           </div>\n        <div style=\"font-size: 12px;\">\n            Received the above items in good order and condition.\n        </div>
-          \n    </div>\n    <div class=\"d-flex justify-content-between\">\n        
+          \n    </div>\n    <div class=\"d-flex justify-content-between\" style=\"margin-top: 40px;\">\n        
           <div style=\"font-size: 12px;\">\n            <!-- Left side blank for now -->\n        
-          </div>\n        <div style=\"font-size: 12px; margin-top: 10px;\">\n            
+          </div>\n        <div style=\"font-size: 12px;\">\n            
           By:_____________________________________<br>\n            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Printed Name & Signature/ Date\n        
           </div>\n    </div>\n</div>\n`;
             // Remove any previous bottom section to avoid duplicates

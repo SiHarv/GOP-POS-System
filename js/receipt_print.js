@@ -113,7 +113,7 @@ $(document).ready(function () {
                 
                 /* Hide browser default headers and footers */
                 @page {
-                  margin: 0.75in !important;
+                  margin: 0.5in !important;
                   size: A4 !important;
                   @top-left { content: ""; }
                   @top-center { content: ""; }
@@ -196,7 +196,7 @@ $(document).ready(function () {
                 }
                 
                 .receipt-details {
-                  margin-bottom: 5px !important;
+                  margin-bottom: 32px !important; /* Much more visible space below upper details */
                   font-size: 14px !important;
                   flex-shrink: 0 !important;
                 }
@@ -211,7 +211,19 @@ $(document).ready(function () {
                   width: 100% !important;
                   border-collapse: collapse !important;
                   border: 1px solid #000000 !important;
-                  flex-grow: 1 !important;
+                  table-layout: fixed !important;
+                  /* Remove flex-grow for print consistency */
+                  margin-top: 40px !important; /* Force spacing from upper details */
+                  margin-bottom: 20px !important; /* Force spacing below table */
+                }
+                
+                /* Additional spacing selectors to ensure separation */
+                .table-container {
+                  margin-top: 20px !important;
+                }
+                
+                .receipt-details + * {
+                  margin-top: 20px !important;
                 }
                 
                 .table th, .table td {
@@ -219,6 +231,8 @@ $(document).ready(function () {
                   font-size: 12px !important;
                   vertical-align: middle !important;
                   padding: 2px 2px !important;
+                  overflow: hidden !important;
+                  word-break: break-word !important;
                 }
                 
                 .table th {
@@ -235,14 +249,14 @@ $(document).ready(function () {
                 }
                
                 .footer {
-                  margin-top: 15px !important;
+                  margin-top: 20px !important; /* Increased spacing above footer */
                   text-align: center !important;
                   font-size: 11px !important;
                   flex-shrink: 0 !important;
                 }
                 
                 .receipt-bottom-container {
-                  margin-top: 15px !important;
+                  margin-top: 20px !important; /* Increased spacing above bottom container */
                   font-size: 11px !important;
                   flex-shrink: 0 !important;
                 }
@@ -274,14 +288,14 @@ $(document).ready(function () {
                   flex-direction: column !important;
                 }
                 
-                /* Column width adjustments for better space utilization */
-                .table th:nth-child(1), .table td:nth-child(1) { width: 5% !important; }
-                .table th:nth-child(2), .table td:nth-child(2) { width: 4% !important; }
-                .table th:nth-child(3), .table td:nth-child(3) { width: 45% !important; }
-                .table th:nth-child(4), .table td:nth-child(4) { width: 10% !important; }
-                .table th:nth-child(5), .table td:nth-child(5) { width: 7% !important; }
-                .table th:nth-child(6), .table td:nth-child(6) { width: 10% !important; }
-                .table th:nth-child(7), .table td:nth-child(7) { width: 10% !important; }
+                /* Column width adjustments for better space utilization (fixed px for print consistency) */
+                .table th:nth-child(1), .table td:nth-child(1) { width: 35px !important; }
+                .table th:nth-child(2), .table td:nth-child(2) { width: 30px !important; }
+                .table th:nth-child(3), .table td:nth-child(3) { width: 260px !important; }
+                .table th:nth-child(4), .table td:nth-child(4) { width: 50px !important; }
+                .table th:nth-child(5), .table td:nth-child(5) { width: 35px !important; }
+                .table th:nth-child(6), .table td:nth-child(6) { width: 50px !important; }
+                .table th:nth-child(7), .table td:nth-child(7) { width: 70px !important; }
             }
         </style>
         `;
