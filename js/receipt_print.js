@@ -108,7 +108,7 @@ $(document).ready(function () {
             @media print {
                 @page {
                   margin: 0.5in !important;
-                  size: letter !important;
+                  size: A4 !important;
                   @top-left { content: ""; }
                   @top-center { content: ""; }
                   @top-right { content: ""; }
