@@ -84,7 +84,7 @@ $logoBase64 = getImageAsBase64($logoPath);
                     </tfoot>
                 </table>
                 <div class="footer text-center mt-4">
-                    <small style="font-style: italic; font-size: 12px">This is a computer-generated receipt</small>
+                    <small style="font-style: italic; font-size: 14px">This is a computer-generated receipt</small>
                 </div>
             </div>
             <div class="modal-footer" style="position: sticky; bottom: 0; right: 0; background: #fff; border: none; z-index: 10; display: flex; gap: 10px; box-shadow: 0 -2px 8px rgba(0,0,0,0.05);">

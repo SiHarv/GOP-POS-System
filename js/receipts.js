@@ -78,7 +78,7 @@ $(document).ready(function () {
           success: function (response) {
             // Fill modal with receipt details
             $("#receipt-id").text(response.id);
-            $("#receipt-date").text(new Date(response.date).toLocaleString());
+            $("#receipt-date").text(new Date(response.date).toLocaleDateString());
             $("#receipt-customer").text(response.customer_name || "-");
             $("#receipt-address").text(response.customer_address || "-");
             $("#receipt-terms").text(response.customer_terms || "-");
@@ -151,13 +151,13 @@ $(document).ready(function () {
             for (let i = currentRows; i < minRows; i++) {
               itemsBody.append(`
               <tr>
-                <td style="text-align: end; font-size: 14px; padding: 3px;">&nbsp;</td>
-                <td style="text-align: start; font-size: 14px; padding: 3px;">&nbsp;</td>
-                <td style="font-size: 14px; padding: 3px;">&nbsp;</td>
-                <td style="text-align: end; font-size: 14px; padding: 3px;">&nbsp;</td>
-                <td style="text-align: end; font-size: 14px; padding: 3px;">&nbsp;</td>
-                <td style="text-align: end; font-size: 14px; padding: 3px;">&nbsp;</td>
-                <td style="text-align: end; font-size: 14px; padding: 3px;">&nbsp;</td>
+                <td style="text-align: end; font-size: 14px; padding: 8px;">&nbsp;</td>
+                <td style="text-align: start; font-size: 14px; padding: 8px;">&nbsp;</td>
+                <td style="font-size: 14px; padding: 8px;">&nbsp;</td>
+                <td style="text-align: end; font-size: 14px; padding: 8px;">&nbsp;</td>
+                <td style="text-align: end; font-size: 14px; padding: 8px;">&nbsp;</td>
+                <td style="text-align: end; font-size: 14px; padding: 8px;">&nbsp;</td>
+                <td style="text-align: end; font-size: 14px; padding: 8px;">&nbsp;</td>
               </tr>
             `);
             }
@@ -180,12 +180,12 @@ $(document).ready(function () {
             // Append signature and note section to the printable area
             const bottomSection = `\n<!-- Additional receipt information container -->\n
           <div class=\"receipt-bottom-container mt-4\" style=\"border: none;\">\n    <div class=\"d-flex justify-content-between mb-4\">\n        
-          <div style=\"font-size: 12px;\">\n            
+          <div style=\"font-size: 14px;\">\n            
           Note: Make all checks payable to <span style=\"color: red; font-weight: bold;\">GOP MARKETING</span>\n        
-          </div>\n        <div style=\"font-size: 12px;\">\n            Received the above items in good order and condition.\n        </div>
+          </div>\n        <div style=\"font-size: 14px;\">\n            Received the above items in good order and condition.\n        </div>
           \n    </div>\n    <div class=\"d-flex justify-content-between\" style=\"margin-top: 40px;\">\n        
-          <div style=\"font-size: 12px;\">\n            <!-- Left side blank for now -->\n        
-          </div>\n        <div style=\"font-size: 12px;\">\n            
+          <div style=\"font-size: 14px;\">\n            <!-- Left side blank for now -->\n        
+          </div>\n        <div style=\"font-size: 14px;\">\n            
           By:_____________________________________<br>\n            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Printed Name & Signature/ Date\n        
           </div>\n    </div>\n</div>\n`;
             // Remove any previous bottom section to avoid duplicates

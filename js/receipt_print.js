@@ -107,20 +107,12 @@ $(document).ready(function () {
         <style>
             @media print {
                 @page {
-                  margin: 0.75in !important;
-                  size: A4 !important;
-                }
-                
-                /* Hide browser default headers and footers */
-                @page {
                   margin: 0.5in !important;
-                  size: A4 !important;
+                  size: letter !important;
                   @top-left { content: ""; }
                   @top-center { content: ""; }
                   @top-right { content: ""; }
-                  @bottom-left { content: ""; }
                   @bottom-center { content: ""; }
-                  @bottom-right { content: ""; }
                 }
                 
                 /* Hide default browser print elements */
