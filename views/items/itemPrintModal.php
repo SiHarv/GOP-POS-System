@@ -37,41 +37,66 @@
                     min-width: 900px;
                 }
 
+                /* Item ID */
                 #printItemsTable th:nth-child(1),
                 #printItemsTable td:nth-child(1) {
                     width: 10%;
                     text-align: center;
-                } /* Item ID - centered and slightly wider */
+                } 
 
+                 /* Item Name */
                 #printItemsTable th:nth-child(2),
                 #printItemsTable td:nth-child(2) {
-                    width: 26%;
-                    text-align: center;
-                } /* Item Name - slightly reduced for balance */
+                    width: 45%;
+                }
 
+                /* Category */
                 #printItemsTable th:nth-child(3),
                 #printItemsTable td:nth-child(3) {
                     width: 15%;
                     text-align: center;
-                } /* Category - slightly reduced for balance */
+                } 
 
+                /* Sold By */
                 #printItemsTable th:nth-child(4),
                 #printItemsTable td:nth-child(4) {
                     width: 10%;
                     text-align: center;
-                } /* Sold By - centered and wider */
+                } 
 
-                #printItemsTable th:nth-child(5),
+
+                /* Cost */
+                #printItemsTable th:nth-child(5) {
+                    width: 10%;
+                    text-align: center !important;
+                    vertical-align: middle !important;
+                }
+                #printItemsTable thead th:nth-child(5) {
+                    text-align: center !important;
+                    vertical-align: middle !important;
+                }
                 #printItemsTable td:nth-child(5) {
-                    width: 13%;
+                    width: 10%;
                 }
-                #printItemsTable th:nth-child(6),
+
+                /* Price */
+                #printItemsTable th:nth-child(6) {
+                    width: 10%;
+                    text-align: center !important;
+                    vertical-align: middle !important;
+                }
+                #printItemsTable thead th:nth-child(6) {
+                    text-align: center !important;
+                    vertical-align: middle !important;
+                }
                 #printItemsTable td:nth-child(6) {
-                    width: 13%;
+                    width: 10%;
                 }
+
+                /* Stock */
                 #printItemsTable th:nth-child(7),
                 #printItemsTable td:nth-child(7) {
-                    width: 13%;
+                    width: 8%;
                 }
                 </style>
                 
@@ -148,7 +173,7 @@
         width: 100%;
         padding: 20px;
         font-family: Arial, sans-serif;
-        font-size: 14px !important;
+        font-size: 16px !important;
     }
 
     .print-header {
@@ -172,7 +197,7 @@
 
     .print-header p {
         margin: 0;
-        font-size: 14px !important;
+        font-size: 16px !important;
         color: #666;
     }
 
@@ -180,7 +205,7 @@
         width: 100%;
         margin: 0;
         border-collapse: collapse;
-        font-size: 14px !important;
+        font-size: 16px !important;
         margin-top: 20px;
         margin-bottom: 20px;
     }
@@ -190,7 +215,7 @@
         border: 1px solid #666;
         padding: 6px;
         text-align: left;
-        font-size: 14px !important;
+        font-size: 16px !important;
     }
 
     .print-table th {
@@ -198,7 +223,7 @@
         color: #000000 !important;
         font-weight: 600 !important;
         text-align: center !important;
-        font-size: 14px !important;
+        font-size: 16px !important;
         padding: 4px 3px !important;
         border: 1px solid #666 !important;
     }
@@ -223,12 +248,12 @@
     .print-header-right {
         text-align: right !important;
         font-weight: bold !important;
-        font-size: 14px !important;
+        font-size: 16px !important;
     }
 
     .print-cell-right {
         text-align: right !important;
-        font-size: 14px !important;
+        font-size: 16px !important;
     }
 
     /* Ensure all table headers are bold */
@@ -237,7 +262,7 @@
         background-color: transparent !important;
         color: #000000 !important;
         border: 1px solid #666 !important;
-        font-size: 14px !important;
+        font-size: 16px !important;
         padding: 4px 3px !important;
         text-transform: uppercase;
         letter-spacing: 0.5px;
@@ -247,7 +272,7 @@
     .print-table tbody td {
         border: 1px solid #666 !important;
         padding: 3px 2px !important;
-        font-size: 14px !important;
+        font-size: 16px !important;
     }
 
     .print-table tbody tr:nth-child(even) {
@@ -257,7 +282,7 @@
     .print-footer {
         margin-top: 30px;
         text-align: center;
-        font-size: 14px !important;
+        font-size: 16px !important;
         color: #666;
         border-top: 1px solid #ccc;
         padding-top: 15px;
@@ -265,7 +290,7 @@
 
     .print-footer p {
         margin: 5px 0;
-        font-size: 14px !important;
+        font-size: 16px !important;
     }
 
     /* Hide modal and other page elements when printing */

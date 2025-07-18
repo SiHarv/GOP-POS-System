@@ -157,7 +157,7 @@ $(document).ready(function() {
             <div class="print-header">
                 <h2 style="font-size: 20px;">GOP Marketing - Items Report</h2>
                 <h3>Category: ${categoryText}</h3>
-                <p>Generated on: ${currentDate}</p>
+                <p style="font-style: italic;">Generated on: ${currentDate}</p>
             </div>
             
             <div class="print-body">
