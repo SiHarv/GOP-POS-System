@@ -54,18 +54,30 @@ $logoBase64 = getImageAsBase64($logoPath);
                             <div><strong>Address:</strong> <span id="receipt-address"></span></div>
                             <div><strong>P.O. Number:</strong> <span id="receipt-po-number">-</span></div>
                         </div>
-                        <div style="font-size: 14px; display: inline-flex; flex-direction: column; margin-left: auto;">
-                            <div style="display: flex; align-items: center; white-space: nowrap; margin-bottom: 2px;">
-                                <strong style="margin-right: 4px;">Date:</strong>
-                                <span id="receipt-date"></span>
+                        <div style="font-size: 14px; display: flex; flex-direction: column; align-items: flex-start; margin-left: auto; gap: 2px;">
+                            <div style="display: flex; align-items: flex-start; gap: 8px;">
+                                <div style="min-width: 80px; text-align: left;">
+                                    <strong>Date:</strong>
+                                </div>
+                                <div style="text-align: left;">
+                                    <span id="receipt-date"></span>
+                                </div>
                             </div>
-                            <div style="display: flex; align-items: center; white-space: nowrap; margin-bottom: 2px;">
-                                <strong style="margin-right: 4px;">Terms:</strong>
-                                <span id="receipt-terms"></span>
+                            <div style="display: flex; align-items: flex-start; gap: 8px;">
+                                <div style="min-width: 80px; text-align: left;">
+                                    <strong>Terms:</strong>
+                                </div>
+                                <div style="text-align: left;">
+                                    <span id="receipt-terms"></span>
+                                </div>
                             </div>
-                            <div style="display: flex; align-items: center; white-space: nowrap;">
-                                <strong style="margin-right: 4px;">Salesman:</strong>
-                                <span id="receipt-salesman"></span>
+                            <div style="display: flex; align-items: flex-start; gap: 8px;">
+                                <div style="min-width: 80px; text-align: left;">
+                                    <strong>Salesman:</strong>
+                                </div>
+                                <div style="text-align: left;">
+                                    <span id="receipt-salesman"></span>
+                                </div>
                             </div>
                         </div>
                     </div>
