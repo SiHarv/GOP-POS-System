@@ -49,13 +49,34 @@ $logoBase64 = getImageAsBase64($logoPath);
                 </div>
                 <div class="receipt-details mb-4">
                     <div class="d-flex">
-                        <div style="font-size: 14px; flex: 1;">
-                            <div><strong>Customer:</strong> <span id="receipt-customer"></span></div>
-                            <div><strong>Address:</strong> <span id="receipt-address"></span></div>
-                            <div><strong>P.O. Number:</strong> <span id="receipt-po-number">-</span></div>
+                        <div style="font-size: 14px; display: flex; flex-direction: column; align-items: flex-start; flex: 1; gap: 2px;">
+                            <div style="display: flex; align-items: flex-start; gap: 5px;">
+                                <div style="min-width: 80px; text-align: left;">
+                                    <strong>Customer:</strong>
+                                </div>
+                                <div style="text-align: left;">
+                                    <span id="receipt-customer"></span>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: flex-start; gap: 5px;">
+                                <div style="min-width: 80px; text-align: left;">
+                                    <strong>Address:</strong>
+                                </div>
+                                <div style="text-align: left;">
+                                    <span id="receipt-address"></span>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: flex-start; gap: 5px;">
+                                <div style="min-width: 80px; text-align: left;">
+                                    <strong>P.O  N.O:</strong>
+                                </div>
+                                <div style="text-align: left;">
+                                    <span id="receipt-po-number">-</span>
+                                </div>
+                            </div>
                         </div>
                         <div style="font-size: 14px; display: flex; flex-direction: column; align-items: flex-start; margin-left: auto; gap: 2px;">
-                            <div style="display: flex; align-items: flex-start; gap: 8px;">
+                            <div style="display: flex; align-items: flex-start; gap: 5px;">
                                 <div style="min-width: 80px; text-align: left;">
                                     <strong>Date:</strong>
                                 </div>
@@ -63,7 +84,7 @@ $logoBase64 = getImageAsBase64($logoPath);
                                     <span id="receipt-date"></span>
                                 </div>
                             </div>
-                            <div style="display: flex; align-items: flex-start; gap: 8px;">
+                            <div style="display: flex; align-items: flex-start; gap: 5px;">
                                 <div style="min-width: 80px; text-align: left;">
                                     <strong>Terms:</strong>
                                 </div>
@@ -71,7 +92,7 @@ $logoBase64 = getImageAsBase64($logoPath);
                                     <span id="receipt-terms"></span>
                                 </div>
                             </div>
-                            <div style="display: flex; align-items: flex-start; gap: 8px;">
+                            <div style="display: flex; align-items: flex-start; gap: 5px;">
                                 <div style="min-width: 80px; text-align: left;">
                                     <strong>Salesman:</strong>
                                 </div>
