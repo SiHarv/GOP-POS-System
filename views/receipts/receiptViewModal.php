@@ -49,16 +49,25 @@ $logoBase64 = getImageAsBase64($logoPath);
                 </div>
                 <div class="receipt-details mb-4">
                     <div class="d-flex">
-                        <div style="font-size: 14px; width: 50%;"><strong>Customer:</strong> <span id="receipt-customer"></span></div>
-                        <div style="font-size: 14px; width: 30%;"><strong>Date:</strong> <span id="receipt-date"></span></div>
-                    </div>
-                    <div class="d-flex">
-                        <div style="font-size: 14px; width: 50%;"><strong>Address:</strong> <span id="receipt-address"></span></div>
-                        <div style="font-size: 14px; width: 30%;"><strong>Terms:</strong> <span id="receipt-terms"></span></div>
-                    </div>
-                    <div class="d-flex">
-                        <div style="font-size: 14px; width: 50%;"><strong>P.O. Number:</strong> <span id="receipt-po-number">-</span></div>
-                        <div style="font-size: 14px; width: 30%;"><strong>Salesman:</strong> <span id="receipt-salesman"></span></div>
+                        <div style="font-size: 14px; flex: 1;">
+                            <div><strong>Customer:</strong> <span id="receipt-customer"></span></div>
+                            <div><strong>Address:</strong> <span id="receipt-address"></span></div>
+                            <div><strong>P.O. Number:</strong> <span id="receipt-po-number">-</span></div>
+                        </div>
+                        <div style="font-size: 14px; display: inline-flex; flex-direction: column; margin-left: auto;">
+                            <div style="display: flex; align-items: center; white-space: nowrap; margin-bottom: 2px;">
+                                <strong style="margin-right: 4px;">Date:</strong>
+                                <span id="receipt-date"></span>
+                            </div>
+                            <div style="display: flex; align-items: center; white-space: nowrap; margin-bottom: 2px;">
+                                <strong style="margin-right: 4px;">Terms:</strong>
+                                <span id="receipt-terms"></span>
+                            </div>
+                            <div style="display: flex; align-items: center; white-space: nowrap;">
+                                <strong style="margin-right: 4px;">Salesman:</strong>
+                                <span id="receipt-salesman"></span>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <table class="table table-bordered" style="padding: none; margin:none;">
