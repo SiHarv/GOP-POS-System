@@ -88,7 +88,7 @@ $logoBase64 = getImageAsBase64($logoPath);
                     <tfoot>
                         <tr>
                             <td colspan="6" class="text-end" style="font-size:12px; padding: 3px;"><strong>Total Amount:</strong></td>
-                            <td class="text-end" style="font-size:12px; padding: 3px;"><strong>₱<span id="receipt-total"></span></strong></td>
+                            <td style="font-size:12px; padding: 3px; position: relative;"><strong><span style="position: absolute; left: 6px;">₱</span><span id="receipt-total" style="display: block; text-align: right;"></span></strong></td>
                         </tr>
                     </tfoot>
                 </table>
