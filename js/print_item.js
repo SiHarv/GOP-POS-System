@@ -127,8 +127,8 @@ $(document).ready(function() {
                     <td class="text-dark">${item.item_name}</td>
                     <td>${item.category || 'N/A'}</td>
                     <td>${item.sold_by || 'N/A'}</td>
-                    <td class="text-end">₱${parseFloat(item.cost || 0).toFixed(2)}</td>
-                    <td class="text-end">₱${parseFloat(item.price || 0).toFixed(2)}</td>
+                    <td class="text-end">${parseFloat(item.cost || 0).toFixed(2)}</td>
+                    <td class="text-end">${parseFloat(item.price || 0).toFixed(2)}</td>
                     <td class="text-end">${item.stock || 0}</td>
                 </tr>
             `;
@@ -155,7 +155,7 @@ $(document).ready(function() {
         // Create print content with preserved classes
         const printContent = `
             <div class="print-header">
-                <h2>GOP Marketing - Items Report</h2>
+                <h2 style="font-size: 20px;">GOP Marketing - Items Report</h2>
                 <h3>Category: ${categoryText}</h3>
                 <p>Generated on: ${currentDate}</p>
             </div>

@@ -134,12 +134,12 @@
     * {
         visibility: hidden;
     }
-    
+
     #printArea,
     #printArea * {
         visibility: visible;
     }
-    
+
     #printArea {
         display: block !important;
         position: absolute;
@@ -148,60 +148,61 @@
         width: 100%;
         padding: 20px;
         font-family: Arial, sans-serif;
+        font-size: 14px !important;
     }
-    
+
     .print-header {
         text-align: center;
         margin-bottom: 30px;
         border-bottom: 2px solid #000;
         padding-bottom: 15px;
     }
-    
+
     .print-header h2 {
         margin: 0 0 10px 0;
-        font-size: 24px;
+        font-size: 20px !important;
         font-weight: bold;
     }
-    
+
     .print-header h3 {
         margin: 0 0 10px 0;
-        font-size: 18px;
+        font-size: 16px !important;
         color: #333;
     }
-    
+
     .print-header p {
         margin: 0;
-        font-size: 12px;
+        font-size: 14px !important;
         color: #666;
     }
-    
+
     .print-table {
         width: 100%;
         margin: 0;
         border-collapse: collapse;
-        font-size: 11px;
+        font-size: 14px !important;
         margin-top: 20px;
         margin-bottom: 20px;
     }
-    
+
     .print-table th,
     .print-table td {
         border: 1px solid #666;
         padding: 6px;
         text-align: left;
+        font-size: 14px !important;
     }
-    
+
     .print-table th {
         background-color: transparent !important;
         color: #000000 !important;
         font-weight: 600 !important;
         text-align: center !important;
-        font-size: 12px !important;
+        font-size: 14px !important;
         padding: 4px 3px !important;
         border: 1px solid #666 !important;
     }
-    
-    
+
     /* Right align price and stock columns in print */
     .print-table th:nth-child(5),
     .print-table th:nth-child(6),
@@ -211,75 +212,62 @@
         background-color: transparent !important;
         color: #000000 !important;
     }
-    
+
     .print-table td:nth-child(5),
     .print-table td:nth-child(6),
     .print-table td:nth-child(7) {
         text-align: right !important;
     }
-    
+
     /* Additional classes for preserved Bootstrap styling in print */
     .print-header-right {
         text-align: right !important;
         font-weight: bold !important;
+        font-size: 14px !important;
     }
-    
+
     .print-cell-right {
         text-align: right !important;
+        font-size: 14px !important;
     }
-    
+
     /* Ensure all table headers are bold */
     .print-table thead th {
         font-weight: 600 !important;
         background-color: transparent !important;
         color: #000000 !important;
         border: 1px solid #666 !important;
-        font-size: 12px !important;
+        font-size: 14px !important;
         padding: 4px 3px !important;
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }
-    
+
     /* Ensure table data styling */
     .print-table tbody td {
         border: 1px solid #666 !important;
         padding: 3px 2px !important;
+        font-size: 14px !important;
     }
-    
-    
-    
-    /* Alternative header styling if background colors fail */
-    @media print {
-        .print-table th {
-            background: transparent !important;
-            color: #000000 !important;
-        }
-        
-        /* Force black text */
-        .print-table thead th {
-            background: none !important;
-            color: #000000 !important;
-            font-weight: 600 !important;
-        }
-    }
-    
+
     .print-table tbody tr:nth-child(even) {
         background-color: #f9f9f9 !important;
     }
-    
+
     .print-footer {
         margin-top: 30px;
         text-align: center;
-        font-size: 10px;
+        font-size: 14px !important;
         color: #666;
         border-top: 1px solid #ccc;
         padding-top: 15px;
     }
-    
+
     .print-footer p {
         margin: 5px 0;
+        font-size: 14px !important;
     }
-    
+
     /* Hide modal and other page elements when printing */
     .modal,
     .modal-backdrop,
