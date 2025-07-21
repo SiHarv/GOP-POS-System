@@ -220,7 +220,7 @@ $(document).ready(function () {
                 
                 .table th, .table td {
                   border: 1px solid #000000 !important;
-                  font-size: 12px !important;
+                  font-size: 14px !important;
                   vertical-align: middle !important;
                   padding: 2px 2px !important;
                   overflow: hidden !important;

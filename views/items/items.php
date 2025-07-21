@@ -127,7 +127,7 @@ try {
                             <table class="items-table" id="items-table">
                                 <thead>
                                     <tr>
-                                        <!-- <th style="width: 3%; min-width: 30px;">#</th> -->
+                                        <th style="width: 8%; min-width: 30px;">Item code</th>
                                         <th style="width: 12%; min-width: 160px;">New stock date</th>
                                         <th>New stock</th>
                                         <th>In stock</th>
@@ -135,7 +135,7 @@ try {
                                         <th style="width: 20%; min-width: 180px;">Name & Description</th>
                                         <th style="width: 14%; min-width: 120px;">Category</th>
                                         <th style="width: 7%; min-width: 60px;">Cost</th>
-                                        <th style="width: 6%; min-width: 60px;">Price</th>
+                                        <th style="width: 7%; min-width: 60px;">Price</th>
                                         <th style="width: 7%; min-width: 60px;">Action</th>
                                     </tr>
                                 </thead>
@@ -153,6 +153,7 @@ try {
                                             }
                                     ?>
                                             <tr class="<?php echo $rowClass; ?>">
+                                                <td><?php echo $item['id']; ?></td>
                                                 <td><?php echo isset($item['date_added']) ? date('m-d-Y', strtotime($item['date_added'])) : '-'; ?></td>
                                                 <td><?php echo isset($item['quantity_added']) ? $item['quantity_added'] : '0'; ?></td>
                                                 <td class="stock-value"><?php echo $item['stock']; ?></td>
