@@ -1,10 +1,11 @@
 <?php
 session_start();
-
 require_once __DIR__ . '/../../controller/backend_charge.php';
+
 $chargeController = new ChargeController();
 $customers = $chargeController->getAllCustomers();
 $items = $chargeController->getAllItems();
+$selectedCustomerName = "";
 ?>
 
 <!DOCTYPE html>
@@ -29,7 +30,7 @@ $items = $chargeController->getAllItems();
 <body>
     <?php require_once '../renderParts/header.php'; ?>
     <?php require_once '../renderParts/sidebar.php'; ?>
-    <?php require_once '../../auth/check_auth.php';?>
+    <?php require_once '../../auth/check_auth.php'; ?>
 
     <main class="main-content">
         <div class="container">
@@ -120,12 +121,19 @@ $items = $chargeController->getAllItems();
                             <div class="mb-3">
                                 <div class="mb-3">
                                     <label for="customer" class="form-label">Select Customer</label>
-                                    <select class="form-select" id="customer" required>
-                                        <option value="">Choose customer...</option>
-                                        <?php foreach ($customers as $customer): ?>
-                                            <option value="<?php echo $customer['id']; ?>"><?php echo $customer['name']; ?></option>
-                                        <?php endforeach; ?>
-                                    </select>
+                                    <div class="dropdown">
+                                        <input type="text" class="form-control" id="customer" placeholder="Search Customer Name..." autocomplete="off" value="<?php echo htmlspecialchars($selectedCustomerName); ?>" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <input type="hidden" id="customer_id" name="customer_id">
+                                        <ul class="dropdown-menu w-100" id="customer-dropdown" style="max-height:200px; overflow-y:auto;">
+                                            <?php foreach ($customers as $customer): ?>
+                                                <li>
+                                                    <a class="dropdown-item customer-option" href="#" data-id="<?php echo $customer['id']; ?>" data-name="<?php echo htmlspecialchars($customer['name']); ?>">
+                                                        <?php echo htmlspecialchars($customer['name']); ?>
+                                                    </a>
+                                                </li>
+                                            <?php endforeach; ?>
+                                        </ul>
+                                    </div>
                                 </div>
 
                                 <!-- Add P.O. number input -->
@@ -153,6 +161,7 @@ $items = $chargeController->getAllItems();
         </div>
     </main>
     <script src="../../js/sidebar.js"></script>
+    <script src="../../js/dpdown.js"></script>
 </body>
 
 </html>

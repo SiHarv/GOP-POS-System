@@ -126,7 +126,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         case 'process_charge':
             // Get P.O. number from the request
             $poNumber = isset($_POST['po_number']) ? $_POST['po_number'] : null;
-            $result = $controller->processCharge($_POST['customer_id'], $_POST['items'], $poNumber);
+            $customerId = isset($_POST['customer_id']) ? intval($_POST['customer_id']) : 0;
+            $items = isset($_POST['items']) ? $_POST['items'] : [];
+            if ($customerId <= 0) {
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => 'Invalid or missing customer selection.'
+                ]);
+                exit;
+            }
+            $result = $controller->processCharge($customerId, $items, $poNumber);
             echo json_encode($result);
             break;
 

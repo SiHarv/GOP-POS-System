@@ -11,6 +11,11 @@ class ItemsController
         $this->conn = $db->getConnection();
     }
 
+    public function getConnection()
+    {
+        return $this->conn;
+    }
+
     public function getAllItems($limit = null, $offset = 0, $searchParams = [])
     {
         $whereConditions = [];
@@ -72,11 +77,11 @@ class ItemsController
         }
 
         $stmt = $this->conn->prepare($query);
-        
+
         if (!empty($params)) {
             $stmt->bind_param($types, ...$params);
         }
-        
+
         $stmt->execute();
         $result = $stmt->get_result();
         $items = [];
@@ -122,13 +127,13 @@ class ItemsController
         }
 
         $query = "SELECT COUNT(*) FROM items i";
-        
+
         if (!empty($whereConditions)) {
             $query .= " WHERE " . implode(" AND ", $whereConditions);
         }
 
         $stmt = $this->conn->prepare($query);
-        
+
         if (!empty($params)) {
             $stmt->bind_param($types, ...$params);
         }
@@ -276,21 +281,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 break;
             case 'search_items':
                 $searchParams = [
+                    'id' => $_POST['id'] ?? '',
                     'name' => $_POST['name'] ?? '',
                     'category' => $_POST['category'] ?? '',
                     'sold_by' => $_POST['sold_by'] ?? '',
                     'stock_min' => $_POST['stock_min'] ?? '',
                     'stock_max' => $_POST['stock_max'] ?? ''
                 ];
-                
+
                 $itemsPerPage = 9;
                 $currentPage = isset($_POST['page']) ? max(1, intval($_POST['page'])) : 1;
                 $offset = ($currentPage - 1) * $itemsPerPage;
-                
+
                 $items = $controller->getAllItems($itemsPerPage, $offset, $searchParams);
                 $totalItems = $controller->getTotalItemsCount($searchParams);
                 $totalPages = ceil($totalItems / $itemsPerPage);
-                
+
                 // Generate table HTML
                 $tableHtml = '';
                 if (empty($items)) {
@@ -303,8 +309,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         } elseif ($item['stock'] < 15) {
                             $rowClass = 'low-stock-row';
                         }
-                        
+
                         $tableHtml .= '<tr class="' . $rowClass . '">';
+                        $tableHtml .= '<td>' . htmlspecialchars($item['id']) . '</td>';
                         $tableHtml .= '<td>' . (isset($item['date_added']) ? date('m-d-Y', strtotime($item['date_added'])) : '-') . '</td>';
                         $tableHtml .= '<td>' . (isset($item['quantity_added']) ? $item['quantity_added'] : '0') . '</td>';
                         $tableHtml .= '<td class="stock-value">' . $item['stock'] . '</td>';
@@ -327,7 +334,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $tableHtml .= '</tr>';
                     }
                 }
-                
+
                 // Generate pagination HTML
                 $paginationHtml = '';
                 if ($totalItems > 0) {
@@ -339,18 +346,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $paginationHtml .= 'Showing all ' . $totalItems . ' item' . ($totalItems != 1 ? 's' : '');
                     }
                     $paginationHtml .= '</small></div>';
-                    
+
                     // Add pagination buttons if more than one page
                     if ($totalPages > 1) {
                         $paginationHtml = '<nav class="mt-4"><ul class="pagination justify-content-center">' .
                             '<li class="page-item' . (($currentPage <= 1) ? ' disabled' : '') . '">' .
                             '<a class="page-link" href="#" data-page="' . ($currentPage - 1) . '">Previous</a></li>';
-                        
+
                         for ($i = 1; $i <= $totalPages; $i++) {
                             $paginationHtml .= '<li class="page-item' . (($i == $currentPage) ? ' active' : '') . '">';
                             $paginationHtml .= '<a class="page-link" href="#" data-page="' . $i . '">' . $i . '</a></li>';
                         }
-                        
+
                         $paginationHtml .= '<li class="page-item' . (($currentPage >= $totalPages) ? ' disabled' : '') . '">' .
                             '<a class="page-link" href="#" data-page="' . ($currentPage + 1) . '">Next</a></li>' .
                             '</ul></nav>' .
@@ -359,7 +366,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             '</small></div>';
                     }
                 }
-                
+
                 echo json_encode([
                     'success' => true,
                     'tableHtml' => $tableHtml,
@@ -371,8 +378,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'getAll') {
-    header('Content-Type: application/json');
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $controller = new ItemsController();
-    echo json_encode($controller->getAllItems());
+
+    if (isset($_GET['action'])) {
+        switch ($_GET['action']) {
+            case 'getCategories':
+                // Return unique categories as [{id, name}]
+                $conn = $controller->getConnection();
+                $result = $conn->query("SELECT DISTINCT category FROM items ORDER BY category ASC");
+                $categories = [];
+                $id = 1;
+                while ($row = $result->fetch_assoc()) {
+                    $categories[] = [
+                        'id' => $id++,
+                        'name' => $row['category']
+                    ];
+                }
+                header('Content-Type: application/json');
+                echo json_encode($categories);
+                exit;
+            case 'getItemsByCategory':
+                $category = isset($_GET['categoryId']) ? $_GET['categoryId'] : '';
+                $conn = $controller->getConnection();
+                $stmt = $conn->prepare("SELECT id, name, category, sold_by, cost, price, stock FROM items WHERE category = ? ORDER BY name ASC");
+                $stmt->bind_param("s", $category);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $items = [];
+                while ($row = $result->fetch_assoc()) {
+                    $items[] = $row;
+                }
+                header('Content-Type: application/json');
+                echo json_encode($items);
+                exit;
+            case 'getAll':
+                header('Content-Type: application/json');
+                echo json_encode($controller->getAllItems());
+                exit;
+        }
+    }
 }

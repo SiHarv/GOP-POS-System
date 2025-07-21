@@ -184,13 +184,12 @@ $(document).ready(function () {
 
   // Update process charge success callback
   $("#process-charge").on("click", function () {
-
     if (cart.length === 0 || !$("#customer").val()) {
       Swal.fire({
-        icon: 'warning',
-        title: 'Missing Information',
-        text: 'Please select a customer and add items to cart',
-        confirmButtonColor: '#3085d6'
+        icon: "warning",
+        title: "Missing Information",
+        text: "Please select a customer and add items to cart",
+        confirmButtonColor: "#3085d6",
       });
       return;
     }
@@ -199,10 +198,10 @@ $(document).ready(function () {
     const poNumber = $("#po_number").val();
     if (!poNumber || poNumber.trim() === "") {
       Swal.fire({
-        icon: 'warning',
-        title: 'Missing P.O. Number',
-        text: 'Please enter a P.O. Number before processing the charge.',
-        confirmButtonColor: '#3085d6'
+        icon: "warning",
+        title: "Missing P.O. Number",
+        text: "Please enter a P.O. Number before processing the charge.",
+        confirmButtonColor: "#3085d6",
       });
       return;
     }
@@ -212,28 +211,28 @@ $(document).ready(function () {
       method: "POST",
       data: {
         action: "process_charge",
-        customer_id: $("#customer").val(),
+        customer_id: $("#customer_id").val(), // <-- Use the hidden input for customer ID
         items: cart,
         po_number: poNumber, // Include P.O. number in the request
       },
       success: function (response) {
         if (response.status === "success") {
           Swal.fire({
-            icon: 'success',
-            title: 'Receipt Created Successfully!',
-            text: 'Receipt has been created. Stock will be subtracted when you print the receipt.',
+            icon: "success",
+            title: "Receipt Created Successfully!",
+            text: "Receipt has been created. Stock will be subtracted when you print the receipt.",
             showCancelButton: true,
-            confirmButtonText: 'View Receipt',
-            cancelButtonText: 'Create Another',
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#6c757d'
+            confirmButtonText: "View Receipt",
+            cancelButtonText: "Create Another",
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#6c757d",
           }).then((result) => {
             if (result.isConfirmed && response.charge_id) {
               // Redirect to receipts page and open the specific receipt
               window.location.href = `../receipts/receipts.php?open_receipt=${response.charge_id}`;
             }
           });
-          
+
           // Clear the form
           cart = [];
           updateCartDisplay();
@@ -243,19 +242,19 @@ $(document).ready(function () {
           refreshItemsTable();
         } else {
           Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: response.message || 'Failed to process charge',
-            confirmButtonColor: '#d33'
+            icon: "error",
+            title: "Error",
+            text: response.message || "Failed to process charge",
+            confirmButtonColor: "#d33",
           });
         }
       },
       error: function () {
         Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Error processing charge',
-          confirmButtonColor: '#d33'
+          icon: "error",
+          title: "Error",
+          text: "Error processing charge",
+          confirmButtonColor: "#d33",
         });
       },
     });
@@ -348,8 +347,6 @@ $(document).ready(function () {
       updateCart();
     }
   });
-
-  
 
   // Update the cart display
   function updateCart() {
