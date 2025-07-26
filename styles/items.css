@@ -5,6 +5,7 @@
 }
 .main-content {
   padding-top: 5.5rem;
+  padding-left: 80px; /* Default padding to account for sidebar */
 }
 body {
   font-family: Arial, sans-serif;
@@ -15,7 +16,9 @@ body {
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+  overflow-x: auto; /* Enable horizontal scrolling */
+  overflow-y: hidden;
+  max-width: 100%; /* Prevent table from breaking layout */
 }
 
 .items-table {
@@ -175,6 +178,11 @@ body {
   background-color: #45a049;
 }
 
+/* Button text for responsive design */
+.button-text {
+  display: inline-block;
+}
+
 .edit-btn {
   background-color: #007bff;
   color: white;
@@ -206,15 +214,15 @@ body {
 }
 
 .low-quantity-item {
-  padding: 12px;
+  padding: 8px 10px;
   background-color: #f8f9fc;
   border-radius: 6px;
   display: flex;
-  justify-content: space-between;
   align-items: flex-start;
   border-left: 3px solid #ffae00;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
   transition: all 0.2s ease;
+  font-size: 0.8rem;
 }
 
 .low-quantity-item:hover {
@@ -233,7 +241,7 @@ body {
 
 .item-meta {
   color: #858796;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   margin-top: 3px;
 }
 
@@ -247,13 +255,59 @@ body {
 
 .stock-count {
   font-weight: bold;
-  font-size: 1.1rem;
+  font-size: 0.10rem;
   border-radius: 50%;
   width: 35px;
   height: 35px;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.stock-indicator {
+  font-weight: bold;
+  min-width: 30px;
+  padding: 0 3px;
+}
+
+.small-sidebar .card {
+  font-size: 0.8rem;
+}
+
+.small-sidebar .low-stock-item {
+  padding: 8px 8px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.small-sidebar .stock-indicator {
+  border-radius: 3px;
+  text-align: center;
+  background-color: rgba(0,0,0,0.03);
+}
+
+/* Style for low stock items when in small sidebar */
+.small-sidebar .text-danger {
+  color: #dc3545 !important;
+}
+
+.small-sidebar .text-warning {
+  color: #ffc107 !important;
+}
+
+.small-sidebar .flex-grow-1 > div:not(:last-child) {
+  margin-bottom: 2px;
+}
+
+.item-details-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.small-sidebar .sold-by {
+  border-top: 1px dotted rgba(0,0,0,0.05);
+  padding-top: 2px;
+  margin-top: 1px;
 }
 
 .stock-count.warning {
@@ -267,7 +321,7 @@ body {
 }
 
 .restock-btn {
-  font-size: 0.75rem;
+  font-size: 0.66rem;
   padding: 0.15rem 0.5rem;
   white-space: nowrap;
 }
@@ -316,7 +370,7 @@ body {
 }
 
 .add-to-po {
-  font-size: 0.8rem;
+  font-size: 0.7rem;
 }
 
 .form-check-input.po-item-checkbox:checked {
@@ -368,6 +422,8 @@ body {
 .container-fluid {
   padding-right: 1rem;
   padding-left: 1rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .purchase-needed {
@@ -376,7 +432,7 @@ body {
 }
 
 .purchase-indicator {
-  font-size: 0.75rem;
+  font-size: 0.66rem;
   color: #dc3545;
   font-weight: 500;
   background-color: rgba(220, 53, 69, 0.1);
@@ -446,15 +502,44 @@ body {
   border: 1px solid #000000;
 }
 
+/* Filter card responsive design */
+.search-filter .card-header {
+  padding: 0.75rem 1rem;
+}
+
+/* Responsive design for filter toggle */
+#toggle-filters {
+  font-size: 0.65rem;
+  padding: 0.25rem 0.5rem;
+}
+
+@media (max-width: 991px) {
+  #filter-body .row {
+    flex-wrap: wrap;
+  }
+  
+  #filter-body .col-md-3 {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+}
+
+@media (max-width: 767px) {
+  #filter-body .col-md-3 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
+
 .search-filter .form-control {
   border: 1px solid #d1d3e2;
-  font-size: 1rem;
+  font-size: 0.9rem;
   padding: 0.6rem;
 }
 
 /* Override for filter form controls to maintain consistent sizing */
 .search-filter .form-control-sm {
-  font-size: 0.875rem;
+  font-size: 0.675rem;
   padding: 0.25rem 0.5rem;
   border-radius: 0.25rem;
 }
@@ -465,7 +550,7 @@ body {
 }
 
 .search-result-count {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: #6c757d;
   text-align: right;
 }
@@ -477,6 +562,221 @@ body {
 
 .no-results-message p {
   margin: 10px 0;
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   color: #5a5c69;
+}
+
+/* Responsive adjustments for laptops and smaller screens */
+@media (max-width: 1366px) {
+  .main-content {
+    padding-top: 4.5rem;
+  }
+  
+  .items-table thead th {
+    padding: 12px 2px;
+    padding-left: 5px;
+    font-size: 0.7rem;
+  }
+  
+  .items-table td {
+    padding: 8px 6px;
+    font-size: 0.8rem;
+  }
+  
+  .add-btn {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+  
+  .search-filter .form-control-sm {
+    font-size: 0.8rem;
+    padding: 0.2rem 0.4rem;
+  }
+  
+  .scrollable-table {
+    max-height: calc(100vh - 220px);
+  }
+}
+
+/* Specific fix for 1199px breakpoint where sidebar overlaps content */
+@media (max-width: 1199px) and (min-width: 992px) {
+  .main-content {
+    padding-left: 85px; /* Match the sidebar width + small buffer */
+  }
+  
+  /* Adjust container padding */
+  .container-fluid {
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+  }
+  
+  /* Ensure table is properly spaced */
+  .table-wrapper {
+    margin-right: 0;
+  }
+  
+  /* Adjust column spacing for the specific breakpoint */
+  .col-lg-10 {
+    padding-right: 8px;
+    flex: 0 0 auto;
+    width: 85%; /* Adjust width slightly */
+  }
+  
+  .col-lg-2 {
+    padding-left: 8px;
+    flex: 0 0 auto;
+    width: 15%; /* Adjust width slightly */
+  }
+  
+  /* Make table more compact */
+  .items-table th, .items-table td {
+    padding: 8px 4px;
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .container-fluid {
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+  }
+  
+  .items {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .items .button-group {
+    margin-top: 10px;
+    width: 100%;
+    justify-content: flex-end;
+  }
+  
+  .items-table thead th {
+    font-size: 0.75rem;
+    padding: 10px 2px;
+  }
+  
+  .items-table td {
+    font-size: 0.75rem;
+    padding: 6px 4px;
+  }
+  
+  .edit-btn {
+    padding: 3px 6px;
+    font-size: 0.7rem;
+  }
+  
+  /* Table column width adjustments for smaller screens */
+  .items-table th:nth-child(1),
+  .items-table td:nth-child(1) {
+    width: 8%;
+  }
+  .items-table th:nth-child(2),
+  .items-table td:nth-child(2) {
+    width: 10%;
+  }
+  .items-table th:nth-child(5),
+  .items-table td:nth-child(5) {
+    width: 18%;
+  }
+  .items-table th:nth-child(6),
+  .items-table td:nth-child(6) {
+    width: 8%;
+  }
+  
+  /* Optimize filter section for smaller screens */
+  .search-filter .card-body .row {
+    margin-right: -5px;
+    margin-left: -5px;
+  }
+  
+  .search-filter .card-body .col-md-3 {
+    padding-right: 5px;
+    padding-left: 5px;
+  }
+}
+
+/* For very small laptop screens */
+@media (max-width: 800px) {
+  .table-wrapper {
+    overflow-x: auto;
+  }
+  
+  .items-table {
+    min-width: 800px; /* Ensure table doesn't get too compressed */
+  }
+  
+  .search-filter .card-body .row {
+    flex-direction: column;
+  }
+  
+  .search-filter .card-body .col-md-3 {
+    width: 100%;
+    margin-bottom: 8px;
+  }
+  
+  /* Adjust the sidebar for very small screens */
+  .low-quantity-item {
+    padding: 8px;
+  }
+  
+  .small-sidebar .stock-indicator {
+    min-width: 25px;
+  }
+  
+  .item-actions {
+    min-width: 70px;
+  }
+  
+  .stock-count {
+    width: 30px;
+    height: 30px;
+    font-size: 0.7rem;
+  }
+  
+  /* Ensure sidebar is responsive at all breakpoints */
+  .small-sidebar {
+    margin-top: 10px;
+  }
+  
+  /* Hide button text on very small screens and just show icons */
+  @media (max-width: 576px) {
+    .button-text {
+      display: none;
+    }
+    
+    .add-btn {
+      padding: 8px;
+    }
+    
+    .add-btn .iconify {
+      margin-right: 0;
+    }
+    
+    .items h5 {
+      font-size: 0.9rem;
+    }
+    
+    /* Make sidebar appear as a horizontal scrollable list on mobile */
+    .sidebar-container {
+      overflow-x: auto;
+      white-space: nowrap;
+      padding-bottom: 15px;
+    }
+    
+    .low-quantity-list {
+      display: flex;
+      flex-direction: row;
+      gap: 10px;
+      flex-wrap: nowrap;
+      padding: 0 5px;
+    }
+    
+    .low-quantity-item {
+      min-width: 200px;
+      width: auto;
+      flex-shrink: 0;
+    }
+  }
 }

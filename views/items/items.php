@@ -49,23 +49,22 @@ try {
     <?php require_once '../renderParts/header.php'; ?>
     <?php require_once '../renderParts/sidebar.php'; ?>
     <main class="main-content">
-        <div class="container-fluid px-4">
-            <div class="row">
+        <div class="container-fluid px-md-2 px-lg-3">
+            <div class="row gx-2 gx-md-3">
 
                 <!-- Main Content Column (Items Table) -->
-                <div class="col-lg-1"></div>
-                <div class="col-lg-8 col-md-10" style="margin-left: 3.5em;">
+                <div class="col-lg-10 col-md-8 col-sm-12 ps-0 ps-md-1">
                     <div class="table-header">
                         <div class="items">
                             <h5 class="fw-bold"><span class="text-danger fw-bolder">Product</span> Inventory</h5>
                             <div class="button-group">
                                 <button id="printItemsBtn" class="add-btn btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#printItemsModal">
-                                    <span class="iconify" data-icon="solar:printer-outline" data-width="24" data-height="24" style="margin-bottom: 2.5px;"></span>
-                                    PRINT ITEMS
+                                    <span class="iconify" data-icon="solar:printer-outline" data-width="12" data-height="12" style="margin-bottom: 2px;"></span>
+                                    <span class="button-text">PRINT ITEMS</span>
                                 </button>
                                 <button id="addItemBtn" class="add-btn btn btn-success">
-                                    <span class="iconify" data-icon="solar:add-circle-outline" data-width="24" data-height="24" style="margin-bottom: 2.5px;"></span>
-                                    ADD ITEM
+                                    <span class="iconify" data-icon="solar:add-circle-outline" data-width="12" data-height="12" style="margin-bottom: 2px;"></span>
+                                    <span class="button-text">ADD ITEM</span>
                                 </button>
                             </div>
                         </div>
@@ -127,16 +126,16 @@ try {
                             <table class="items-table" id="items-table">
                                 <thead>
                                     <tr>
-                                        <th style="width: 8%; min-width: 30px;">Item code</th>
-                                        <th style="width: 12%; min-width: 160px;">New stock date</th>
-                                        <th>New stock</th>
-                                        <th>In stock</th>
+                                        <th style="width: 8%; min-width: 60px;">Item code</th>
+                                        <th style="width: 12%; min-width: 120px;">New stock date</th>
+                                        <th style="min-width: 70px;">New stock</th>
+                                        <th style="min-width: 70px;">In stock</th>
                                         <th style="width: 7%; min-width: 70px;">Sold by</th>
-                                        <th style="width: 20%; min-width: 180px;">Name & Description</th>
-                                        <th style="width: 14%; min-width: 120px;">Category</th>
+                                        <th style="width: 20%; min-width: 160px;">Name & Description</th>
+                                        <th style="width: 14%; min-width: 100px;">Category</th>
                                         <th style="width: 7%; min-width: 60px;">Cost</th>
                                         <th style="width: 7%; min-width: 60px;">Price</th>
-                                        <th style="width: 7%; min-width: 60px;">Action</th>
+                                        <th style="width: 7%; min-width: 80px;">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody id="itemsTableBody">
@@ -214,12 +213,14 @@ try {
                 </div>
 
                 <!-- Low Quantity Items Panel (Right Side) -->
-                <div class="col-lg-2 col-md-6 mt-3 mt-lg-0">
-                    <?php
-                    // Pass low stock items to the sidebar
-                    $sidebarItems = $lowStockItems;
-                    require_once 'lowQuantityItems.php';
-                    ?>
+                <div class="col-lg-2 col-md-4 col-sm-12 mt-3 mt-md-0">
+                    <div class="sidebar-container small-sidebar">
+                        <?php
+                        // Pass low stock items to the sidebar
+                        $sidebarItems = $lowStockItems;
+                        require_once 'lowQuantityItems.php';
+                        ?>
+                    </div>
                 </div>
             </div>
         </div>

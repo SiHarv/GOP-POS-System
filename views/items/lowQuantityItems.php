@@ -21,14 +21,14 @@ usort($lowStockItems, function ($a, $b) {
 ?>
 
 <div class="low-quantity-panel" style="height: 0;">
-   <div class="card">
-      <div class="card-header bg-dark text-dark">
+   <div class="card shadow-sm">
+      <div class="card-header bg-dark text-dark py-2">
          <h6 class="mb-0 fw-bold text-white text-start">
             <span class="iconify me-1" data-icon="solar:danger-triangle-linear" data-width="16" style="margin-bottom: 2px;"></span>
             Low Stock Alert
          </h6>
       </div>
-      <div class="card-body p-2" style="max-height: 500px; overflow-y: auto;">
+      <div class="card-body p-1" style="max-height: 500px; overflow-y: auto;">
          <?php if (isset($sidebarItems) && !empty($sidebarItems)): ?>
             <?php foreach ($sidebarItems as $item):
                $stockClass = '';
@@ -42,24 +42,24 @@ usort($lowStockItems, function ($a, $b) {
                }
             ?>
                <div class="low-stock-item mb-2 p-2 border-bottom">
-                  <div class="d-flex justify-content-between align-items-start">
-                     <div class="flex-grow-1">
+                  <div class="d-flex align-items-center">
+                     <div class="stock-indicator me-2">
+                        <div class="<?php echo $stockClass; ?> fw-bold d-flex align-items-center" style="font-size: 0.85rem;">
+                           <span class="iconify me-1" data-icon="<?php echo $stockIcon; ?>" data-width="12"></span>
+                           <span><?php echo $item['stock']; ?></span>
+                        </div>
+                     </div>
+                     <div class="flex-grow-1 item-details-container">
                         <div class="fw-bold text-primary" style="font-size: 0.8rem;">
                            <?php echo substr($item['name'], 0, 18); ?><?php echo strlen($item['name']) > 18 ? '...' : ''; ?>
                         </div>
                         <div class="text-muted" style="font-size: 0.7rem;">
                            <?php echo $item['category']; ?>
                         </div>
-                     </div>
-                     <div class="text-end">
-                        <div class="<?php echo $stockClass; ?> fw-bold" style="font-size: 0.85rem;">
-                           <span class="iconify" data-icon="<?php echo $stockIcon; ?>" data-width="12"></span>
-                           <?php echo $item['stock']; ?>
+                        <div class="text-muted sold-by" style="font-size: 0.65rem;">
+                           Sold by: <?php echo strlen($item['sold_by']) > 12 ? substr($item['sold_by'], 0, 10) . '...' : $item['sold_by']; ?>
                         </div>
                      </div>
-                  </div>
-                  <div class="text-muted mt-1" style="font-size: 0.65rem;">
-                     Sold by: <?php echo $item['sold_by']; ?>
                   </div>
                </div>
             <?php endforeach; ?>
