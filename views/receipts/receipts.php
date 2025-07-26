@@ -49,7 +49,7 @@ try {
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-1"></div>
-                <div class="col-lg-8">
+                <div class="col-lg-10">
                     <div class="table-header">
                         <div class="receipts d-flex align-items-center">
                             <!-- <span class="iconify me-1 ms-3" data-icon="solar:chat-square-2-broken" data-width="24"></span> -->
@@ -108,7 +108,7 @@ try {
                         </div>
                         <!-- End Filter Section -->
 
-                        <div class="table-wrapper" style="max-height: 615px; overflow-y: auto;">
+                        <div class="table-wrapper" style="max-height: 650px; overflow-y: auto;">
                             <table class="receipts-table" id="receipts-table">
                                 <thead>
                                     <tr>
@@ -177,49 +177,7 @@ try {
                         </div>
                     </div>
                 </div>
-
-                <!-- Right Sidebar -->
-                <div class="col-lg-2">
-                    <div class="right-sidebar">
-                        <!-- Recent Activity Card -->
-                        <div class="card">
-                            <div class="card-header bg-dark text-white">
-                                <h6 class="mb-0 fw-bold">
-                                    <span class="iconify me-1" data-icon="solar:clock-circle-linear" data-width="16"></span>
-                                    Recent Activity
-                                </h6>
-                            </div>
-                            <div class="card-body">
-                                <div class="recent-receipts">
-                                    <?php
-                                    $recentReceipts = array_slice($receipts, 0, 8);
-                                    foreach ($recentReceipts as $receipt):
-                                    ?>
-                                        <div class="recent-item mb-2 p-2 border-bottom">
-                                            <div class="d-flex justify-content-between">
-                                                <small class="fw-bold text-primary">#<?php echo $receipt['id']; ?></small>
-                                                <small class="text-success fw-bold">₱<?php echo number_format($receipt['total_price'], 2); ?></small>
-                                            </div>
-                                            <div class="text-muted" style="font-size: 0.8rem;">
-                                                <?php echo substr($receipt['customer_name'], 0, 25); ?><?php echo strlen($receipt['customer_name']) > 25 ? '...' : ''; ?>
-                                            </div>
-                                            <div class="text-muted" style="font-size: 0.75rem;">
-                                                <?php echo date('M d, h:i A', strtotime($receipt['charge_date'])); ?>
-                                            </div>
-                                        </div>
-                                    <?php endforeach; ?>
-
-                                    <?php if (empty($receipts)): ?>
-                                        <div class="text-center text-muted py-3">
-                                            <span class="iconify" data-icon="solar:inbox-linear" data-width="32"></span>
-                                            <div class="mt-2">No recent activity</div>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <!-- Right Sidebar Removed -->
             </div>
         </div>
     </main>

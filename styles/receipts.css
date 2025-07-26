@@ -353,102 +353,18 @@ body {
   background: #a1a1a1;
 }
 
-/* Right Sidebar Styles */
-.right-sidebar {
-  position: sticky;
-  top: 1rem;
-  max-height: calc(100vh - 150px);
-  overflow-y: auto;
-  padding-right: 0.5rem;
-}
-
-.right-sidebar .card {
-  border: 1px solid #e3e6f0;
-  box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
-}
-
-.right-sidebar .card-header {
-  padding: 0.75rem 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.right-sidebar .card-body {
-  max-height: calc(100vh - 250px);
-  overflow-y: auto;
-  padding: 1rem;
-}
-
-.recent-receipts,
-.recent-customers {
-  max-height: calc(100vh - 300px);
-  overflow-y: auto;
-}
-
-.recent-item {
-  transition: background-color 0.2s ease;
-  border-radius: 4px;
-}
-
-.recent-item:hover {
-  background-color: #f8f9fa;
-}
-
-.recent-item:last-child {
-  border-bottom: none !important;
-}
-
-/* Enhanced scrollbar styling for right sidebar */
-.right-sidebar::-webkit-scrollbar,
-.right-sidebar .card-body::-webkit-scrollbar,
-.recent-receipts::-webkit-scrollbar,
-.recent-customers::-webkit-scrollbar {
-  width: 0px;
-}
-
-.right-sidebar::-webkit-scrollbar-track,
-.right-sidebar .card-body::-webkit-scrollbar-track,
-.recent-receipts::-webkit-scrollbar-track,
-.recent-customers::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 3px;
-}
-
-.right-sidebar::-webkit-scrollbar-thumb,
-.right-sidebar .card-body::-webkit-scrollbar-thumb,
-.recent-receipts::-webkit-scrollbar-thumb,
-.recent-customers::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 3px;
-}
-
-.right-sidebar::-webkit-scrollbar-thumb:hover,
-.right-sidebar .card-body::-webkit-scrollbar-thumb:hover,
-.recent-receipts::-webkit-scrollbar-thumb:hover,
-.recent-customers::-webkit-scrollbar-thumb:hover {
-  background: #a1a1a1;
-}
+/* Right Sidebar Styles - Removed */
 
 /* Responsive adjustments */
 @media (max-width: 991px) {
-  .right-sidebar {
-    position: static;
-    max-height: 400px;
-    margin-top: 2rem;
-    padding-right: 0;
-  }
-
   .table-wrapper {
-    max-height: calc(100vh - 400px);
+    max-height: calc(100vh - 250px);
   }
 }
 
 @media (max-width: 767px) {
   .table-wrapper {
-    max-height: calc(100vh - 300px);
-  }
-
-  .right-sidebar {
-    max-height: 350px;
+    max-height: calc(100vh - 200px);
   }
 }
 
