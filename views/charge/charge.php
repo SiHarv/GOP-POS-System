@@ -34,12 +34,12 @@ $selectedCustomerName = "";
 
     <main class="main-content">
         <div class="container">
-            <div class="row">
+            <div class="row gx-3">
                 <div class="mb-2">
                     <h5 class="text-start fw-bold"><span class="text-danger fw-bolder">Charge</span> Management</h5>
                 </div>
                 <!-- Left side - Item Selection -->
-                <div class="col-md-8">
+                <div class="col-lg-9 col-md-8">
                     <div class="card mb-4">
                         <div class="card-header d-flex align-items-center" style="background-color: #000000; color: white;">
                             <span class="iconify me-1" data-icon="solar:box-linear" data-width="24"></span>
@@ -111,7 +111,7 @@ $selectedCustomerName = "";
                 </div>
 
                 <!-- Right side - Cart -->
-                <div class="col-md-4">
+                <div class="col-lg-3 col-md-4">
                     <div class="card">
                         <div class="card-header d-flex align-items-center" style="background-color: #000000; color: white;">
                             <span class="iconify me-1" data-icon="solar:cart-large-linear" data-width="24"></span>
