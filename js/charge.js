@@ -408,7 +408,7 @@ $(document).ready(function () {
             <div class="row align-items-center mb-1">
               <div class="col-7">
                 <div class="input-group input-group-sm">
-                  <span class="input-group-text bg-light">Discount</span>
+                  <span class="input-group-text bg-light">Disc.</span>
                   <input type="number" class="form-control item-discount" value="${
                     item.discount
                   }" 
