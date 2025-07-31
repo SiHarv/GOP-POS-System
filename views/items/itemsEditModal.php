@@ -22,26 +22,12 @@
                         <input type="number" class="form-control" id="edit_new_stock" name="new_stock" min="0" value="0">
                     </div>
                     <div class="mb-3">
-                        <label for="edit_sold_by" class="form-label">Sold By</label>
-                        <select class="form-select" id="edit_sold_by" name="sold_by" required>
-                            <option value="PCS">Piece</option>
-                            <option value="PCK">Pack</option>
-                            <option value="BOX">Box</option>
-                            <option value="KG">Kg</option>
-                        </select>
+                        <label for="edit_sold_by" class="form-label">Unit</label>
+                        <input type="text" class="form-control" id="edit_sold_by" name="sold_by" placeholder="Enter unit" required>
                     </div>
                     <div class="mb-3">
                         <label for="edit_category" class="form-label">Category</label>
-                        <select class="form-select" id="edit_category" name="category" required>
-                            <option value="HARDWARE">HARDWARE</option>
-                            <option value="ELECTRICAL">ELECTRICAL</option>
-                            <option value="PLUMBING">PLUMBING</option>
-                            <option value="PVC FITTING">PVC FITTING</option>
-                            <option value="G.I FITTING">G.I FITTING</option>
-                            <option value="PPR FITTING">PPR FITTING</option>
-                            <option value="BLUE FITTING">BLUE FITTING</option>
-                            <option value="P.E FITTING">P.E FITTING</option>
-                        </select>
+                        <input type="text" class="form-control" id="edit_category" name="category" placeholder="Enter category" required>
                     </div>
                     <div class="mb-3">
                         <label for="edit_cost" class="form-label">Cost (₱)</label>

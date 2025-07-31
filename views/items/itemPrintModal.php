@@ -110,7 +110,7 @@
                                     <th class="fw-bold text-center" style="width: 8%;">Item ID</th>
                                     <th class="fw-bold text-center">Item Name</th>
                                     <th class="fw-bold text-center">Category</th>
-                                    <th class="fw-bold text-center">Sold By</th>
+                                    <th class="fw-bold text-center">Unit</th>
                                     <th class="fw-bold text-end">Cost</th>
                                     <th class="fw-bold text-end">Price</th>
                                     <th class="fw-bold text-end">Stock</th>

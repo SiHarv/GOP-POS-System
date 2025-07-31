@@ -57,7 +57,7 @@ usort($lowStockItems, function ($a, $b) {
                            <?php echo $item['category']; ?>
                         </div>
                         <div class="text-muted sold-by" style="font-size: 0.65rem;">
-                           Sold by: <?php echo strlen($item['sold_by']) > 12 ? substr($item['sold_by'], 0, 10) . '...' : $item['sold_by']; ?>
+                           Unit: <?php echo strlen($item['sold_by']) > 12 ? substr($item['sold_by'], 0, 10) . '...' : $item['sold_by']; ?>
                         </div>
                      </div>
                   </div>

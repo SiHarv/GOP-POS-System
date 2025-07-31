@@ -18,28 +18,12 @@
                         <input type="number" class="form-control" id="stock" name="stock" min="0" placeholder="Enter item stock or quantity" required>
                     </div>
                     <div class="mb-3">
-                        <label for="sold_by" class="form-label">Sold By</label>
-                        <select class="form-select" id="sold_by" name="sold_by" required>
-                            <option value="" selected disabled>--  --</option>
-                            <option value="PCS">PIECE</option>
-                            <option value="PCK">PACK</option>
-                            <option value="BOX">BOX</option>
-                            <option value="KG">Kg</option>
-                        </select>
+                        <label for="sold_by" class="form-label">UNIT</label>
+                        <input type="text" class="form-control" id="sold_by" name="sold_by" placeholder="Enter unit" required>
                     </div>
                     <div class="mb-3">
                         <label for="category" class="form-label">Category</label>
-                        <select class="form-select" id="category" name="category" required>
-                            <option value="" selected disabled>-- Select category --</option>
-                            <option value="HARDWARE">HARDWARE</option>
-                            <option value="ELECTRICAL">ELECTRICAL</option>
-                            <option value="PLUMBING">PLUMBING</option>
-                            <option value="PVC FITTING">PVC FITTING</option>
-                            <option value="G.I FITTING">G.I FITTING</option>
-                            <option value="PPR FITTING">PPR FITTING</option>
-                            <option value="BLUE FITTING">BLUE FITTING</option>
-                            <option value="P.E FITTING">P.E FITTING</option>
-                        </select>
+                        <input type="text" class="form-control" id="category" name="category" placeholder="Enter category" required>
                     </div>
                     <div class="mb-3">
                         <label for="cost" class="form-label">Cost (₱)</label>

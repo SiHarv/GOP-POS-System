@@ -25,6 +25,44 @@ try {
 } catch (Exception $e) {
     die("Error: " . $e->getMessage());
 }
+
+// CSV Import Logic
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['csv_file'])) {
+    $csvFile = $_FILES['csv_file']['tmp_name'];
+    if (($handle = fopen($csvFile, 'r')) !== false) {
+        // Skip header row
+        fgetcsv($handle);
+        require_once __DIR__ . '/../../controller/backend_items.php';
+        $itemsController = new ItemsController();
+        $importCount = 0;
+        while (($data = fgetcsv($handle, 1000, ',')) !== false) {
+            // CSV columns: id, stock, sold_by, name, category, cost, price
+            $id = $data[0] ?? '';
+            $stock = $data[1] ?? 0;
+            $sold_by = $data[2] ?? '';
+            $name = $data[3] ?? '';
+            $category = $data[4] ?? '';
+            $cost = $data[5] ?? 0;
+            $price = $data[6] ?? 0;
+            if ($id && $sold_by && $name && $category) {
+                $itemsController->addItem([
+                    'id' => $id,
+                    'stock' => $stock,
+                    'sold_by' => $sold_by,
+                    'name' => $name,
+                    'category' => $category,
+                    'cost' => $cost,
+                    'price' => $price
+                ]);
+                $importCount++;
+            }
+        }
+        fclose($handle);
+        $importMessage = "$importCount items imported successfully.";
+    } else {
+        $importMessage = "Failed to open CSV file.";
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -62,6 +100,10 @@ try {
                                     <span class="iconify" data-icon="solar:printer-outline" data-width="12" data-height="12" style="margin-bottom: 2px;"></span>
                                     <span class="button-text">PRINT ITEMS</span>
                                 </button>
+                                <button id="importCsvBtn" class="add-btn btn btn-secondary me-2" data-bs-toggle="modal" data-bs-target="#importCsvModal">
+                                    <span class="iconify" data-icon="mdi:file-import-outline" data-width="12" data-height="12" style="margin-bottom: 2px;"></span>
+                                    <span class="button-text">IMPORT CSV</span>
+                                </button>
                                 <button id="addItemBtn" class="add-btn btn btn-success">
                                     <span class="iconify" data-icon="solar:add-circle-outline" data-width="12" data-height="12" style="margin-bottom: 2px;"></span>
                                     <span class="button-text">ADD ITEM</span>
@@ -93,7 +135,7 @@ try {
                                                 placeholder="Filter by category">
                                         </div>
                                         <div class="col-md-3">
-                                            <label for="sold-by-filter" class="form-label">Sold By</label>
+                                            <label for="sold-by-filter" class="form-label">Unit</label>
                                             <input type="text" class="form-control form-control-sm" id="sold-by-filter"
                                                 placeholder="Filter by unit">
                                         </div>
@@ -130,7 +172,7 @@ try {
                                         <th style="width: 12%; min-width: 120px;">New stock date</th>
                                         <th style="min-width: 70px;">New stock</th>
                                         <th style="min-width: 70px;">In stock</th>
-                                        <th style="width: 7%; min-width: 70px;">Sold by</th>
+                                        <th style="width: 7%; min-width: 70px;">Unit</th>
                                         <th style="width: 20%; min-width: 160px;">Name & Description</th>
                                         <th style="width: 14%; min-width: 100px;">Category</th>
                                         <th style="width: 7%; min-width: 60px;">Cost</th>
@@ -228,6 +270,29 @@ try {
     <?php require_once 'itemsAddModal.php'; ?>
     <?php require_once 'itemsEditModal.php'; ?>
     <?php require_once 'itemPrintModal.php'; ?>
+    <!-- Import CSV Modal -->
+    <div class="modal fade" id="importCsvModal" tabindex="-1" aria-labelledby="importCsvModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <form method="post" enctype="multipart/form-data">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="importCsvModalLabel">Import Items from CSV</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <label for="csv_file" class="form-label">Select CSV file</label>
+                <input type="file" class="form-control" id="csv_file" name="csv_file" accept=".csv" required>
+                <div class="form-text">CSV columns: id, stock, sold_by, name, category, cost, price</div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary">Import</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
     <script src="../../js/sidebar.js"></script>
     <script src="../../js/lowstock.js"></script>
     <script src="../../js/print_item.js"></script>
