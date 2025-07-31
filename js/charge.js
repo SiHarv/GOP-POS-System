@@ -92,6 +92,11 @@ $(document).ready(function () {
         existingItem.discount = 0;
       }
       calculateItemTotal(existingItem);
+      
+      // Move existing item to top of cart (beginning of array)
+      const itemIndex = cart.findIndex((item) => item.id === itemId);
+      const [movedItem] = cart.splice(itemIndex, 1);
+      cart.unshift(movedItem);
     } else {
       if (itemStock <= 0) {
         alert("This item is out of stock!");
@@ -110,7 +115,8 @@ $(document).ready(function () {
       // Calculate initial total (no discount)
       newItem.total = newItem.price * newItem.quantity;
 
-      cart.push(newItem);
+      // Add new item to the beginning of cart array (top position)
+      cart.unshift(newItem);
     }
 
     updateCart();
@@ -279,6 +285,11 @@ $(document).ready(function () {
         existingItem.quantity += 1;
         // Recalculate total with discount
         calculateItemTotal(existingItem);
+        
+        // Move existing item to top of cart
+        const itemIndex = cart.findIndex((item) => item.id === itemId);
+        const [movedItem] = cart.splice(itemIndex, 1);
+        cart.unshift(movedItem);
       } else {
         alert("Cannot add more of this item. Maximum stock reached.");
         return;
@@ -292,7 +303,8 @@ $(document).ready(function () {
         discount: 0, // Default 0% discount
         total: itemPrice,
       };
-      cart.push(newItem);
+      // Add new item to the beginning of cart array
+      cart.unshift(newItem);
     }
 
     updateCart();
@@ -382,43 +394,36 @@ $(document).ready(function () {
           </div>
           <div class="card-body py-2">
             <div class="row mb-2">
-              <div class="col-6">
-                <div class="input-group input-group-sm">
-                  <span class="input-group-text bg-light">Qty</span>
-                  <input type="number" class="form-control item-quantity" value="${
-                    item.quantity
-                  }" 
-                    min="1" max="${$(`.add-item[data-id="${item.id}"]`).data(
-                      "stock"
-                    )}" 
-                    data-index="${index}" data-max-stock="${$(
-        `.add-item[data-id="${item.id}"]`
-      ).data("stock")}">
+              <div class="col-12 mb-2">
+                <div class="text-end">
+                  <div class="text-muted small">Unit Price: ₱${item.price.toFixed(2)}</div>
                 </div>
               </div>
-              <div class="col-6">
-                <div class="text-end">
-                  <div class="text-muted small">Unit: ₱${item.price.toFixed(
-                    2
-                  )}</div>
-                </div>
+              <div class="col-6 pe-1">
+                <label class="form-label small mb-1">Quantity</label>
+                <input type="number" class="form-control form-control-sm item-quantity" value="${
+                  item.quantity
+                }" 
+                  min="1" max="${$(`.add-item[data-id="${item.id}"]`).data(
+                    "stock"
+                  )}" 
+                  data-index="${index}" data-max-stock="${$(
+        `.add-item[data-id="${item.id}"]`
+      ).data("stock")}">
+              </div>
+              <div class="col-6 ps-1">
+                <label class="form-label small mb-1">Discount %</label>
+                <input type="number" class="form-control form-control-sm item-discount" value="${
+                  item.discount
+                }" 
+                  min="0" max="100" data-index="${index}">
               </div>
             </div>
             
             <div class="row align-items-center mb-1">
-              <div class="col-7">
-                <div class="input-group input-group-sm">
-                  <span class="input-group-text bg-light">Disc.</span>
-                  <input type="number" class="form-control item-discount" value="${
-                    item.discount
-                  }" 
-                    min="0" max="100" data-index="${index}">
-                  <span class="input-group-text bg-light">%</span>
-                </div>
-              </div>
-              <div class="col-5">
+              <div class="col-12">
                 <div class="text-end">
-                  <strong>₱${item.total.toFixed(2)}</strong>
+                  <strong class="h6">Total: ₱${item.total.toFixed(2)}</strong>
                 </div>
               </div>
             </div>

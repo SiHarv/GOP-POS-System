@@ -119,10 +119,10 @@ $selectedCustomerName = "";
                         </div>
                         <div class="card-body">
                             <div class="mb-3">
-                                <div class="mb-3">
-                                    <label for="customer" class="form-label">Select Customer</label>
+                                <div class="mb-2">
+                                    <label for="customer" class="form-label small">Select Customer</label>
                                     <div class="dropdown">
-                                        <input type="text" class="form-control" id="customer" placeholder="Search Customer Name..." autocomplete="off" value="<?php echo htmlspecialchars($selectedCustomerName); ?>" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <input type="text" class="form-control form-control-sm" id="customer" placeholder="Search Customer Name..." autocomplete="off" value="<?php echo htmlspecialchars($selectedCustomerName); ?>" data-bs-toggle="dropdown" aria-expanded="false">
                                         <input type="hidden" id="customer_id" name="customer_id">
                                         <ul class="dropdown-menu w-100" id="customer-dropdown" style="max-height:200px; overflow-y:auto;">
                                             <?php foreach ($customers as $customer): ?>
@@ -137,22 +137,22 @@ $selectedCustomerName = "";
                                 </div>
 
                                 <!-- Add P.O. number input -->
-                                <div class="mb-3">
-                                    <label for="po_number" class="form-label">P.O. Number</label>
-                                    <input type="text" class="form-control" id="po_number" placeholder="Enter P.O. Number">
+                                <div class="mb-2">
+                                    <label for="po_number" class="form-label small">P.O. Number</label>
+                                    <input type="text" class="form-control form-control-sm" id="po_number" placeholder="Enter P.O. Number">
                                 </div>
 
-                                <div class="d-flex justify-content-end">
-                                    <button id="process-charge" class="btn btn-success">Process Charge</button>
+                                <div class="d-flex justify-content-end mb-2">
+                                    <button id="process-charge" class="btn btn-success btn-sm">Process Charge</button>
                                 </div>
                             </div>
 
-                            <div id="cart-items" class="mb-3">
+                            <div id="cart-items" class="mb-2">
                                 <!-- Cart items will be added here dynamically -->
                             </div>
 
                             <div class="total-section">
-                                <h4>Total: ₱<span id="total-amount">0.00</span></h4>
+                                <h5>Total: ₱<span id="total-amount">0.00</span></h5>
                             </div>
                         </div>
                     </div>
