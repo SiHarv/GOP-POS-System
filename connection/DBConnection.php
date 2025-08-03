@@ -2,7 +2,7 @@
 class DBConnection {
     private $host = "localhost";
     private $username = "root";
-    private $password = "";
+    private $password = "100403.dom";
     private $database = "gop_marketing_db";
     private $conn;
 

@@ -31,7 +31,8 @@ $(document).ready(function () {
                                         data-id="${item.id}"
                                         data-name="${item.name}"
                                         data-price="${item.price}"
-                                        data-stock="${item.stock}">
+                                        data-stock="${item.stock}"
+                                        data-unit="${item.unit || 'PCS'}">
                                         Add
                                     </button>`
                                     : `<button class="btn btn-sm btn-secondary" disabled>
@@ -49,14 +50,209 @@ $(document).ready(function () {
     });
   }
 
-  // Function to calculate item total with discount
+  // Update cart display
+  function updateCart() {
+    const cartContainer = $("#cart-items");
+    cartContainer.empty();
+
+    if (cart.length === 0) {
+      cartContainer.html('<p class="text-muted">Your cart is empty</p>');
+      $("#total-amount").text("0.00");
+      return;
+    }
+
+    let totalAmount = 0;
+
+    cart.forEach((item, index) => {
+      // Safety check: ensure item has total calculated
+      if (item.total === undefined || isNaN(item.total)) {
+        calculateItemTotal(item);
+      }
+
+      // Initialize customPrice if not exists
+      if (item.customPrice === undefined) {
+        item.customPrice = item.price;
+        item.isPriceEditable = false;
+      }
+
+      // Initialize unit if not exists
+      if (item.unit === undefined) {
+        item.unit = "PCS"; // Default unit
+      }
+
+      totalAmount += item.total;
+
+      const subtotal = item.customPrice * item.quantity;
+      const savings = subtotal - item.total;
+
+      const itemElement = `
+        <div class="cart-item card mb-3">
+          <div class="card-header bg-light d-flex justify-content-between align-items-center">
+            <h6 class="mb-0 px-2">${item.name}</h6>
+            <div class="d-flex align-items-center">
+              <button class="btn btn-sm btn-outline-danger remove-item" data-index="${index}">
+                <span class="iconify" data-icon="solar:trash-bin-minimalistic-outline" data-width="16"></span>
+              </button>
+            </div>
+          </div>
+          <div class="card-body py-2">
+            <div class="row mb-2">
+              <div class="col-12 mb-2">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="form-check form-switch">
+                    <input class="form-check-input price-toggle" type="checkbox" data-index="${index}" ${item.isPriceEditable ? 'checked' : ''}>
+                    <label class="form-check-label small text-muted">Edit Price</label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6 mb-2">
+                <label class="form-label small mb-1">Unit</label>
+                <input type="text" class="form-control form-control-sm item-unit" 
+                  value="${item.unit}" 
+                  data-index="${index}" 
+                  data-item-id="${item.id}"
+                  placeholder="e.g., PCS, KG, LTR">
+              </div>
+              <div class="col-6 mb-2">
+                <div class="text-end">
+                  ${item.isPriceEditable ? `
+                    <label class="form-label small mb-1">Unit Price</label>
+                    <input type="number" class="form-control form-control-sm item-custom-price" 
+                      value="${item.customPrice.toFixed(2)}" 
+                      min="0" step="0.01" data-index="${index}"
+                      placeholder="0.00">
+                    ${item.customPrice !== item.price ? 
+                      `<small class="text-muted">Original: ₱${item.price.toFixed(2)}</small>` : 
+                      ''
+                    }
+                  ` : `
+                    <label class="form-label small mb-1">Unit Price</label>
+                    <div class="text-muted small border rounded px-2 py-1">₱${item.customPrice.toFixed(2)}</div>
+                    ${item.customPrice !== item.price ? 
+                      `<small class="text-warning">Custom Price (Original: ₱${item.price.toFixed(2)})</small>` : 
+                      ''
+                    }
+                  `}
+                </div>
+              </div>
+              <div class="col-6 pe-1">
+                <label class="form-label small mb-1">Quantity</label>
+                <input type="number" class="form-control form-control-sm item-quantity" value="${
+                  item.quantity
+                }" 
+                  min="1" max="${$(`.add-item[data-id="${item.id}"]`).data(
+                    "stock"
+                  )}" 
+                  data-index="${index}" data-max-stock="${$(
+        `.add-item[data-id="${item.id}"]`
+      ).data("stock")}">
+              </div>
+              <div class="col-6 ps-1">
+                <label class="form-label small mb-1">Discount %</label>
+                <input type="number" class="form-control form-control-sm item-discount" value="${
+                  item.discount
+                }" 
+                  min="0" max="100" data-index="${index}">
+              </div>
+            </div>
+            
+            <div class="row align-items-center mb-1">
+              <div class="col-12">
+                <div class="text-end">
+                  <strong class="h6">Total: ₱${item.total.toFixed(2)}</strong>
+                </div>
+              </div>
+            </div>
+            
+            ${
+              item.discount > 0
+                ? `
+              <div class="discount-info alert alert-success py-1 px-2 mt-1 mb-0 d-flex justify-content-between align-items-center">
+                <small>You save:</small>
+                <strong>₱${savings.toFixed(2)}</strong>
+              </div>
+            `
+                : ""
+            }
+          </div>
+        </div>
+      `;
+
+      cartContainer.append(itemElement);
+    });
+
+    const discountedItems = cart.filter((item) => item.discount > 0);
+    if (discountedItems.length > 0) {
+      const totalSavings = discountedItems.reduce((sum, item) => {
+        const subtotal = item.customPrice * item.quantity;
+        return sum + (subtotal - item.total);
+      }, 0);
+
+      cartContainer.append(`
+        <div class="savings-summary alert alert-success mb-3">
+          <div class="d-flex justify-content-between">
+            <span>Total Savings:</span>
+            <strong>₱${totalSavings.toFixed(2)}</strong>
+          </div>
+        </div>
+      `);
+    }
+
+    $("#total-amount").text(totalAmount.toFixed(2));
+  }
+
+  // Handle price toggle
+  $(document).on("change", ".price-toggle", function () {
+    const index = $(this).data("index");
+    cart[index].isPriceEditable = $(this).is(":checked");
+    
+    // If toggling off, reset to original price
+    if (!cart[index].isPriceEditable) {
+      cart[index].customPrice = cart[index].price;
+      calculateItemTotal(cart[index]);
+    }
+    
+    updateCart();
+  });
+
+  // Handle custom price change
+  $(document).on("input", ".item-custom-price", function () {
+    const $input = $(this);
+    const index = $input.data("index");
+    const newPrice = parseFloat($input.val());
+
+    if (!isNaN(newPrice) && newPrice >= 0) {
+      cart[index].customPrice = newPrice;
+      
+      // Recalculate total with new price
+      calculateItemTotal(cart[index]);
+
+      // Update only the total display immediately
+      const $cartItem = $input.closest('.cart-item');
+      $cartItem.find('.h6').text(`Total: ₱${cart[index].total.toFixed(2)}`);
+      
+      // Update savings display if discount exists
+      if (cart[index].discount > 0) {
+        const subtotal = cart[index].customPrice * cart[index].quantity;
+        const savings = subtotal - cart[index].total;
+        $cartItem.find('.discount-info strong').text(`₱${savings.toFixed(2)}`);
+      }
+
+      // Update grand total immediately
+      updateGrandTotal();
+    }
+  });
+
+  // Update the calculateItemTotal function to use customPrice
   function calculateItemTotal(item) {
     // Ensure discount is a number
     if (item.discount === undefined || isNaN(parseInt(item.discount))) {
       item.discount = 0;
     }
 
-    const subtotal = parseFloat(item.price) * parseInt(item.quantity);
+    // Use customPrice if available, otherwise use original price
+    const priceToUse = item.customPrice !== undefined ? item.customPrice : item.price;
+    const subtotal = parseFloat(priceToUse) * parseInt(item.quantity);
     const discountAmount = subtotal * (parseFloat(item.discount) / 100);
     item.total = subtotal - discountAmount;
 
@@ -76,6 +272,7 @@ $(document).ready(function () {
     const itemName = button.data("name");
     const itemPrice = parseFloat(button.data("price"));
     const itemStock = parseInt(button.data("stock"));
+    const itemUnit = button.data("unit") || "PCS"; // Get unit from data attribute
 
     const existingItem = cart.find((item) => item.id === itemId);
 
@@ -107,13 +304,16 @@ $(document).ready(function () {
         id: itemId,
         name: itemName,
         price: itemPrice,
+        customPrice: itemPrice, // Initialize custom price same as original
+        isPriceEditable: false, // Default to non-editable
         quantity: 1,
         discount: 0,
+        unit: itemUnit, // Include unit
         maxStock: itemStock,
       };
 
       // Calculate initial total (no discount)
-      newItem.total = newItem.price * newItem.quantity;
+      newItem.total = newItem.customPrice * newItem.quantity;
 
       // Add new item to the beginning of cart array (top position)
       cart.unshift(newItem);
@@ -269,47 +469,6 @@ $(document).ready(function () {
   // Initial click handler setup
   $(".add-item").on("click", handleAddItem);
 
-  // Add item to cart
-  $(".add-item").on("click", function () {
-    const itemId = $(this).data("id");
-    const itemName = $(this).data("name");
-    const itemPrice = parseFloat($(this).data("price"));
-    const maxStock = parseInt($(this).data("stock"));
-
-    // Check if item already in cart
-    const existingItem = cart.find((item) => item.id === itemId);
-
-    if (existingItem) {
-      // Don't exceed available stock
-      if (existingItem.quantity < maxStock) {
-        existingItem.quantity += 1;
-        // Recalculate total with discount
-        calculateItemTotal(existingItem);
-        
-        // Move existing item to top of cart
-        const itemIndex = cart.findIndex((item) => item.id === itemId);
-        const [movedItem] = cart.splice(itemIndex, 1);
-        cart.unshift(movedItem);
-      } else {
-        alert("Cannot add more of this item. Maximum stock reached.");
-        return;
-      }
-    } else {
-      const newItem = {
-        id: itemId,
-        name: itemName,
-        price: itemPrice,
-        quantity: 1,
-        discount: 0, // Default 0% discount
-        total: itemPrice,
-      };
-      // Add new item to the beginning of cart array
-      cart.unshift(newItem);
-    }
-
-    updateCart();
-  });
-
   // Remove item from cart
   $(document).on("click", ".remove-item", function () {
     const index = $(this).data("index");
@@ -317,156 +476,135 @@ $(document).ready(function () {
     updateCart();
   });
 
-  // Update quantity
-  $(document).on("change", ".item-quantity", function () {
-    const index = $(this).data("index");
-    const newQuantity = parseInt($(this).val());
-    const maxStock = $(this).data("max-stock");
+  // Update quantity - immediate update without debouncing
+  $(document).on("input", ".item-quantity", function () {
+    const $input = $(this);
+    const index = $input.data("index");
+    const newQuantity = parseInt($input.val());
+    const maxStock = $input.data("max-stock");
 
+    // Update cart data immediately for real-time validation
     if (newQuantity < 1) {
-      $(this).val(1);
+      $input.val(1);
       cart[index].quantity = 1;
     } else if (newQuantity > maxStock) {
-      $(this).val(maxStock);
+      $input.val(maxStock);
       cart[index].quantity = maxStock;
     } else {
       cart[index].quantity = newQuantity;
     }
 
-    // Recalculate total with discount
+    // Recalculate total immediately
     calculateItemTotal(cart[index]);
-    updateCart();
+
+    // Update only the total display immediately without rebuilding entire cart
+    const $cartItem = $input.closest('.cart-item');
+    $cartItem.find('.h6').text(`Total: ₱${cart[index].total.toFixed(2)}`);
+    
+    // Update savings display if discount exists
+    if (cart[index].discount > 0) {
+      const subtotal = cart[index].price * cart[index].quantity;
+      const savings = subtotal - cart[index].total;
+      $cartItem.find('.discount-info strong').text(`₱${savings.toFixed(2)}`);
+    }
+
+    // Update grand total immediately
+    updateGrandTotal();
   });
 
-  // Handle discount change
-  $(document).on("change", ".item-discount", function () {
-    const index = $(this).data("index");
-    let discount = parseInt($(this).val());
+  // Clear default "0" when user focuses on discount input
+  $(document).on("focus", ".item-discount", function () {
+    const $input = $(this);
+    if ($input.val() === "0") {
+      $input.val("");
+    }
+  });
 
-    // Validate discount range (0-100%)
-    if (isNaN(discount) || discount < 0) {
+  // Restore "0" if user leaves discount input empty
+  $(document).on("blur", ".item-discount", function () {
+    const $input = $(this);
+    if ($input.val() === "" || $input.val() === null) {
+      $input.val("0");
+      // Trigger input event to update calculations
+      $input.trigger("input");
+    }
+  });
+
+  // Handle discount change - immediate update without debouncing
+  $(document).on("input", ".item-discount", function () {
+    const $input = $(this);
+    const index = $input.data("index");
+    let discount = parseInt($input.val());
+
+    // Allow empty input while typing
+    if ($input.val() === "") {
       discount = 0;
-      $(this).val(0);
-    } else if (discount > 100) {
-      discount = 100;
-      $(this).val(100);
+    } else {
+      // Validate discount range (0-100%)
+      if (isNaN(discount) || discount < 0) {
+        discount = 0;
+        $input.val(0);
+      } else if (discount > 100) {
+        discount = 100;
+        $input.val(100);
+      }
     }
 
     if (cart[index]) {
       cart[index].discount = discount;
       // Recalculate total with discount
       calculateItemTotal(cart[index]);
-      updateCart();
+
+      // Update only the total display immediately
+      const $cartItem = $input.closest('.cart-item');
+      $cartItem.find('.h6').text(`Total: ₱${cart[index].total.toFixed(2)}`);
+      
+      // Update or show/hide savings display
+      const subtotal = cart[index].price * cart[index].quantity;
+      const savings = subtotal - cart[index].total;
+      
+      if (discount > 0) {
+        let $discountInfo = $cartItem.find('.discount-info');
+        if ($discountInfo.length === 0) {
+          $cartItem.find('.card-body').append(`
+            <div class="discount-info alert alert-success py-1 px-2 mt-1 mb-0 d-flex justify-content-between align-items-center">
+              <small>You save:</small>
+              <strong>₱${savings.toFixed(2)}</strong>
+            </div>
+          `);
+        } else {
+          $discountInfo.find('strong').text(`₱${savings.toFixed(2)}`);
+        }
+      } else {
+        $cartItem.find('.discount-info').remove();
+      }
+
+      // Update grand total immediately
+      updateGrandTotal();
     }
   });
 
-  // Update the cart display
-  function updateCart() {
-    const cartContainer = $("#cart-items");
-    cartContainer.empty();
-
-    if (cart.length === 0) {
-      cartContainer.html('<p class="text-muted">Your cart is empty</p>');
-      $("#total-amount").text("0.00");
-      return;
-    }
-
+  // Function to update only the grand total
+  function updateGrandTotal() {
     let totalAmount = 0;
-
-    cart.forEach((item, index) => {
-      // Safety check: ensure item has total calculated
-      if (item.total === undefined || isNaN(item.total)) {
-        calculateItemTotal(item);
+    cart.forEach(item => {
+      if (item.total !== undefined && !isNaN(item.total)) {
+        totalAmount += item.total;
       }
-
-      totalAmount += item.total;
-
-      const subtotal = item.price * item.quantity;
-      const savings = subtotal - item.total;
-
-      const itemElement = `
-        <div class="cart-item card mb-3">
-          <div class="card-header bg-light d-flex justify-content-between align-items-center">
-            <h6 class="mb-0 px-3">${item.name}</h6>
-            <button class="btn btn-sm btn-outline-danger remove-item" data-index="${index}">
-              <span class="iconify" data-icon="solar:trash-bin-minimalistic-outline" data-width="16"></span>
-            </button>
-          </div>
-          <div class="card-body py-2">
-            <div class="row mb-2">
-              <div class="col-12 mb-2">
-                <div class="text-end">
-                  <div class="text-muted small">Unit Price: ₱${item.price.toFixed(2)}</div>
-                </div>
-              </div>
-              <div class="col-6 pe-1">
-                <label class="form-label small mb-1">Quantity</label>
-                <input type="number" class="form-control form-control-sm item-quantity" value="${
-                  item.quantity
-                }" 
-                  min="1" max="${$(`.add-item[data-id="${item.id}"]`).data(
-                    "stock"
-                  )}" 
-                  data-index="${index}" data-max-stock="${$(
-        `.add-item[data-id="${item.id}"]`
-      ).data("stock")}">
-              </div>
-              <div class="col-6 ps-1">
-                <label class="form-label small mb-1">Discount %</label>
-                <input type="number" class="form-control form-control-sm item-discount" value="${
-                  item.discount
-                }" 
-                  min="0" max="100" data-index="${index}">
-              </div>
-            </div>
-            
-            <div class="row align-items-center mb-1">
-              <div class="col-12">
-                <div class="text-end">
-                  <strong class="h6">Total: ₱${item.total.toFixed(2)}</strong>
-                </div>
-              </div>
-            </div>
-            
-            ${
-              item.discount > 0
-                ? `
-              <div class="discount-info alert alert-success py-1 px-2 mt-1 mb-0 d-flex justify-content-between align-items-center">
-                <small>You save:</small>
-                <strong>₱${savings.toFixed(2)}</strong>
-              </div>
-            `
-                : ""
-            }
-          </div>
-        </div>
-      `;
-
-      cartContainer.append(itemElement);
     });
+    $("#total-amount").text(totalAmount.toFixed(2));
 
+    // Update total savings
     const discountedItems = cart.filter((item) => item.discount > 0);
     if (discountedItems.length > 0) {
       const totalSavings = discountedItems.reduce((sum, item) => {
         const subtotal = item.price * item.quantity;
         return sum + (subtotal - item.total);
       }, 0);
-
-      cartContainer.append(`
-        <div class="savings-summary alert alert-success mb-3">
-          <div class="d-flex justify-content-between">
-            <span>Total Savings:</span>
-            <strong>₱${totalSavings.toFixed(2)}</strong>
-          </div>
-        </div>
-      `);
+      
+      $('.savings-summary strong').text(`₱${totalSavings.toFixed(2)}`);
     }
-
-    $("#total-amount").text(totalAmount.toFixed(2));
   }
-
-  // Initialize empty cart
-  updateCart();
 
   // Item search functionality
   $("#item-search").on("keyup", function () {
@@ -507,4 +645,67 @@ $(document).ready(function () {
       $("#no-items-found").remove();
     }
   }
+
+  // Handle unit change and update database
+  $(document).on("blur", ".item-unit", function () {
+    const $input = $(this);
+    const index = $input.data("index");
+    const itemId = $input.data("item-id");
+    const newUnit = $input.val().trim();
+
+    if (newUnit === "") {
+      $input.val("PCS"); // Default to PCS if empty
+      cart[index].unit = "PCS";
+      return;
+    }
+
+    // Update cart item
+    cart[index].unit = newUnit;
+
+    // Update database
+    $.ajax({
+      url: "../../controller/backend_charge.php",
+      method: "POST",
+      data: {
+        action: "update_item_unit",
+        item_id: itemId,
+        unit: newUnit
+      },
+      success: function (response) {
+        if (response.status === "success") {
+          // Show success indicator briefly
+          $input.removeClass("is-invalid").addClass("is-valid");
+          setTimeout(() => {
+            $input.removeClass("is-valid");
+          }, 2000);
+          
+          // Refresh items table to show updated unit
+          refreshItemsTable();
+        } else {
+          // Show error indicator
+          $input.addClass("is-invalid");
+          alert("Failed to update unit: " + (response.message || "Unknown error"));
+        }
+      },
+      error: function () {
+        $input.addClass("is-invalid");
+        alert("Error updating unit in database");
+      }
+    });
+  });
+
+  // Handle unit input validation on typing
+  $(document).on("input", ".item-unit", function () {
+    const $input = $(this);
+    const index = $input.data("index");
+    const newUnit = $input.val().trim();
+
+    // Remove validation classes while typing
+    $input.removeClass("is-valid is-invalid");
+
+    // Update cart item immediately for UI consistency
+    if (cart[index]) {
+      cart[index].unit = newUnit || "PCS";
+    }
+  });
 });

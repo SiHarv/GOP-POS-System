@@ -28,8 +28,9 @@ class ReceiptPrintController
             i.sold_by AS item_unit,
             ci.quantity,
             ci.price AS unit_price,
+            ci.custom_price,
             ci.discount_percentage,
-            (ci.quantity * ci.price * (1 - ci.discount_percentage/100)) AS subtotal
+            (ci.quantity * COALESCE(ci.custom_price, ci.price) * (1 - ci.discount_percentage/100)) AS subtotal
         FROM charges c
         JOIN customers cust ON c.customer_id = cust.id
         JOIN charge_items ci ON c.id = ci.charge_id
@@ -64,6 +65,7 @@ class ReceiptPrintController
                     'name' => $row['item_name'] ?? '',
                     'unit' => $row['item_unit'] ?? 'PCS',
                     'unit_price' => floatval($row['unit_price']),
+                    'custom_price' => $row['custom_price'] !== null ? floatval($row['custom_price']) : null,
                     'discount_percentage' => floatval($row['discount_percentage']),
                     'subtotal' => floatval($row['subtotal'])
                 ];

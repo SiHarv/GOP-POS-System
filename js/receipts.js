@@ -99,15 +99,19 @@ $(document).ready(function () {
             response.items.forEach((item) => {
               // Safely parse values with defaults
               const quantity = parseInt(item.quantity) || 0;
-              const unitPrice = parseFloat(item.unit_price) || 0;
-              const discountPercentage =
-                parseFloat(item.discount_percentage) || 0;
+              const originalPrice = parseFloat(item.unit_price) || 0;
+              const customPrice = item.custom_price !== null && item.custom_price !== undefined ? parseFloat(item.custom_price) : null;
+              const discountPercentage = parseFloat(item.discount_percentage) || 0;
               const unit = item.unit || "PCS";
               const itemName = item.name || "-";
 
+              // Use custom price if it exists and is different, otherwise use original price
+              const basePrice = customPrice !== null ? customPrice : originalPrice;
+              const isCustomPrice = customPrice !== null;
+
               // Calculate net price (discounted price)
-              const discountAmount = unitPrice * (discountPercentage / 100);
-              const netPrice = unitPrice - discountAmount;
+              const discountAmount = basePrice * (discountPercentage / 100);
+              const netPrice = basePrice - discountAmount;
               const amount = quantity * netPrice;
 
               total += amount;
@@ -115,12 +119,15 @@ $(document).ready(function () {
               // Display discount percentage properly
               const discountText = discountPercentage.toFixed(1) + "%";
 
+              // Create item name with custom price indicator if needed
+              let displayName = itemName;
+
               itemsBody.append(`
               <tr>
                 <td style="text-align: end; font-size: 14px; padding: 3px;">${quantity}</td>
                 <td style="text-align: start; font-size: 14px; padding: 3px;">${unit}</td>
-                <td style="font-size: 14px; padding: 3px;">${itemName}</td>
-                <td style="text-align: end; font-size: 14px; padding: 3px;">${unitPrice.toLocaleString(
+                <td style="font-size: 14px; padding: 3px;">${displayName}</td>
+                <td style="text-align: end; font-size: 14px; padding: 3px;">${basePrice.toLocaleString(
                   "en-US",
                   {
                     minimumFractionDigits: 2,

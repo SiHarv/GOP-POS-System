@@ -27,8 +27,8 @@ class ChargeController
 
     public function getAllItems()
     {
-        // Add stock to the SELECT statement
-        $sql = "SELECT id, name, category, stock, price FROM items ORDER BY name ASC";
+        // Use sold_by instead of unit
+        $sql = "SELECT id, name, category, stock, price, sold_by as unit FROM items ORDER BY name ASC";
         $result = $this->conn->query($sql);
         $items = [];
 
@@ -65,8 +65,8 @@ class ChargeController
 
             $chargeId = $this->conn->insert_id;
 
-            // 2. Insert charge items only (NO stock update - this will be done on print)
-            $insertItemSql = "INSERT INTO charge_items (charge_id, item_id, quantity, price, discount_percentage) VALUES (?, ?, ?, ?, ?)";
+            // 2. Insert charge items with custom price support
+            $insertItemSql = "INSERT INTO charge_items (charge_id, item_id, quantity, price, custom_price, discount_percentage) VALUES (?, ?, ?, ?, ?, ?)";
             $insertStmt = $this->conn->prepare($insertItemSql);
 
             foreach ($items as $item) {
@@ -80,14 +80,26 @@ class ChargeController
                 $discount = isset($item['discount']) && is_numeric($item['discount']) ?
                     $item['discount'] : 0;
 
-                // Insert charge item with discount
+                // Get custom price if it exists, otherwise use original price
+                $originalPrice = floatval($item['price']);
+                $customPrice = isset($item['customPrice']) && is_numeric($item['customPrice']) ? 
+                    floatval($item['customPrice']) : null;
+
+                // Only store custom price if it's different from original price
+                $priceToStore = null;
+                if ($customPrice !== null && $customPrice != $originalPrice) {
+                    $priceToStore = $customPrice;
+                }
+
+                // Insert charge item with custom price and discount
                 $insertStmt->bind_param(
-                    "iiidd",
+                    "iiiddd",
                     $chargeId,
                     $item['id'],
                     $item['quantity'],
-                    $item['price'],
-                    $discount  // Store discount percentage
+                    $originalPrice,    // Original price from database
+                    $priceToStore,     // Custom price only if different, NULL otherwise
+                    $discount          // Store discount percentage
                 );
 
                 if (!$insertStmt->execute()) {
@@ -99,6 +111,42 @@ class ChargeController
             return ['status' => 'success', 'charge_id' => $chargeId];
         } catch (Exception $e) {
             $this->conn->rollback();
+            return [
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ];
+        }
+    }
+
+    public function updateItemUnit($itemId, $unit)
+    {
+        try {
+            // Validate inputs
+            if (empty($itemId) || empty($unit)) {
+                throw new Exception("Item ID and unit are required");
+            }
+
+            // Sanitize unit input
+            $unit = trim($unit);
+            if (strlen($unit) > 20) { // Reasonable limit for unit
+                throw new Exception("Unit name is too long");
+            }
+
+            // Update the sold_by column in database
+            $sql = "UPDATE items SET sold_by = ? WHERE id = ?";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bind_param("si", $unit, $itemId);
+
+            if ($stmt->execute()) {
+                if ($stmt->affected_rows > 0) {
+                    return ['status' => 'success', 'message' => 'Unit updated successfully'];
+                } else {
+                    return ['status' => 'error', 'message' => 'Item not found or no changes made'];
+                }
+            } else {
+                throw new Exception("Failed to update unit");
+            }
+        } catch (Exception $e) {
             return [
                 'status' => 'error',
                 'message' => $e->getMessage()
@@ -118,6 +166,7 @@ class ChargeController
     }
 }
 
+// Handle AJAX requests
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     header('Content-Type: application/json');
     $controller = new ChargeController();
@@ -142,6 +191,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         case 'get_items':
             $items = $controller->getAllItems();
             echo json_encode($items);
+            break;
+
+        case 'update_item_unit':
+            $itemId = isset($_POST['item_id']) ? intval($_POST['item_id']) : 0;
+            $unit = isset($_POST['unit']) ? $_POST['unit'] : '';
+            $result = $controller->updateItemUnit($itemId, $unit);
+            echo json_encode($result);
             break;
     }
 }
