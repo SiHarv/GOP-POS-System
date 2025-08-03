@@ -1,6 +1,37 @@
 $(document).ready(function () {
   let cart = [];
 
+  // Load cart from localStorage on page load
+  function loadCartFromStorage() {
+    const savedCart = localStorage.getItem('charge_cart');
+    if (savedCart) {
+      try {
+        cart = JSON.parse(savedCart);
+        updateCart();
+      } catch (e) {
+        console.error('Error loading cart from localStorage:', e);
+        cart = [];
+      }
+    }
+  }
+
+  // Save cart to localStorage
+  function saveCartToStorage() {
+    try {
+      localStorage.setItem('charge_cart', JSON.stringify(cart));
+    } catch (e) {
+      console.error('Error saving cart to localStorage:', e);
+    }
+  }
+
+  // Clear cart from localStorage
+  function clearCartFromStorage() {
+    localStorage.removeItem('charge_cart');
+  }
+
+  // Initialize cart from localStorage when page loads
+  loadCartFromStorage();
+
   // Function to refresh items table
   function refreshItemsTable() {
     $.ajax({
@@ -212,6 +243,8 @@ $(document).ready(function () {
       calculateItemTotal(cart[index]);
     }
     
+    // Save cart to localStorage after price toggle
+    saveCartToStorage();
     updateCart();
   });
 
@@ -238,6 +271,8 @@ $(document).ready(function () {
         $cartItem.find('.discount-info strong').text(`₱${savings.toFixed(2)}`);
       }
 
+      // Save cart to localStorage after price change
+      saveCartToStorage();
       // Update grand total immediately
       updateGrandTotal();
     }
@@ -319,6 +354,8 @@ $(document).ready(function () {
       cart.unshift(newItem);
     }
 
+    // Save cart to localStorage after adding item
+    saveCartToStorage();
     updateCart();
   }
 
@@ -364,6 +401,8 @@ $(document).ready(function () {
     const item = cart.find((item) => item.id === itemId);
     if (item && item.quantity < item.maxStock) {
       item.quantity++;
+      // Save cart to localStorage after quantity change
+      saveCartToStorage();
       updateCartDisplay();
     } else {
       alert("Maximum stock limit reached!");
@@ -375,15 +414,19 @@ $(document).ready(function () {
     const item = cart.find((item) => item.id === itemId);
     if (item && item.quantity > 1) {
       item.quantity--;
+      // Save cart to localStorage after quantity change
+      saveCartToStorage();
       updateCartDisplay();
     }
   });
 
   // Remove item from cart
   $(document).on("click", ".remove-item", function () {
-    const itemId = $(this).closest(".cart-item").data("id");
-    cart = cart.filter((item) => item.id !== itemId);
-    updateCartDisplay();
+    const index = $(this).data("index");
+    cart.splice(index, 1);
+    // Save cart to localStorage after removing item
+    saveCartToStorage();
+    updateCart();
   });
 
   // No longer disable the process-charge button on customer selection
@@ -439,11 +482,14 @@ $(document).ready(function () {
             }
           });
 
-          // Clear the form
+          // Clear the form and localStorage
           cart = [];
+          clearCartFromStorage(); // Clear localStorage when charge is processed
           updateCartDisplay();
           $("#customer").val("");
           $("#po_number").val(""); // Clear P.O. Number field
+          $("#salesman").val(""); // Clear Salesman field
+          $("#customer_id").val(""); // Clear customer ID
           // Refresh the items table
           refreshItemsTable();
         } else {
@@ -468,13 +514,6 @@ $(document).ready(function () {
 
   // Initial click handler setup
   $(".add-item").on("click", handleAddItem);
-
-  // Remove item from cart
-  $(document).on("click", ".remove-item", function () {
-    const index = $(this).data("index");
-    cart.splice(index, 1);
-    updateCart();
-  });
 
   // Update quantity - immediate update without debouncing
   $(document).on("input", ".item-quantity", function () {
@@ -508,6 +547,8 @@ $(document).ready(function () {
       $cartItem.find('.discount-info strong').text(`₱${savings.toFixed(2)}`);
     }
 
+    // Save cart to localStorage after quantity change
+    saveCartToStorage();
     // Update grand total immediately
     updateGrandTotal();
   });
@@ -579,6 +620,8 @@ $(document).ready(function () {
         $cartItem.find('.discount-info').remove();
       }
 
+      // Save cart to localStorage after discount change
+      saveCartToStorage();
       // Update grand total immediately
       updateGrandTotal();
     }
@@ -656,11 +699,16 @@ $(document).ready(function () {
     if (newUnit === "") {
       $input.val("PCS"); // Default to PCS if empty
       cart[index].unit = "PCS";
+      // Save cart to localStorage after unit change
+      saveCartToStorage();
       return;
     }
 
     // Update cart item
     cart[index].unit = newUnit;
+    
+    // Save cart to localStorage after unit change
+    saveCartToStorage();
 
     // Update database
     $.ajax({
