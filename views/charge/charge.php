@@ -127,7 +127,10 @@ $selectedCustomerName = "";
                                         <ul class="dropdown-menu w-100" id="customer-dropdown" style="max-height:200px; overflow-y:auto;">
                                             <?php foreach ($customers as $customer): ?>
                                                 <li>
-                                                    <a class="dropdown-item customer-option" href="#" data-id="<?php echo $customer['id']; ?>" data-name="<?php echo htmlspecialchars($customer['name']); ?>">
+                                                    <a class="dropdown-item customer-option" href="#" 
+                                                       data-id="<?php echo $customer['id']; ?>" 
+                                                       data-name="<?php echo htmlspecialchars($customer['name']); ?>"
+                                                       data-salesman="<?php echo htmlspecialchars($customer['salesman'] ?? ''); ?>">
                                                         <?php echo htmlspecialchars($customer['name']); ?>
                                                     </a>
                                                 </li>
@@ -140,6 +143,12 @@ $selectedCustomerName = "";
                                 <div class="mb-2">
                                     <label for="po_number" class="form-label small">P.O. Number</label>
                                     <input type="text" class="form-control form-control-sm" id="po_number" placeholder="Enter P.O. Number">
+                                </div>
+
+                                <!-- Add Salesman input -->
+                                <div class="mb-2">
+                                    <label for="salesman" class="form-label small">Salesman</label>
+                                    <input type="text" class="form-control form-control-sm" id="salesman" placeholder="Enter Salesman Name">
                                 </div>
 
                                 <div class="d-flex justify-content-end mb-2">

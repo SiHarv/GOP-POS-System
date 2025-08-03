@@ -13,7 +13,7 @@ class ChargeController
 
     public function getAllCustomers()
     {
-        $sql = "SELECT id, name FROM customers ORDER BY name ASC";
+        $sql = "SELECT id, name, COALESCE(salesman, '') as salesman FROM customers ORDER BY name ASC";
         $result = $this->conn->query($sql);
         $customers = [];
 
@@ -154,6 +154,42 @@ class ChargeController
         }
     }
 
+    public function updateCustomerSalesman($customerId, $salesman)
+    {
+        try {
+            // Validate inputs
+            if (empty($customerId)) {
+                throw new Exception("Customer ID is required");
+            }
+
+            // Sanitize salesman input (allow empty string to clear salesman)
+            $salesman = trim($salesman);
+            if (strlen($salesman) > 100) { // Reasonable limit for salesman name
+                throw new Exception("Salesman name is too long");
+            }
+
+            // Update the salesman column in customers table
+            $sql = "UPDATE customers SET salesman = ? WHERE id = ?";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bind_param("si", $salesman, $customerId);
+
+            if ($stmt->execute()) {
+                if ($stmt->affected_rows > 0) {
+                    return ['status' => 'success', 'message' => 'Salesman updated successfully'];
+                } else {
+                    return ['status' => 'error', 'message' => 'Customer not found or no changes made'];
+                }
+            } else {
+                throw new Exception("Failed to update salesman");
+            }
+        } catch (Exception $e) {
+            return [
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ];
+        }
+    }
+
     private function getItemStock($itemId)
     {
         $sql = "SELECT stock FROM items WHERE id = ?";
@@ -197,6 +233,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             $itemId = isset($_POST['item_id']) ? intval($_POST['item_id']) : 0;
             $unit = isset($_POST['unit']) ? $_POST['unit'] : '';
             $result = $controller->updateItemUnit($itemId, $unit);
+            echo json_encode($result);
+            break;
+
+        case 'update_customer_salesman':
+            $customerId = isset($_POST['customer_id']) ? intval($_POST['customer_id']) : 0;
+            $salesman = isset($_POST['salesman']) ? $_POST['salesman'] : '';
+            $result = $controller->updateCustomerSalesman($customerId, $salesman);
             echo json_encode($result);
             break;
     }

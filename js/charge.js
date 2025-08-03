@@ -708,4 +708,82 @@ $(document).ready(function () {
       cart[index].unit = newUnit || "PCS";
     }
   });
+
+  // Handle customer selection and populate salesman field
+  $(document).on("click", ".customer-option", function (e) {
+    e.preventDefault();
+    const customerId = $(this).data("id");
+    const customerName = $(this).data("name");
+    const customerSalesman = $(this).data("salesman");
+
+    // Set customer name and ID
+    $("#customer").val(customerName);
+    $("#customer_id").val(customerId);
+
+    // Populate salesman field
+    $("#salesman").val(customerSalesman || "");
+
+    // Close dropdown
+    $("#customer-dropdown").removeClass("show");
+  });
+
+  // Handle salesman field update when user changes it
+  $(document).on("blur", "#salesman", function () {
+    const $input = $(this);
+    const customerId = $("#customer_id").val();
+    const newSalesman = $input.val().trim();
+
+    // Only update if customer is selected
+    if (!customerId) {
+      return;
+    }
+
+    // Update database
+    $.ajax({
+      url: "../../controller/backend_charge.php",
+      method: "POST",
+      data: {
+        action: "update_customer_salesman",
+        customer_id: customerId,
+        salesman: newSalesman
+      },
+      success: function (response) {
+        if (response.status === "success") {
+          // Show success indicator briefly
+          $input.removeClass("is-invalid").addClass("is-valid");
+          setTimeout(() => {
+            $input.removeClass("is-valid");
+          }, 2000);
+          
+          // Update the dropdown data for future selections
+          $(`.customer-option[data-id="${customerId}"]`).attr("data-salesman", newSalesman);
+        } else {
+          // Show error indicator
+          $input.addClass("is-invalid");
+          Swal.fire({
+            icon: "error",
+            title: "Update Failed",
+            text: "Failed to update salesman: " + (response.message || "Unknown error"),
+            confirmButtonColor: "#d33",
+          });
+        }
+      },
+      error: function () {
+        $input.addClass("is-invalid");
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Error updating salesman in database",
+          confirmButtonColor: "#d33",
+        });
+      }
+    });
+  });
+
+  // Handle salesman input validation on typing
+  $(document).on("input", "#salesman", function () {
+    const $input = $(this);
+    // Remove validation classes while typing
+    $input.removeClass("is-valid is-invalid");
+  });
 });
