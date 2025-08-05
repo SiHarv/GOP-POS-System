@@ -443,6 +443,19 @@ $(document).ready(function () {
       return;
     }
 
+    // Check for items with quantity 0
+    const zeroQuantityItems = cart.filter(item => item.quantity === 0);
+    if (zeroQuantityItems.length > 0) {
+      const itemNames = zeroQuantityItems.map(item => item.name).join(", ");
+      Swal.fire({
+        icon: "error",
+        title: "Invalid Quantity",
+        text: `The following items have quantity 0: ${itemNames}. Please update quantities before processing.`,
+        confirmButtonColor: "#d33",
+      });
+      return;
+    }
+
     // Get P.O. Number from input field
     const poNumber = $("#po_number").val();
     if (!poNumber || poNumber.trim() === "") {
