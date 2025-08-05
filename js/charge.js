@@ -341,7 +341,7 @@ $(document).ready(function () {
         price: itemPrice,
         customPrice: itemPrice, // Initialize custom price same as original
         isPriceEditable: false, // Default to non-editable
-        quantity: 1,
+        quantity: 0,
         discount: 0,
         unit: itemUnit, // Include unit
         maxStock: itemStock,

@@ -6,6 +6,9 @@ $(document).ready(function () {
     document.getElementById("editCustomerModal")
   );
 
+  // Track current page
+  let currentPage = 1;
+
   // Add click handler for "Add Customer" button
   $("#addCustomerBtn").on("click", function () {
     addCustomerModal.show();
@@ -18,6 +21,9 @@ $(document).ready(function () {
 
   // Function to perform search with AJAX
   function performSearch(page = 1) {
+    // Update current page tracker
+    currentPage = page;
+    
     const searchData = {
       action: 'search_customers',
       name: $('#name-filter').val(),
@@ -45,6 +51,9 @@ $(document).ready(function () {
           
           // Re-bind edit button events
           bindEditButtonEvents();
+          
+          // Re-bind delete button events
+          bindDeleteButtonEvents();
         }
       },
       error: function() {
@@ -89,6 +98,93 @@ $(document).ready(function () {
     });
   }
 
+  // Function to bind delete button events
+  function bindDeleteButtonEvents() {
+    $(document).off('click', '.delete-btn').on('click', '.delete-btn', function(e) {
+      e.preventDefault();
+      
+      const customerId = $(this).data('id');
+      const customerName = $(this).data('name');
+      
+      // Show SweetAlert confirmation dialog
+      if (typeof Swal !== 'undefined') {
+        Swal.fire({
+          title: 'Are you sure?',
+          text: `Do you want to delete "${customerName}"? This action cannot be undone.`,
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#3085d6',
+          confirmButtonText: 'Yes, delete it!',
+          cancelButtonText: 'Cancel'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            deleteCustomer(customerId, customerName);
+          }
+        });
+      } else {
+        // Fallback to native confirm if SweetAlert is not available
+        if (confirm(`Are you sure you want to delete "${customerName}"? This action cannot be undone.`)) {
+          deleteCustomer(customerId, customerName);
+        }
+      }
+    });
+  }
+
+  // Function to delete customer via AJAX
+  function deleteCustomer(customerId, customerName) {
+    $.ajax({
+      url: '../../controller/backend_customers.php',
+      method: 'POST',
+      data: {
+        action: 'delete_customer',
+        customer_id: customerId
+      },
+      dataType: 'json',
+      success: function(response) {
+        if (response.status === 'success') {
+          if (typeof Swal !== 'undefined') {
+            Swal.fire({
+              icon: 'success',
+              title: 'Deleted!',
+              text: 'Customer has been deleted successfully.',
+              confirmButtonColor: '#3085d6',
+              timer: 2000
+            });
+          } else {
+            alert('Customer deleted successfully!');
+          }
+          
+          // Refresh the table by performing a new search, staying on current page
+          performSearch(currentPage);
+        } else {
+          if (typeof Swal !== 'undefined') {
+            Swal.fire({
+              icon: 'error',
+              title: 'Delete Failed',
+              text: response.message || 'Failed to delete customer',
+              confirmButtonColor: '#d33',
+            });
+          } else {
+            alert('Failed to delete customer: ' + (response.message || 'Unknown error'));
+          }
+        }
+      },
+      error: function() {
+        if (typeof Swal !== 'undefined') {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Error occurred while deleting customer',
+            confirmButtonColor: '#d33',
+          });
+        } else {
+          alert('Error occurred while deleting customer');
+        }
+      }
+    });
+  }
+
   // Auto-search with debounce for text inputs
   let searchTimeout;
   $('#name-filter, #phone-filter, #address-filter, #salesman-filter').on('input', function() {
@@ -120,6 +216,7 @@ $(document).ready(function () {
   // Initial binding
   bindPaginationEvents();
   bindEditButtonEvents();
+  bindDeleteButtonEvents();
 
   // Handle edit form submission
   $("#editCustomerForm").submit(function (e) {
@@ -136,7 +233,8 @@ $(document).ready(function () {
       success: function (response) {
         if (response.status === "success") {
           editCustomerModal.hide();
-          window.location.reload();
+          // Refresh the table by performing a new search, staying on current page
+          performSearch(currentPage);
         } else {
           alert(
             "Error updating customer: " + (response.message || "Unknown error")
@@ -166,7 +264,8 @@ $(document).ready(function () {
           // Reset form and close modal
           $("#addCustomerForm")[0].reset();
           addCustomerModal.hide();
-          window.location.reload();
+          // For new customer, go to page 1 to see the newly added customer
+          performSearch(1);
         } else {
           alert(
             "Error adding customer: " + (response.message || "Unknown error")

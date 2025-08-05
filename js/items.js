@@ -1,6 +1,7 @@
 $(document).ready(function() {
     const editItemModal = new bootstrap.Modal(document.getElementById('editItemModal'));
     const addItemModal = new bootstrap.Modal(document.getElementById('addItemModal'));
+    let currentPage = 1;
 
     // Toggle filter section
     $("#toggle-filters").click(function() {
@@ -9,6 +10,7 @@ $(document).ready(function() {
 
     // Function to perform search with AJAX
     function performSearch(page = 1) {
+        currentPage = page; // Update current page tracker
         const searchData = {
             action: 'search_items',
             name: $('#name-filter').val(),
@@ -37,6 +39,9 @@ $(document).ready(function() {
                     
                     // Re-bind edit button events
                     bindEditButtonEvents();
+                    
+                    // Re-bind delete button events
+                    bindDeleteButtonEvents();
                 }
             },
             error: function() {
@@ -84,6 +89,93 @@ $(document).ready(function() {
         });
     }
 
+    // Function to bind delete button events
+    function bindDeleteButtonEvents() {
+        $(document).off('click', '.delete-btn').on('click', '.delete-btn', function(e) {
+            e.preventDefault();
+            
+            const itemId = $(this).data('id');
+            const itemName = $(this).data('name');
+            
+            // Show SweetAlert confirmation dialog
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: `Do you want to delete "${itemName}"? This action cannot be undone.`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        deleteItem(itemId, itemName);
+                    }
+                });
+            } else {
+                // Fallback to native confirm if SweetAlert is not available
+                if (confirm(`Are you sure you want to delete "${itemName}"? This action cannot be undone.`)) {
+                    deleteItem(itemId, itemName);
+                }
+            }
+        });
+    }
+
+    // Function to delete item via AJAX
+    function deleteItem(itemId, itemName) {
+        $.ajax({
+            url: '../../controller/backend_items.php',
+            method: 'POST',
+            data: {
+                action: 'delete_item',
+                item_id: itemId
+            },
+            dataType: 'json',
+            success: function(response) {
+                if (response.status === 'success') {
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Deleted!',
+                            text: 'Item has been deleted successfully.',
+                            confirmButtonColor: '#3085d6',
+                            timer: 2000
+                        });
+                    } else {
+                        alert('Item deleted successfully!');
+                    }
+                    
+                    // Refresh the table by performing a new search
+                    performSearch(currentPage);
+                } else {
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Delete Failed',
+                            text: response.message || 'Failed to delete item',
+                            confirmButtonColor: '#d33',
+                        });
+                    } else {
+                        alert('Failed to delete item: ' + (response.message || 'Unknown error'));
+                    }
+                }
+            },
+            error: function() {
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Error occurred while deleting item',
+                        confirmButtonColor: '#d33',
+                    });
+                } else {
+                    alert('Error occurred while deleting item');
+                }
+            }
+        });
+    }
+
     // Auto-search with debounce for text inputs
     let searchTimeout;
     $('#name-filter, #category-filter, #sold-by-filter').on('input', function() {
@@ -120,6 +212,7 @@ $(document).ready(function() {
     // Initial binding
     bindPaginationEvents();
     bindEditButtonEvents();
+    bindDeleteButtonEvents();
 
     // Handle edit form submission
     $('#editItemForm').on('submit', function(e) {
@@ -148,6 +241,7 @@ $(document).ready(function() {
                 } else {
                     alert('Error updating item: ' + response.message);
                 }
+                performSearch(currentPage); // Refresh the table
             },
             error: function(xhr, status, error) {
                 console.error("AJAX Error:", xhr.responseText);

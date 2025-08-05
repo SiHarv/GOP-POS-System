@@ -125,7 +125,7 @@ try {
                                                 <td><?php echo htmlspecialchars($customer['address']); ?></td>
                                                 <td><?php echo htmlspecialchars($customer['terms']); ?></td>
                                                 <td><?php echo htmlspecialchars($customer['salesman']); ?></td>
-                                                <td>
+                                                <td class="action-buttons">
                                                     <button class="btn btn-sm btn-link edit-btn"
                                                         data-id="<?php echo $customer['id']; ?>"
                                                         data-name="<?php echo htmlspecialchars($customer['name']); ?>"
@@ -135,6 +135,11 @@ try {
                                                         data-salesman="<?php echo htmlspecialchars($customer['salesman']); ?>">
                                                         EDIT
                                                         <!-- <span class="iconify" data-icon="solar:pen-linear" data-width="16"></span> -->
+                                                    </button>
+                                                    <button class="btn btn-sm btn-link delete-btn"
+                                                        data-id="<?php echo $customer['id']; ?>"
+                                                        data-name="<?php echo htmlspecialchars($customer['name']); ?>">
+                                                        DELETE
                                                     </button>
                                                 </td>
                                             </tr>

@@ -203,7 +203,7 @@ try {
                                                 <td><?php echo htmlspecialchars($item['category']); ?></td>
                                                 <td>₱<?php echo number_format($item['cost'], 2); ?></td>
                                                 <td>₱<?php echo number_format($item['price'], 2); ?></td>
-                                                <td>
+                                                <td class="action-buttons">
                                                     <button class="btn btn-sm btn-link edit-btn"
                                                         data-id="<?php echo $item['id']; ?>"
                                                         data-name="<?php echo htmlspecialchars($item['name']); ?>"
@@ -213,6 +213,11 @@ try {
                                                         data-cost="<?php echo $item['cost']; ?>"
                                                         data-price="<?php echo $item['price']; ?>">
                                                         EDIT
+                                                    </button>
+                                                    <button class="btn btn-sm btn-link delete-btn"
+                                                        data-id="<?php echo $item['id']; ?>"
+                                                        data-name="<?php echo htmlspecialchars($item['name']); ?>">
+                                                        DELETE
                                                     </button>
                                                 </td>
                                             </tr>

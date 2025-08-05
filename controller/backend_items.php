@@ -264,6 +264,47 @@ class ItemsController
         }
         return $items;
     }
+
+    public function deleteItem($itemId)
+    {
+        try {
+            // Validate input
+            if (empty($itemId)) {
+                throw new Exception("Item ID is required");
+            }
+
+            // Check if item exists
+            $checkSql = "SELECT id FROM items WHERE id = ?";
+            $checkStmt = $this->conn->prepare($checkSql);
+            $checkStmt->bind_param("s", $itemId);
+            $checkStmt->execute();
+            $result = $checkStmt->get_result();
+            
+            if ($result->num_rows === 0) {
+                throw new Exception("Item not found");
+            }
+
+            // Delete the item
+            $sql = "DELETE FROM items WHERE id = ?";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bind_param("s", $itemId);
+
+            if ($stmt->execute()) {
+                if ($stmt->affected_rows > 0) {
+                    return ['status' => 'success', 'message' => 'Item deleted successfully'];
+                } else {
+                    return ['status' => 'error', 'message' => 'No item was deleted'];
+                }
+            } else {
+                throw new Exception("Failed to delete item");
+            }
+        } catch (Exception $e) {
+            return [
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ];
+        }
+    }
 }
 
 // Handle AJAX requests
@@ -278,6 +319,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 break;
             case 'edit_item':
                 echo json_encode($controller->updateItem($_POST));
+                break;
+            case 'delete_item':
+                $itemId = isset($_POST['item_id']) ? $_POST['item_id'] : '';
+                $result = $controller->deleteItem($itemId);
+                echo json_encode($result);
                 break;
             case 'search_items':
                 $searchParams = [
@@ -320,7 +366,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $tableHtml .= '<td>' . htmlspecialchars($item['category']) . '</td>';
                         $tableHtml .= '<td>₱' . number_format($item['cost'], 2) . '</td>';
                         $tableHtml .= '<td>₱' . number_format($item['price'], 2) . '</td>';
-                        $tableHtml .= '<td>';
+                        $tableHtml .= '<td class="action-buttons">';
                         $tableHtml .= '<button class="btn btn-sm btn-link edit-btn" ';
                         $tableHtml .= 'data-id="' . $item['id'] . '" ';
                         $tableHtml .= 'data-name="' . htmlspecialchars($item['name']) . '" ';
@@ -330,6 +376,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $tableHtml .= 'data-cost="' . $item['cost'] . '" ';
                         $tableHtml .= 'data-price="' . $item['price'] . '">';
                         $tableHtml .= 'EDIT</button>';
+                        $tableHtml .= '<button class="btn btn-sm btn-link delete-btn" ';
+                        $tableHtml .= 'data-id="' . $item['id'] . '" ';
+                        $tableHtml .= 'data-name="' . htmlspecialchars($item['name']) . '">';
+                        $tableHtml .= 'DELETE</button>';
                         $tableHtml .= '</td>';
                         $tableHtml .= '</tr>';
                     }
