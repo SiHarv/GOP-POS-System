@@ -91,7 +91,8 @@ $selectedCustomerName = "";
                                                             data-id="<?php echo $item['id']; ?>"
                                                             data-name="<?php echo $item['name']; ?>"
                                                             data-price="<?php echo $item['price']; ?>"
-                                                            data-stock="<?php echo $item['stock']; ?>">
+                                                            data-stock="<?php echo $item['stock']; ?>"
+                                                            data-unit="<?php echo $item['unit']; ?>">
                                                             ADD
                                                             <span class="iconify" data-icon="solar:add-circle-outline" data-width="20" data-height="20"></span>
                                                         </button>

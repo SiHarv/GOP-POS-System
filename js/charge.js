@@ -63,7 +63,7 @@ $(document).ready(function () {
                                         data-name="${item.name}"
                                         data-price="${item.price}"
                                         data-stock="${item.stock}"
-                                        data-unit="${item.unit || 'PCS'}">
+                                        data-unit="${item.unit}">
                                         Add
                                     </button>`
                                     : `<button class="btn btn-sm btn-secondary" disabled>
@@ -107,8 +107,8 @@ $(document).ready(function () {
       }
 
       // Initialize unit if not exists
-      if (item.unit === undefined) {
-        item.unit = "PCS"; // Default unit
+      if (item.unit === undefined || item.unit === null || item.unit === "") {
+        item.unit = "PCS"; // Default unit only if no unit is set
       }
 
       totalAmount += item.total;
@@ -307,7 +307,7 @@ $(document).ready(function () {
     const itemName = button.data("name");
     const itemPrice = parseFloat(button.data("price"));
     const itemStock = parseInt(button.data("stock"));
-    const itemUnit = button.data("unit") || "PCS"; // Get unit from data attribute
+    const itemUnit = button.data("unit"); // Remove the fallback, trust the backend
 
     const existingItem = cart.find((item) => item.id === itemId);
 
@@ -341,13 +341,13 @@ $(document).ready(function () {
         price: itemPrice,
         customPrice: itemPrice, // Initialize custom price same as original
         isPriceEditable: false, // Default to non-editable
-        quantity: 0,
+        quantity: 1, // Set quantity to 1 instead of 0
         discount: 0,
-        unit: itemUnit, // Include unit
+        unit: itemUnit, // Use the unit from database
         maxStock: itemStock,
       };
 
-      // Calculate initial total (no discount)
+      // Calculate initial total (with quantity 1)
       newItem.total = newItem.customPrice * newItem.quantity;
 
       // Add new item to the beginning of cart array (top position)
