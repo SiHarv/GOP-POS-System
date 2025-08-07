@@ -64,7 +64,8 @@ $(document).ready(function () {
                                         data-price="${item.price}"
                                         data-stock="${item.stock}"
                                         data-unit="${item.unit}">
-                                        Add
+                                        ADD
+                                        <span class="iconify" data-icon="solar:add-circle-outline" data-width="20" data-height="20"></span>
                                     </button>`
                                     : `<button class="btn btn-sm btn-secondary" disabled>
                                         Out of Stock
@@ -108,7 +109,7 @@ $(document).ready(function () {
 
       // Initialize unit if not exists
       if (item.unit === undefined || item.unit === null || item.unit === "") {
-        item.unit = "PCS"; // Default unit only if no unit is set
+        item.unit = ""; // Default unit only if no unit is set
       }
 
       totalAmount += item.total;
@@ -339,11 +340,11 @@ $(document).ready(function () {
         id: itemId,
         name: itemName,
         price: itemPrice,
-        customPrice: itemPrice, // Initialize custom price same as original
-        isPriceEditable: false, // Default to non-editable
-        quantity: 1, // Set quantity to 1 instead of 0
+        customPrice: itemPrice,
+        isPriceEditable: false,
+        quantity: 0,
         discount: 0,
-        unit: itemUnit, // Use the unit from database
+        unit: itemUnit, 
         maxStock: itemStock,
       };
 

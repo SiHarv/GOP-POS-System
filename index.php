@@ -1,4 +1,5 @@
 <?php
+ob_start();
 session_start();
 
 // Static 6-digit PIN
@@ -356,4 +357,6 @@ if (isset($_GET['logout'])) {
     header('Location: index.php');
     exit;
 }
+
+ob_end_flush();
 ?>

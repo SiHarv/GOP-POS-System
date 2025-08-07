@@ -237,11 +237,10 @@ $(document).ready(function() {
             success: function(response) {
                 if(response.success) {
                     $('#editItemModal').modal('hide');
-                    location.reload();
+                    performSearch(currentPage);
                 } else {
                     alert('Error updating item: ' + response.message);
                 }
-                performSearch(currentPage); // Refresh the table
             },
             error: function(xhr, status, error) {
                 console.error("AJAX Error:", xhr.responseText);
@@ -269,7 +268,8 @@ $(document).ready(function() {
                 if (response.status === 'success') {
                     $('#addItemForm')[0].reset();
                     addItemModal.hide();
-                    location.reload();
+                    // For new item, go to page 1 to see the newly added item
+                    performSearch(1);
                 } else {
                     alert("Error adding item: " + (response.message || 'Unknown error'));
                 }
