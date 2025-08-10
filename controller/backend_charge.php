@@ -80,15 +80,16 @@ class ChargeController
                 $discount = isset($item['discount']) && is_numeric($item['discount']) ?
                     $item['discount'] : 0;
 
-                // Get custom price if it exists, otherwise use original price
+                // Resolve prices
                 $originalPrice = floatval($item['price']);
-                $customPrice = isset($item['customPrice']) && is_numeric($item['customPrice']) ? 
-                    floatval($item['customPrice']) : null;
-
-                // Only store custom price if it's different from original price
-                $priceToStore = null;
-                if ($customPrice !== null && $customPrice != $originalPrice) {
-                    $priceToStore = $customPrice;
+                // Default custom_price to original price to satisfy NOT NULL schema
+                $priceToStore = $originalPrice;
+                if (isset($item['customPrice']) && is_numeric($item['customPrice'])) {
+                    $customPrice = floatval($item['customPrice']);
+                    // Use custom if different
+                    if ($customPrice != $originalPrice) {
+                        $priceToStore = $customPrice;
+                    }
                 }
 
                 // Insert charge item with custom price and discount
@@ -98,7 +99,7 @@ class ChargeController
                     $item['id'],
                     $item['quantity'],
                     $originalPrice,    // Original price from database
-                    $priceToStore,     // Custom price only if different, NULL otherwise
+                    $priceToStore,     // Custom or original price (non-null)
                     $discount          // Store discount percentage
                 );
 

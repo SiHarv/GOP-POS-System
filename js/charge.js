@@ -348,8 +348,11 @@ $(document).ready(function () {
         maxStock: itemStock,
       };
 
-      // Calculate initial total (with quantity 1)
-      newItem.total = newItem.customPrice * newItem.quantity;
+      // Calculate initial total
+      const initialUnitPrice = newItem.isPriceEditable && newItem.customPrice !== undefined
+        ? newItem.customPrice
+        : newItem.price;
+      newItem.total = initialUnitPrice * newItem.quantity;
 
       // Add new item to the beginning of cart array (top position)
       cart.unshift(newItem);
