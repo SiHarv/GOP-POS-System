@@ -13,7 +13,7 @@ class CustomersController
 
     public function getAllCustomers($limit = null, $offset = 0, $searchParams = [])
     {
-        $whereConditions = [];
+        $whereConditions = ["(status IS NULL OR status = 'active')"]; // Exclude deleted customers
         $params = [];
         $types = "";
 
@@ -39,11 +39,7 @@ class CustomersController
             $types .= "s";
         }
 
-        $query = "SELECT * FROM customers";
-        
-        if (!empty($whereConditions)) {
-            $query .= " WHERE " . implode(" AND ", $whereConditions);
-        }
+        $query = "SELECT * FROM customers WHERE " . implode(" AND ", $whereConditions);
         
         $query .= " ORDER BY id DESC";
 
@@ -74,7 +70,7 @@ class CustomersController
 
     public function getTotalCustomersCount($searchParams = [])
     {
-        $whereConditions = [];
+        $whereConditions = ["(status IS NULL OR status = 'active')"]; // Exclude deleted customers
         $params = [];
         $types = "";
 
@@ -99,11 +95,7 @@ class CustomersController
             $types .= "s";
         }
 
-        $query = "SELECT COUNT(*) FROM customers";
-        
-        if (!empty($whereConditions)) {
-            $query .= " WHERE " . implode(" AND ", $whereConditions);
-        }
+        $query = "SELECT COUNT(*) FROM customers WHERE " . implode(" AND ", $whereConditions);
 
         $stmt = $this->conn->prepare($query);
         
@@ -204,25 +196,70 @@ class CustomersController
                 throw new Exception("Customer not found");
             }
 
-            // Delete the customer
-            $sql = "DELETE FROM customers WHERE id = ?";
-            $stmt = $this->conn->prepare($sql);
-            $stmt->bind_param("i", $customerId);
+            // Check if customer is referenced in charges
+            $referenceSql = "SELECT COUNT(*) as ref_count FROM charges WHERE customer_id = ?";
+            $refStmt = $this->conn->prepare($referenceSql);
+            $refStmt->bind_param("i", $customerId);
+            $refStmt->execute();
+            $refResult = $refStmt->get_result();
+            $refRow = $refResult->fetch_assoc();
 
-            if ($stmt->execute()) {
-                if ($stmt->affected_rows > 0) {
-                    return ['status' => 'success', 'message' => 'Customer deleted successfully'];
+            if ($refRow['ref_count'] > 0) {
+                // Customer is referenced in charges, so we'll mark it as deleted instead
+                // First, check if status column exists, if not add it
+                $this->ensureStatusColumn();
+                
+                $sql = "UPDATE customers SET status = 'deleted' WHERE id = ?";
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bind_param("i", $customerId);
+                
+                if ($stmt->execute()) {
+                    if ($stmt->affected_rows > 0) {
+                        return ['status' => 'success', 'message' => 'Customer deleted successfully (archived due to transaction history)'];
+                    } else {
+                        return ['status' => 'error', 'message' => 'No customer was deleted'];
+                    }
                 } else {
-                    return ['status' => 'error', 'message' => 'No customer was deleted'];
+                    throw new Exception("Failed to delete customer");
                 }
             } else {
-                throw new Exception("Failed to delete customer");
+                // Customer is not referenced, safe to delete completely
+                $sql = "DELETE FROM customers WHERE id = ?";
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bind_param("i", $customerId);
+
+                if ($stmt->execute()) {
+                    if ($stmt->affected_rows > 0) {
+                        return ['status' => 'success', 'message' => 'Customer deleted successfully'];
+                    } else {
+                        return ['status' => 'error', 'message' => 'No customer was deleted'];
+                    }
+                } else {
+                    throw new Exception("Failed to delete customer");
+                }
             }
         } catch (Exception $e) {
             return [
                 'status' => 'error',
                 'message' => $e->getMessage()
             ];
+        }
+    }
+
+    private function ensureStatusColumn()
+    {
+        try {
+            // Check if status column exists
+            $checkColumnSql = "SHOW COLUMNS FROM customers LIKE 'status'";
+            $result = $this->conn->query($checkColumnSql);
+            
+            if ($result->num_rows === 0) {
+                // Add status column if it doesn't exist
+                $addColumnSql = "ALTER TABLE customers ADD COLUMN status ENUM('active', 'deleted') DEFAULT 'active'";
+                $this->conn->query($addColumnSql);
+            }
+        } catch (Exception $e) {
+            // Column might already exist, continue
         }
     }
 }

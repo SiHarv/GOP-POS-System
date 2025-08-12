@@ -13,7 +13,10 @@ class ChargeController
 
     public function getAllCustomers()
     {
-        $sql = "SELECT id, name, COALESCE(salesman, '') as salesman FROM customers ORDER BY name ASC";
+        $sql = "SELECT id, name, COALESCE(salesman, '') as salesman 
+                FROM customers 
+                WHERE (status IS NULL OR status = 'active')
+                ORDER BY name ASC";
         $result = $this->conn->query($sql);
         $customers = [];
 
@@ -27,8 +30,11 @@ class ChargeController
 
     public function getAllItems()
     {
-        // Use sold_by instead of unit, with fallback to 'PCS' if empty
-        $sql = "SELECT id, name, category, stock, price, COALESCE(NULLIF(sold_by, ''), 'PCS') as unit FROM items ORDER BY name ASC";
+        // Use sold_by instead of unit, with fallback to 'PCS' if empty, and exclude deleted items
+        $sql = "SELECT id, name, category, stock, price, COALESCE(NULLIF(sold_by, ''), 'PCS') as unit 
+                FROM items 
+                WHERE (status IS NULL OR status = 'active')
+                ORDER BY name ASC";
         $result = $this->conn->query($sql);
         $items = [];
 
