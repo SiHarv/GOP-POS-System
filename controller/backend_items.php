@@ -18,7 +18,7 @@ class ItemsController
 
     public function getAllItems($limit = null, $offset = 0, $searchParams = [])
     {
-        $whereConditions = [];
+        $whereConditions = ["(i.status IS NULL OR i.status = 'active')"]; // Exclude deleted items
         $params = [];
         $types = "";
 
@@ -63,9 +63,7 @@ class ItemsController
                     )
                 ) h ON i.id = h.item_id";
 
-        if (!empty($whereConditions)) {
-            $query .= " WHERE " . implode(" AND ", $whereConditions);
-        }
+        $query .= " WHERE " . implode(" AND ", $whereConditions);
 
         $query .= " ORDER BY i.id DESC";
 
@@ -96,7 +94,7 @@ class ItemsController
 
     public function getTotalItemsCount($searchParams = [])
     {
-        $whereConditions = [];
+        $whereConditions = ["(i.status IS NULL OR i.status = 'active')"]; // Exclude deleted items
         $params = [];
         $types = "";
 
@@ -126,11 +124,7 @@ class ItemsController
             $types .= "i";
         }
 
-        $query = "SELECT COUNT(*) FROM items i";
-
-        if (!empty($whereConditions)) {
-            $query .= " WHERE " . implode(" AND ", $whereConditions);
-        }
+        $query = "SELECT COUNT(*) FROM items i WHERE " . implode(" AND ", $whereConditions);
 
         $stmt = $this->conn->prepare($query);
 
@@ -248,7 +242,7 @@ class ItemsController
                         GROUP BY item_id
                     )
                 ) h ON i.id = h.item_id
-                WHERE i.stock <= ?
+                WHERE i.stock <= ? AND (i.status IS NULL OR i.status = 'active')
                 ORDER BY i.stock ASC, i.id DESC";
 
         $stmt = $this->conn->prepare($query);
@@ -284,25 +278,70 @@ class ItemsController
                 throw new Exception("Item not found");
             }
 
-            // Delete the item
-            $sql = "DELETE FROM items WHERE id = ?";
-            $stmt = $this->conn->prepare($sql);
-            $stmt->bind_param("s", $itemId);
+            // Check if item is referenced in charge_items
+            $referenceSql = "SELECT COUNT(*) as ref_count FROM charge_items WHERE item_id = ?";
+            $refStmt = $this->conn->prepare($referenceSql);
+            $refStmt->bind_param("i", $itemId);
+            $refStmt->execute();
+            $refResult = $refStmt->get_result();
+            $refRow = $refResult->fetch_assoc();
 
-            if ($stmt->execute()) {
-                if ($stmt->affected_rows > 0) {
-                    return ['status' => 'success', 'message' => 'Item deleted successfully'];
+            if ($refRow['ref_count'] > 0) {
+                // Item is referenced in charges, so we'll mark it as deleted instead
+                // First, check if status column exists, if not add it
+                $this->ensureStatusColumn();
+                
+                $sql = "UPDATE items SET status = 'deleted' WHERE id = ?";
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bind_param("s", $itemId);
+                
+                if ($stmt->execute()) {
+                    if ($stmt->affected_rows > 0) {
+                        return ['status' => 'success', 'message' => 'Item deleted successfully (archived due to transaction history)'];
+                    } else {
+                        return ['status' => 'error', 'message' => 'No item was deleted'];
+                    }
                 } else {
-                    return ['status' => 'error', 'message' => 'No item was deleted'];
+                    throw new Exception("Failed to delete item");
                 }
             } else {
-                throw new Exception("Failed to delete item");
+                // Item is not referenced, safe to delete completely
+                $sql = "DELETE FROM items WHERE id = ?";
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bind_param("s", $itemId);
+
+                if ($stmt->execute()) {
+                    if ($stmt->affected_rows > 0) {
+                        return ['status' => 'success', 'message' => 'Item deleted successfully'];
+                    } else {
+                        return ['status' => 'error', 'message' => 'No item was deleted'];
+                    }
+                } else {
+                    throw new Exception("Failed to delete item");
+                }
             }
         } catch (Exception $e) {
             return [
                 'status' => 'error',
                 'message' => $e->getMessage()
             ];
+        }
+    }
+
+    private function ensureStatusColumn()
+    {
+        try {
+            // Check if status column exists
+            $checkColumnSql = "SHOW COLUMNS FROM items LIKE 'status'";
+            $result = $this->conn->query($checkColumnSql);
+            
+            if ($result->num_rows === 0) {
+                // Add status column if it doesn't exist
+                $addColumnSql = "ALTER TABLE items ADD COLUMN status ENUM('active', 'deleted') DEFAULT 'active'";
+                $this->conn->query($addColumnSql);
+            }
+        } catch (Exception $e) {
+            // Column might already exist, continue
         }
     }
 }
