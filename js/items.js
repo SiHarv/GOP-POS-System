@@ -236,6 +236,10 @@ $(document).ready(function() {
             dataType: 'json',
             success: function(response) {
                 if(response.success) {
+                    // Clear all input fields
+                    $('#edit_new_stock').val('');  // Clear new stock field
+                    
+                    // Close modal and refresh table
                     $('#editItemModal').modal('hide');
                     performSearch(currentPage);
                 } else {
