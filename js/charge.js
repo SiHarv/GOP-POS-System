@@ -184,7 +184,7 @@ $(document).ready(function () {
                 <input type="number" class="form-control form-control-sm item-discount" value="${
                   item.discount
                 }" 
-                  min="0" max="100" data-index="${index}">
+                  min="0" max="100" step="0.01" data-index="${index}">
               </div>
             </div>
             
@@ -281,8 +281,8 @@ $(document).ready(function () {
 
   // Update the calculateItemTotal function to use customPrice
   function calculateItemTotal(item) {
-    // Ensure discount is a number
-    if (item.discount === undefined || isNaN(parseInt(item.discount))) {
+    // Ensure discount is a number (allow decimals)
+    if (item.discount === undefined || isNaN(parseFloat(item.discount))) {
       item.discount = 0;
     }
 
@@ -592,7 +592,7 @@ $(document).ready(function () {
   $(document).on("input", ".item-discount", function () {
     const $input = $(this);
     const index = $input.data("index");
-    let discount = parseInt($input.val());
+    let discount = parseFloat($input.val());
 
     // Allow empty input while typing
     if ($input.val() === "") {
