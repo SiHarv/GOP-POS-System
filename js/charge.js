@@ -46,7 +46,6 @@ $(document).ready(function () {
           tbody.append(`
                         <tr>
                             <td>${item.name}</td>
-                            <td>${item.category}</td>
                             <td>${item.stock}</td>
                             <td>₱${parseFloat(item.price).toLocaleString(
                               "en-US",
@@ -681,10 +680,9 @@ $(document).ready(function () {
     $("#items-table tbody tr").each(function () {
       const row = $(this);
       const name = row.find("td:nth-child(1)").text().toLowerCase();
-      const category = row.find("td:nth-child(2)").text().toLowerCase();
 
       const matches =
-        name.includes(searchTerm) || category.includes(searchTerm);
+        name.includes(searchTerm);
 
       if (matches || searchTerm === "") {
         row.show();

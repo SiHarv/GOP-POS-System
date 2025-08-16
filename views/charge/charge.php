@@ -71,18 +71,16 @@ $selectedCustomerName = "";
                                 <table class="table table-hover" id="items-table">
                                     <thead>
                                         <tr>
-                                            <th>Name</th>
-                                            <th>Category</th>
-                                            <th>Stock</th>
-                                            <th>Price</th>
-                                            <th>Action</th>
+                                            <th style="width: 55%;">Name</th>
+                                            <th style="width: 15%;">Stock</th>
+                                            <th style="width: 15%;">Price</th>
+                                            <th style="width: 15%;">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php foreach ($items as $item): ?>
                                             <tr>
                                                 <td><?php echo $item['name']; ?></td>
-                                                <td><?php echo $item['category']; ?></td>
                                                 <td><?php echo $item['stock']; ?></td>
                                                 <td>₱<?php echo number_format($item['price'], 2); ?></td>
                                                 <td>
