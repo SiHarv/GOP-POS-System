@@ -164,7 +164,7 @@ $(document).ready(function () {
                   object-fit: contain !important;
                   padding-right: 24px;
                 }
-                !
+                
                 .receipt-header .d-flex {
                   display: flex !important;
                   justify-content: space-between !important;
