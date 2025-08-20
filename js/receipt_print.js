@@ -164,7 +164,7 @@ $(document).ready(function () {
                   object-fit: contain !important;
                   padding-right: 24px;
                 }
-                !
+                
                 .receipt-header .d-flex {
                   display: flex !important;
                   justify-content: space-between !important;
@@ -288,6 +288,10 @@ $(document).ready(function () {
                 .table th:nth-child(5), .table td:nth-child(5) { width: 35px !important; }
                 .table th:nth-child(6), .table td:nth-child(6) { width: 50px !important; }
                 .table th:nth-child(7), .table td:nth-child(7) { width: 70px !important; }
+                
+                .table tfoot { display: none !important; }
+                #receipt-items .print-total-row { display: table-row !important; }
+                tr.print-total-row { page-break-inside: avoid; break-inside: avoid; }
             }
         </style>
         `;

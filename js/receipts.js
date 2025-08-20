@@ -168,6 +168,19 @@ $(document).ready(function () {
               </tr>
             `);
             }
+            itemsBody.append(`
+              <tr class="print-total-row" style="display: none;">
+                <td colspan="6" class="text-end" style="font-size:12px; padding:3px;">
+                  <strong>Total Amount ₱:</strong>
+                </td>
+                <td style="font-size:12px; padding:3px; text-align:right;">
+                  <strong><span id="receipt-total-print-amount">${total.toLocaleString("en-US", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}</span></strong>
+                </td>
+              </tr>
+            `);
 
             $("#receipt-total").text(
               total.toLocaleString("en-US", {
