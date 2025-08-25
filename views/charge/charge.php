@@ -6,7 +6,12 @@ require_once __DIR__ . '/../../controller/backend_charge.php';
 $chargeController = new ChargeController();
 $customers = $chargeController->getAllCustomers();
 $items = $chargeController->getAllItems();
-$selectedCustomerName = "";
+
+// Retrieve stored customer data from session
+$selectedCustomerName = isset($_SESSION['charge_customer_name']) ? $_SESSION['charge_customer_name'] : "";
+$selectedCustomerId = isset($_SESSION['charge_customer_id']) ? $_SESSION['charge_customer_id'] : "";
+$selectedPoNumber = isset($_SESSION['charge_po_number']) ? $_SESSION['charge_po_number'] : "";
+$selectedSalesman = isset($_SESSION['charge_salesman']) ? $_SESSION['charge_salesman'] : "";
 ?>
 
 <!DOCTYPE html>
@@ -122,7 +127,7 @@ $selectedCustomerName = "";
                                     <label for="customer" class="form-label small">Select Customer</label>
                                     <div class="dropdown">
                                         <input type="text" class="form-control form-control-sm" id="customer" placeholder="Search Customer Name..." autocomplete="off" value="<?php echo htmlspecialchars($selectedCustomerName); ?>" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <input type="hidden" id="customer_id" name="customer_id">
+                                        <input type="hidden" id="customer_id" name="customer_id" value="<?php echo htmlspecialchars($selectedCustomerId); ?>">
                                         <ul class="dropdown-menu w-100" id="customer-dropdown" style="max-height:200px; overflow-y:auto;">
                                             <?php foreach ($customers as $customer): ?>
                                                 <li>
@@ -141,13 +146,13 @@ $selectedCustomerName = "";
                                 <!-- Add P.O. number input -->
                                 <div class="mb-2">
                                     <label for="po_number" class="form-label small">P.O. Number</label>
-                                    <input type="text" class="form-control form-control-sm" id="po_number" placeholder="Enter P.O. Number">
+                                    <input type="text" class="form-control form-control-sm" id="po_number" placeholder="Enter P.O. Number" value="<?php echo htmlspecialchars($selectedPoNumber); ?>">
                                 </div>
 
                                 <!-- Add Salesman input -->
                                 <div class="mb-2">
                                     <label for="salesman" class="form-label small">Salesman</label>
-                                    <input type="text" class="form-control form-control-sm" id="salesman" placeholder="Enter Salesman Name">
+                                    <input type="text" class="form-control form-control-sm" id="salesman" placeholder="Enter Salesman Name" value="<?php echo htmlspecialchars($selectedSalesman); ?>">
                                 </div>
 
                                 <div class="d-flex justify-content-end mb-2">
@@ -168,6 +173,48 @@ $selectedCustomerName = "";
             </div>
         </div>
     </main>
+    
+    <script>
+        // Store customer data in session when values change
+        $(document).ready(function() {
+            // Function to save data to session
+            function saveToSession() {
+                $.ajax({
+                    url: '../../controller/save_charge_session.php',
+                    method: 'POST',
+                    data: {
+                        customer_name: $('#customer').val(),
+                        customer_id: $('#customer_id').val(),
+                        po_number: $('#po_number').val(),
+                        salesman: $('#salesman').val()
+                    },
+                    dataType: 'json'
+                });
+            }
+            
+            // Save data when customer selection changes
+            $(document).on('click', '.customer-option', function() {
+                // Wait for the values to be updated then save
+                setTimeout(saveToSession, 100);
+            });
+            
+            // Save data when input fields change
+            $('#customer, #po_number, #salesman').on('blur', saveToSession);
+            
+            // Clear session data when charge is processed successfully
+            $(document).on('chargeProcessed', function() {
+                $.ajax({
+                    url: '../../controller/save_charge_session.php',
+                    method: 'POST',
+                    data: {
+                        action: 'clear'
+                    },
+                    dataType: 'json'
+                });
+            });
+        });
+    </script>
+    
     <script src="../../js/sidebar.js"></script>
     <script src="../../js/dpdown.js"></script>
 </body>

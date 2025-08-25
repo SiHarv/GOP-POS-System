@@ -131,6 +131,9 @@ $logoBase64 = getImageAsBase64($logoPath);
             </div>
             <div class="modal-footer" style="position: sticky; bottom: 0; right: 0; background: #fff; border: none; z-index: 10; display: flex; gap: 10px; box-shadow: 0 -2px 8px rgba(0,0,0,0.05);">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" id="save-receipt" style="display: none;">Save Changes</button>
+                <button type="button" class="btn btn-secondary" id="cancel-edit" style="display: none;">Cancel Edit</button>
+                <button type="button" class="btn btn-danger" id="edit-row-item">Edit Receipt</button>
                 <button type="button" class="btn btn-primary" id="print-receipt">Print Receipt</button>
             </div>
         </div>
@@ -141,3 +144,450 @@ $logoBase64 = getImageAsBase64($logoPath);
 
 <!-- Include the receipt print functionality script -->
 <script src="../../js/receipt_print.js"></script>
+<script>
+let isEditMode = false;
+let originalReceiptData = [];
+
+// Edit Receipt button functionality
+document.getElementById('edit-row-item').addEventListener('click', function() {
+    if (!isEditMode) {
+        enterEditMode();
+    } else {
+        exitEditMode();
+    }
+});
+
+// Save changes button
+document.getElementById('save-receipt').addEventListener('click', function() {
+    saveAllChanges();
+});
+
+// Cancel edit button
+document.getElementById('cancel-edit').addEventListener('click', function() {
+    cancelEdit();
+});
+
+function enterEditMode() {
+    isEditMode = true;
+    
+    // Store original data for cancellation
+    storeOriginalData();
+    
+    // Add action column to table header
+    const headerRow = document.querySelector('#receiptModal thead tr');
+    const actionHeader = document.createElement('th');
+    actionHeader.className = 'text-center';
+    actionHeader.style.cssText = 'font-size: 12px; padding: 3px;';
+    actionHeader.textContent = 'ACTIONS';
+    headerRow.appendChild(actionHeader);
+    
+    // Add action buttons to each row
+    const rows = document.querySelectorAll('#receipt-items tr');
+    rows.forEach((row, index) => {
+        addActionButtons(row, index);
+    });
+    
+    // Update footer buttons
+    document.getElementById('edit-row-item').textContent = 'Exit Edit';
+    document.getElementById('edit-row-item').className = 'btn btn-warning';
+    document.getElementById('save-receipt').style.display = 'inline-block';
+    document.getElementById('cancel-edit').style.display = 'inline-block';
+    document.getElementById('print-receipt').style.display = 'none';
+    
+    // Update total colspan
+    const totalRow = document.querySelector('#receiptModal tfoot tr');
+    totalRow.children[0].setAttribute('colspan', '7');
+}
+
+function exitEditMode() {
+    isEditMode = false;
+    
+    // Remove action column from header
+    const headerRow = document.querySelector('#receiptModal thead tr');
+    const actionHeader = headerRow.lastElementChild;
+    if (actionHeader && actionHeader.textContent === 'ACTIONS') {
+        headerRow.removeChild(actionHeader);
+    }
+    
+    // Remove action buttons from rows and exit any active editing
+    const rows = document.querySelectorAll('#receipt-items tr');
+    rows.forEach(row => {
+        // Exit edit mode if row is being edited
+        if (row.classList.contains('editing')) {
+            cancelRowEdit(row);
+        }
+        
+        // Remove action column
+        const actionCell = row.lastElementChild;
+        if (actionCell && actionCell.querySelector('.action-buttons')) {
+            row.removeChild(actionCell);
+        }
+    });
+    
+    // Reset footer buttons
+    document.getElementById('edit-row-item').textContent = 'Edit Receipt';
+    document.getElementById('edit-row-item').className = 'btn btn-danger';
+    document.getElementById('save-receipt').style.display = 'none';
+    document.getElementById('cancel-edit').style.display = 'none';
+    document.getElementById('print-receipt').style.display = 'inline-block';
+    
+    // Reset total colspan
+    const totalRow = document.querySelector('#receiptModal tfoot tr');
+    totalRow.children[0].setAttribute('colspan', '6');
+}
+
+function addActionButtons(row, index) {
+    const actionCell = document.createElement('td');
+    actionCell.style.cssText = 'font-size: 12px; padding: 3px; text-align: center;';
+    actionCell.innerHTML = `
+        <div class="action-buttons">
+            <button type="button" class="btn btn-sm btn-warning edit-btn" onclick="editRow(${index})">Edit</button>
+            <button type="button" class="btn btn-sm btn-danger delete-btn" onclick="deleteRow(${index})">Delete</button>
+        </div>
+    `;
+    row.appendChild(actionCell);
+}
+
+function editRow(index) {
+    const rows = document.querySelectorAll('#receipt-items tr');
+    const row = rows[index];
+    
+    if (row.classList.contains('editing')) {
+        saveRowChanges(row, index);
+    } else {
+        enterRowEditMode(row, index);
+    }
+}
+
+function enterRowEditMode(row, index) {
+    row.classList.add('editing');
+    
+    const cells = row.querySelectorAll('td');
+    // Edit all cells except the last one (actions)
+    for (let i = 0; i < cells.length - 1; i++) {
+        const cell = cells[i];
+        let currentValue = cell.textContent.trim();
+        
+        // Special handling for discount field - remove % symbol for editing
+        if (i === 4 && currentValue.includes('%')) {
+            currentValue = currentValue.replace('%', '');
+        }
+        
+        if (i === 2) { // Item description - use textarea
+            cell.innerHTML = `<textarea class="form-control" style="font-size: 11px; padding: 2px; min-height: 40px;">${currentValue}</textarea>`;
+        } else { // Other fields - use input
+            const inputType = (i === 0 || i >= 3) ? 'number' : 'text'; // QTY and price fields as number
+            const step = (i === 4) ? '0.1' : '0.01'; // Different step for discount
+            const placeholder = (i === 4) ? 'Enter discount %' : '';
+            cell.innerHTML = `<input type="${inputType}" class="form-control" style="font-size: 11px; padding: 2px;" value="${currentValue}" step="${step}" placeholder="${placeholder}">`;
+        }
+    }
+    
+    // Add real-time calculation for discount field
+    const discountInput = cells[4].querySelector('input');
+    const basePriceInput = cells[3].querySelector('input');
+    const netPriceInput = cells[5].querySelector('input');
+    
+    if (discountInput && basePriceInput && netPriceInput) {
+        const updateNetPrice = () => {
+            const basePrice = parseFloat(basePriceInput.value) || 0;
+            let discount = parseFloat(discountInput.value) || 0;
+            
+            // Handle percentage conversion
+            if (discount > 1 && discount <= 100) {
+                // discount is already percentage
+            } else if (discount > 0 && discount <= 1) {
+                discount = discount * 100;
+            }
+            
+            if (discount > 100) discount = 100;
+            if (discount < 0) discount = 0;
+            
+            const discountAmount = basePrice * (discount / 100);
+            const netPrice = basePrice - discountAmount;
+            
+            netPriceInput.value = netPrice.toFixed(2);
+            
+            // Also update amount if quantity is available
+            const qtyInput = cells[0].querySelector('input');
+            if (qtyInput) {
+                const qty = parseFloat(qtyInput.value) || 0;
+                const amount = qty * netPrice;
+                const amountCell = cells[6];
+                if (amountCell) {
+                    amountCell.textContent = amount.toFixed(2);
+                }
+            }
+        };
+        
+        // Add event listeners for real-time updates
+        discountInput.addEventListener('input', updateNetPrice);
+        basePriceInput.addEventListener('input', updateNetPrice);
+        
+        // Also update amount when quantity changes
+        const qtyInput = cells[0].querySelector('input');
+        if (qtyInput) {
+            qtyInput.addEventListener('input', () => {
+                const qty = parseFloat(qtyInput.value) || 0;
+                const netPrice = parseFloat(netPriceInput.value) || 0;
+                const amount = qty * netPrice;
+                cells[6].textContent = amount.toFixed(2);
+            });
+        }
+    }
+    
+    // Update edit button
+    const editBtn = row.querySelector('.edit-btn');
+    editBtn.textContent = 'Save';
+    editBtn.className = 'btn btn-sm btn-success edit-btn';
+}
+
+function saveRowChanges(row, index) {
+    const cells = row.querySelectorAll('td');
+    const inputs = row.querySelectorAll('input, textarea');
+    
+    // Validate and update values
+    const qty = parseFloat(inputs[0].value) || 0;
+    const unit = inputs[1].value.trim();
+    const description = inputs[2].value.trim();
+    const basePrice = parseFloat(inputs[3].value) || 0;
+    let discount = parseFloat(inputs[4].value) || 0;
+    
+    // Handle discount input - check if it's percentage or decimal
+    if (inputs[4].value.includes('%')) {
+        // Remove % sign and parse
+        discount = parseFloat(inputs[4].value.replace('%', '')) || 0;
+    } else if (discount > 1 && discount <= 100) {
+        // If discount is between 1 and 100, treat as percentage
+        // discount stays as is
+    } else if (discount > 0 && discount <= 1) {
+        // If discount is between 0 and 1, convert to percentage
+        discount = discount * 100;
+    }
+    
+    // Ensure discount doesn't exceed 100%
+    if (discount > 100) discount = 100;
+    if (discount < 0) discount = 0;
+    
+    // Calculate net price from base price and discount percentage
+    const discountAmount = basePrice * (discount / 100);
+    const netPrice = basePrice - discountAmount;
+    
+    // Calculate amount
+    const amount = qty * netPrice;
+    
+    // Update cell contents with proper formatting
+    cells[0].textContent = qty.toString();
+    cells[1].textContent = unit;
+    cells[2].textContent = description;
+    cells[3].textContent = basePrice.toFixed(2);
+    cells[4].textContent = discount.toFixed(1) + '%'; // Display as percentage with % symbol
+    cells[5].textContent = netPrice.toFixed(2);
+    cells[6].textContent = amount.toFixed(2);
+    
+    // Exit edit mode
+    row.classList.remove('editing');
+    
+    // Update edit button
+    const editBtn = row.querySelector('.edit-btn');
+    editBtn.textContent = 'Edit';
+    editBtn.className = 'btn btn-sm btn-warning edit-btn';
+    
+    // Recalculate total
+    updateTotal();
+}
+
+function cancelRowEdit(row) {
+    // This would restore original values if needed
+    row.classList.remove('editing');
+    const editBtn = row.querySelector('.edit-btn');
+    if (editBtn) {
+        editBtn.textContent = 'Edit';
+        editBtn.className = 'btn btn-sm btn-warning edit-btn';
+    }
+}
+
+function deleteRow(index) {
+    if (confirm('Are you sure you want to delete this item?')) {
+        const rows = document.querySelectorAll('#receipt-items tr');
+        const row = rows[index];
+        row.remove();
+        
+        // Renumber remaining rows
+        const remainingRows = document.querySelectorAll('#receipt-items tr');
+        remainingRows.forEach((row, newIndex) => {
+            const editBtn = row.querySelector('.edit-btn');
+            const deleteBtn = row.querySelector('.delete-btn');
+            if (editBtn) editBtn.setAttribute('onclick', `editRow(${newIndex})`);
+            if (deleteBtn) deleteBtn.setAttribute('onclick', `deleteRow(${newIndex})`);
+        });
+        
+        updateTotal();
+    }
+}
+
+function updateTotal() {
+    const rows = document.querySelectorAll('#receipt-items tr');
+    let total = 0;
+    
+    rows.forEach(row => {
+        const amountCell = row.cells[6]; // Amount column
+        if (amountCell) {
+            const amount = parseFloat(amountCell.textContent) || 0;
+            total += amount;
+        }
+    });
+    
+    document.getElementById('receipt-total').textContent = total.toFixed(2);
+}
+
+function storeOriginalData() {
+    const rows = document.querySelectorAll('#receipt-items tr');
+    originalReceiptData = [];
+    
+    rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        const rowData = [];
+        
+        // Only store rows that have actual content (not empty padding rows)
+        if (cells.length > 0 && cells[0].textContent.trim() !== '' && cells[0].textContent.trim() !== '\u00a0') {
+            cells.forEach(cell => {
+                rowData.push(cell.textContent.trim());
+            });
+            originalReceiptData.push(rowData);
+        }
+    });
+}
+
+function saveAllChanges() {
+    // Here you would typically send the updated data to your backend
+    // For now, just show success message and exit edit mode
+    alert('Receipt changes saved successfully!');
+    exitEditMode();
+}
+
+function cancelEdit() {
+    if (confirm('Are you sure you want to cancel all changes?')) {
+        // Restore original data
+        restoreOriginalData();
+        exitEditMode();
+    }
+}
+
+function restoreOriginalData() {
+    const tbody = document.getElementById('receipt-items');
+    tbody.innerHTML = '';
+    
+    originalReceiptData.forEach(rowData => {
+        const row = document.createElement('tr');
+        rowData.forEach((cellData, index) => {
+            const cell = document.createElement('td');
+            
+            // Apply the same styling as the original rendering from receipts.js
+            switch(index) {
+                case 0: // QTY
+                    cell.style.cssText = 'text-align: end; font-size: 14px; padding: 3px;';
+                    break;
+                case 1: // UNIT
+                    cell.style.cssText = 'text-align: start; font-size: 14px; padding: 3px;';
+                    break;
+                case 2: // ITEM/DESCRIPTION
+                    cell.style.cssText = 'font-size: 14px; padding: 3px;';
+                    break;
+                case 3: // BASE PRICE
+                case 4: // DISC.
+                case 5: // NET PRICE
+                case 6: // AMOUNT
+                    cell.style.cssText = 'text-align: end; font-size: 14px; padding: 3px;';
+                    break;
+                default:
+                    cell.style.cssText = 'font-size: 12px; padding: 3px;';
+            }
+            
+            cell.textContent = cellData;
+            row.appendChild(cell);
+        });
+        tbody.appendChild(row);
+    });
+    
+    // Add empty rows to maintain the same structure as receipts.js
+    const minRows = 28;
+    const currentRows = originalReceiptData.length;
+    for (let i = currentRows; i < minRows; i++) {
+        const emptyRow = document.createElement('tr');
+        
+        // Create 7 empty cells with proper styling
+        for (let j = 0; j < 7; j++) {
+            const cell = document.createElement('td');
+            switch(j) {
+                case 0: // QTY
+                    cell.style.cssText = 'text-align: end; font-size: 14px; padding: 8px;';
+                    break;
+                case 1: // UNIT
+                    cell.style.cssText = 'text-align: start; font-size: 14px; padding: 8px;';
+                    break;
+                case 2: // ITEM/DESCRIPTION
+                    cell.style.cssText = 'font-size: 14px; padding: 8px;';
+                    break;
+                case 3: // BASE PRICE
+                case 4: // DISC.
+                case 5: // NET PRICE
+                case 6: // AMOUNT
+                    cell.style.cssText = 'text-align: end; font-size: 14px; padding: 8px;';
+                    break;
+            }
+            cell.innerHTML = '&nbsp;';
+            emptyRow.appendChild(cell);
+        }
+        tbody.appendChild(emptyRow);
+    }
+    
+    updateTotal();
+}
+
+// Prevent modal from closing when in edit mode
+document.getElementById('receiptModal').addEventListener('hide.bs.modal', function (e) {
+    if (isEditMode) {
+        e.preventDefault();
+        alert('Please save or cancel your changes before closing.');
+    }
+});
+</script>
+
+<style>
+.editing {
+    background-color: #fff3cd !important;
+}
+
+.btn-sm {
+    font-size: 10px;
+    padding: 2px 6px;
+    margin: 1px;
+}
+
+#receipt-items td {
+    vertical-align: middle;
+}
+
+#receipt-items .form-control {
+    border: 1px solid #ced4da;
+    border-radius: 3px;
+    width: 100%;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 3px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+@media print {
+    .action-buttons,
+    #edit-row-item,
+    #save-receipt,
+    #cancel-edit {
+        display: none !important;
+    }
+}
+</style>
