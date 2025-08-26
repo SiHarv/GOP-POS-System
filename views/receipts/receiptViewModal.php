@@ -279,9 +279,43 @@ function enterRowEditMode(row, index) {
             const inputType = (i === 0 || i >= 3) ? 'number' : 'text'; // QTY and price fields as number
             const step = (i === 4) ? '0.1' : '0.01'; // Different step for discount
             const placeholder = (i === 4) ? 'Enter discount %' : '';
-            cell.innerHTML = `<input type="${inputType}" class="form-control" style="font-size: 11px; padding: 2px;" value="${currentValue}" step="${step}" placeholder="${placeholder}">`;
+            
+            // For quantity field, add stock validation attributes
+            let additionalAttributes = '';
+            if (i === 0) { // Quantity field
+                additionalAttributes = 'min="0.1" data-original-qty="' + currentValue + '"';
+            }
+            
+            cell.innerHTML = `<input type="${inputType}" class="form-control" style="font-size: 11px; padding: 2px;" value="${currentValue}" step="${step}" placeholder="${placeholder}" ${additionalAttributes}>`;
         }
     }
+    
+    // Get current stock for this item and add validation
+    const itemDescription = cells[2].textContent.trim();
+    getItemStock(itemDescription).then(stockData => {
+        if (stockData.success) {
+            const qtyInput = cells[0].querySelector('input');
+            if (qtyInput) {
+                const originalQty = parseFloat(qtyInput.getAttribute('data-original-qty')) || 0;
+                const availableStock = stockData.stock + originalQty; // Add back the original quantity
+                
+                qtyInput.setAttribute('max', availableStock);
+                qtyInput.setAttribute('title', `Maximum available: ${availableStock}`);
+                
+                // Add real-time validation
+                qtyInput.addEventListener('input', function() {
+                    const enteredQty = parseFloat(this.value) || 0;
+                    if (enteredQty > availableStock) {
+                        this.setCustomValidity(`Quantity cannot exceed available stock (${availableStock})`);
+                        this.style.borderColor = '#dc3545';
+                    } else {
+                        this.setCustomValidity('');
+                        this.style.borderColor = '#ced4da';
+                    }
+                });
+            }
+        }
+    });
     
     // Add real-time calculation for discount field
     const discountInput = cells[4].querySelector('input');
@@ -346,8 +380,25 @@ function saveRowChanges(row, index) {
     const cells = row.querySelectorAll('td');
     const inputs = row.querySelectorAll('input, textarea');
     
+    // Validate quantity before saving
+    const qtyInput = inputs[0];
+    const enteredQty = parseFloat(qtyInput.value) || 0;
+    const maxStock = parseFloat(qtyInput.getAttribute('max')) || 0;
+    
+    if (enteredQty > maxStock) {
+        alert(`Quantity (${enteredQty}) cannot exceed available stock (${maxStock})`);
+        qtyInput.focus();
+        return; // Don't save if validation fails
+    }
+    
+    if (enteredQty <= 0) {
+        alert('Quantity must be greater than 0');
+        qtyInput.focus();
+        return;
+    }
+    
     // Validate and update values
-    const qty = parseFloat(inputs[0].value) || 0;
+    const qty = enteredQty;
     const unit = inputs[1].value.trim();
     const description = inputs[2].value.trim();
     const basePrice = parseFloat(inputs[3].value) || 0;
@@ -460,10 +511,85 @@ function storeOriginalData() {
 }
 
 function saveAllChanges() {
-    // Here you would typically send the updated data to your backend
-    // For now, just show success message and exit edit mode
-    alert('Receipt changes saved successfully!');
-    exitEditMode();
+    // Collect all current receipt data
+    const rows = document.querySelectorAll('#receipt-items tr');
+    const items = [];
+    
+    rows.forEach(row => {
+        const cells = row.cells;
+        // Only include rows with actual data (not empty rows)
+        if (cells.length >= 7 && cells[0].textContent.trim() !== '' && cells[0].textContent.trim() !== '\u00a0') {
+            items.push({
+                qty: cells[0].textContent.trim(),
+                unit: cells[1].textContent.trim(),
+                description: cells[2].textContent.trim(),
+                basePrice: cells[3].textContent.trim(),
+                discount: cells[4].textContent.trim(),
+                netPrice: cells[5].textContent.trim(),
+                amount: cells[6].textContent.trim()
+            });
+        }
+    });
+    
+    if (items.length === 0) {
+        alert('No items to save');
+        return;
+    }
+    
+    // Get current receipt ID
+    const receiptId = document.getElementById('receipt-id').textContent;
+    
+    if (!receiptId) {
+        alert('Receipt ID not found');
+        return;
+    }
+    
+    // Show loading state
+    const saveBtn = document.getElementById('save-receipt');
+    const originalText = saveBtn.textContent;
+    saveBtn.textContent = 'Saving...';
+    saveBtn.disabled = true;
+    
+    // Send updated data to backend
+    $.ajax({
+        url: '../../controller/backend_receipts.php',
+        method: 'POST',
+        data: {
+            action: 'update_receipt',
+            receipt_id: receiptId,
+            items: JSON.stringify(items)
+        },
+        dataType: 'json',
+        success: function(response) {
+            if (response.success) {
+                alert('Receipt changes saved successfully!\n\nNote: Stock will be deducted when the receipt is printed/finalized.');
+                
+                // Update the receipt total if returned
+                if (response.total_price) {
+                    document.getElementById('receipt-total').textContent = parseFloat(response.total_price).toFixed(2);
+                }
+                
+                // Exit edit mode
+                exitEditMode();
+                
+                // Store the new data as original for future cancellations
+                storeOriginalData();
+                
+            } else {
+                alert('Error saving receipt: ' + (response.message || 'Unknown error'));
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('AJAX Error:', error);
+            console.error('Response:', xhr.responseText);
+            alert('Error saving receipt. Please check the console for details.');
+        },
+        complete: function() {
+            // Restore button state
+            saveBtn.textContent = originalText;
+            saveBtn.disabled = false;
+        }
+    });
 }
 
 function cancelEdit() {
@@ -545,6 +671,25 @@ function restoreOriginalData() {
     updateTotal();
 }
 
+// Function to get current stock for an item
+async function getItemStock(itemName) {
+    try {
+        const response = await $.ajax({
+            url: '../../controller/backend_receipts.php',
+            method: 'POST',
+            data: {
+                action: 'get_item_stock',
+                item_name: itemName
+            },
+            dataType: 'json'
+        });
+        return response;
+    } catch (error) {
+        console.error('Error getting item stock:', error);
+        return { success: false, stock: 0 };
+    }
+}
+
 // Prevent modal from closing when in edit mode
 document.getElementById('receiptModal').addEventListener('hide.bs.modal', function (e) {
     if (isEditMode) {
@@ -589,5 +734,49 @@ document.getElementById('receiptModal').addEventListener('hide.bs.modal', functi
     #cancel-edit {
         display: none !important;
     }
+    
+    /* Print header that repeats on every page */
+    .print-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 120px;
+        background: white;
+        z-index: 999;
+        border-bottom: 1px solid #000;
+        padding: 10px;
+        display: block !important;
+    }
+    
+    /* Hide the original header on print */
+    .receipt-header {
+        display: none !important;
+    }
+    
+    /* Add top margin to content to account for fixed header */
+    .modal-body {
+        margin-top: 130px !important;
+        padding-top: 0 !important;
+    }
+    
+    /* Ensure page breaks work properly */
+    .receipt-details {
+        page-break-inside: avoid;
+    }
+    
+    table {
+        page-break-inside: auto;
+    }
+    
+    tr {
+        page-break-inside: avoid;
+        page-break-after: auto;
+    }
+}
+
+/* Hidden print header - only visible when printing */
+.print-header {
+    display: none;
 }
 </style>

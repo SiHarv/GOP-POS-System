@@ -141,6 +141,134 @@ class ReceiptsController
         $printController = new ReceiptPrintController();
         return $printController->getReceiptDetails($id);
     }
+    
+    public function updateReceiptItems($receiptId, $items) {
+        try {
+            $this->conn->begin_transaction();
+            
+            // Check if receipt is already finalized
+            $checkSql = "SELECT finalized FROM charges WHERE id = ?";
+            $checkStmt = $this->conn->prepare($checkSql);
+            $checkStmt->bind_param("i", $receiptId);
+            $checkStmt->execute();
+            $checkResult = $checkStmt->get_result();
+            $receiptData = $checkResult->fetch_assoc();
+
+            // Don't allow editing if receipt is already finalized
+            if ($receiptData && $receiptData['finalized'] == 1) {
+                return [
+                    'success' => false,
+                    'message' => 'Cannot edit finalized receipt. Stock has already been deducted.'
+                ];
+            }
+            
+            // Delete existing charge items for this receipt
+            $deleteStmt = $this->conn->prepare("DELETE FROM charge_items WHERE charge_id = ?");
+            $deleteStmt->bind_param("i", $receiptId);
+            $deleteStmt->execute();
+            
+            // Insert updated items - NO STOCK ADJUSTMENTS during editing
+            $insertStmt = $this->conn->prepare("
+                INSERT INTO charge_items (charge_id, item_id, quantity, price, discount_percentage) 
+                VALUES (?, ?, ?, ?, ?)
+            ");
+            
+            $totalAmount = 0;
+            
+            foreach ($items as $item) {
+                // Find item_id by name
+                $itemId = $this->getItemIdByName($item['description']);
+                
+                if ($itemId) {
+                    // Calculate values
+                    $quantity = floatval($item['qty']);
+                    $basePrice = floatval($item['basePrice']);
+                    $discountPercent = floatval(str_replace('%', '', $item['discount']));
+                    $amount = floatval($item['amount']);
+                    
+                    // Insert charge item - Stock will be deducted only when finalizing/printing
+                    $insertStmt->bind_param("iiddd", $receiptId, $itemId, $quantity, $basePrice, $discountPercent);
+                    $insertStmt->execute();
+                    
+                    $totalAmount += $amount;
+                }
+            }
+            
+            // Update charge total
+            $updateChargeStmt = $this->conn->prepare("
+                UPDATE charges SET total_price = ? 
+                WHERE id = ?
+            ");
+            $updateChargeStmt->bind_param("di", $totalAmount, $receiptId);
+            $updateChargeStmt->execute();
+            
+            $this->conn->commit();
+            
+            return [
+                'success' => true,
+                'message' => 'Receipt updated successfully. Stock will be deducted when receipt is printed/finalized.',
+                'total_price' => $totalAmount
+            ];
+            
+        } catch (Exception $e) {
+            $this->conn->rollback();
+            return [
+                'success' => false,
+                'message' => 'Error updating receipt: ' . $e->getMessage()
+            ];
+        }
+    }
+    
+    private function getOriginalReceiptItems($receiptId) {
+        $stmt = $this->conn->prepare("
+            SELECT ci.*, i.name as item_name 
+            FROM charge_items ci 
+            JOIN items i ON ci.item_id = i.id 
+            WHERE ci.charge_id = ?
+        ");
+        $stmt->bind_param("i", $receiptId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+    
+    private function getItemIdByName($itemName) {
+        $stmt = $this->conn->prepare("SELECT id FROM items WHERE name = ? LIMIT 1");
+        $stmt->bind_param("s", $itemName);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        return $row ? $row['id'] : null;
+    }
+    
+    public function getItemStock($itemName) {
+        try {
+            $stmt = $this->conn->prepare("SELECT stock FROM items WHERE name = ? LIMIT 1");
+            $stmt->bind_param("s", $itemName);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $row = $result->fetch_assoc();
+            
+            if ($row) {
+                return [
+                    'success' => true,
+                    'stock' => floatval($row['stock'])
+                ];
+            } else {
+                return [
+                    'success' => false,
+                    'message' => 'Item not found',
+                    'stock' => 0
+                ];
+            }
+        } catch (Exception $e) {
+            return [
+                'success' => false,
+                'message' => 'Error getting item stock: ' . $e->getMessage(),
+                'stock' => 0
+            ];
+        }
+    }
 }
 
 // Handle AJAX requests
@@ -151,6 +279,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     if ($_POST['action'] === 'get_details' && isset($_POST['id'])) {
         $result = $controller->getReceiptDetails($_POST['id']);
         echo json_encode($result);
+        exit;
+    }
+    
+    if ($_POST['action'] === 'update_receipt') {
+        $receiptId = $_POST['receipt_id'] ?? '';
+        $items = json_decode($_POST['items'], true) ?? [];
+        
+        if ($receiptId && !empty($items)) {
+            $result = $controller->updateReceiptItems($receiptId, $items);
+            echo json_encode($result);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Invalid input data']);
+        }
+        exit;
+    }
+    
+    if ($_POST['action'] === 'get_item_stock') {
+        $itemName = $_POST['item_name'] ?? '';
+        
+        if ($itemName) {
+            $result = $controller->getItemStock($itemName);
+            echo json_encode($result);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Item name required', 'stock' => 0]);
+        }
         exit;
     }
     
@@ -183,7 +336,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 $tableHtml .= '<td>' . (!empty($receipt['po_number']) ? $receipt['po_number'] : '-') . '</td>';
                 $tableHtml .= '<td>₱' . number_format($receipt['total_price'], 2) . '</td>';
                 $tableHtml .= '<td>' . date('M d, Y h:i A', strtotime($receipt['charge_date'])) . '</td>';
-                $tableHtml .= '<td><button class="btn btn-sm btn-link view-receipt" data-id="' . $receipt['id'] . '">View</button></td>';
+                $tableHtml .= '<td><button class="btn btn-link view-receipt" data-id="' . $receipt['id'] . '">View</button></td>';
                 $tableHtml .= '</tr>';
             }
         }
