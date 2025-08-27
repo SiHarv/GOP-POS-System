@@ -128,6 +128,11 @@ $logoBase64 = getImageAsBase64($logoPath);
                 <div class="footer text-center mt-4">
                     <small style="font-style: italic; font-size: 14px">This is a computer-generated receipt</small>
                 </div>
+                
+                <!-- Print page footer for page numbering -->
+                <div class="print-page-footer" style="display: none;">
+                    <span id="page-number-display">Receipt #<span id="receipt-number-footer"></span> | Page 1</span>
+                </div>
             </div>
             <div class="modal-footer" style="position: sticky; bottom: 0; right: 0; background: #fff; border: none; z-index: 10; display: flex; gap: 10px; box-shadow: 0 -2px 8px rgba(0,0,0,0.05);">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -697,6 +702,36 @@ document.getElementById('receiptModal').addEventListener('hide.bs.modal', functi
         alert('Please save or cancel your changes before closing.');
     }
 });
+
+// Update the receipt number in footer when receipt is loaded
+function updateReceiptFooter() {
+    const receiptNumber = document.getElementById('receipt-id').textContent || 'N/A';
+    const footerElement = document.getElementById('receipt-number-footer');
+    if (footerElement) {
+        footerElement.textContent = receiptNumber;
+    }
+}
+
+// Call this function whenever receipt data is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Observer to watch for changes in receipt-id
+    const receiptIdElement = document.getElementById('receipt-id');
+    if (receiptIdElement) {
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'childList' || mutation.type === 'characterData') {
+                    updateReceiptFooter();
+                }
+            });
+        });
+        
+        observer.observe(receiptIdElement, {
+            childList: true,
+            subtree: true,
+            characterData: true
+        });
+    }
+});
 </script>
 
 <style>
@@ -773,10 +808,29 @@ document.getElementById('receiptModal').addEventListener('hide.bs.modal', functi
         page-break-inside: avoid;
         page-break-after: auto;
     }
+    
+    /* Show page footer only on print */
+    .print-page-footer {
+        display: block !important;
+    }
+    
+    /* Hide screen footer on print if needed */
+    .footer {
+        margin-top: 20px !important;
+        text-align: center !important;
+        font-size: 11px !important;
+        flex-shrink: 0 !important;
+        margin-bottom: 0.5in !important;
+    }
 }
 
 /* Hidden print header - only visible when printing */
 .print-header {
+    display: none;
+}
+
+/* Hidden print page footer - only visible when printing */
+.print-page-footer {
     display: none;
 }
 </style>

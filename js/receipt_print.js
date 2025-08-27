@@ -102,17 +102,30 @@ $(document).ready(function () {
 
   // Function to actually print the receipt
   function printReceipt() {
+    // Get receipt number for page identification
+    const receiptNumber = document.getElementById('receipt-id').textContent || 'N/A';
+    
     // Inject print-specific CSS styles
     const printStyles = `
         <style>
             @media print {
                 @page {
-                  margin: 0.5in !important;
+                  margin: 0.5in 0.5in 0.8in 0.5in !important;
                   size: A4 !important;
                   @top-left { content: ""; }
                   @top-center { content: ""; }
                   @top-right { content: ""; }
-                  @bottom-center { content: ""; }
+                  @bottom-center { 
+                    content: "Receipt #${receiptNumber} | Page " counter(page) " of " counter(pages);
+                    font-size: 11px;
+                    font-family: Arial, sans-serif;
+                    color: #666;
+                  }
+                }
+                
+                /* Initialize page counter */
+                body {
+                  counter-reset: page;
                 }
                 
                 /* Hide default browser print elements */
@@ -138,9 +151,32 @@ $(document).ready(function () {
                 body {
                   box-sizing: border-box !important;
                   border: none !important;
-                  min-height: calc(100vh - 1.5in) !important;
+                  min-height: calc(100vh - 1.8in) !important;
                   display: flex !important;
                   flex-direction: column !important;
+                  padding-bottom: 0.3in !important;
+                }
+                
+                /* Page break handling */
+                .page-break {
+                  page-break-before: always !important;
+                }
+                
+                .no-page-break {
+                  page-break-inside: avoid !important;
+                }
+                
+                /* Alternative footer for browsers that don't support @page bottom-center */
+                .print-page-footer {
+                  position: fixed !important;
+                  bottom: 0.3in !important;
+                  left: 0 !important;
+                  right: 0 !important;
+                  text-align: center !important;
+                  font-size: 11px !important;
+                  color: #666 !important;
+                  z-index: 1000 !important;
+                  background: white !important;
                 }
                 
                 .receipt-header {
@@ -296,16 +332,22 @@ $(document).ready(function () {
     const printContents = document.getElementById("printable-area").innerHTML;
     const originalContents = document.body.innerHTML;
 
+    // Update the fallback footer content with receipt number
+    const updatedPrintContents = printContents.replace(
+      '<span id="page-number-display"></span>',
+      `<span id="page-number-display">Receipt #${receiptNumber} | Page 1</span>`
+    );
+
     // Create a complete HTML document with styles for printing
     const printDocument = `
         <!DOCTYPE html>
         <html>
         <head>
-            <title>Receipt Print</title>
+            <title>Receipt #${receiptNumber} Print</title>
             ${printStyles}
         </head>
         <body>
-            ${printContents}
+            ${updatedPrintContents}
         </body>
         </html>
         `;
