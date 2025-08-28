@@ -1,12 +1,32 @@
 $(document).ready(function () {
   let cart = [];
 
+  // Optimized cart storage - only store essential data
+  function getOptimizedCartData() {
+    return cart.map(item => ({
+      id: item.id,
+      name: item.name,
+      price: item.price,
+      customPrice: item.customPrice || item.price,
+      isPriceEditable: item.isPriceEditable || false,
+      quantity: item.quantity,
+      discount: item.discount || 0,
+      unit: item.unit || '',
+      total: item.total
+    }));
+  }
+
   // Load cart from localStorage on page load
   function loadCartFromStorage() {
     const savedCart = localStorage.getItem('charge_cart');
     if (savedCart) {
       try {
-        cart = JSON.parse(savedCart);
+        const parsedCart = JSON.parse(savedCart);
+        // Restore cart with minimal data and recalculate what's needed
+        cart = parsedCart.map(item => ({
+          ...item,
+          maxStock: getItemStock(item.id) // Get fresh stock data
+        }));
         updateCart();
       } catch (e) {
         console.error('Error loading cart from localStorage:', e);
@@ -15,13 +35,29 @@ $(document).ready(function () {
     }
   }
 
-  // Save cart to localStorage
+  // Optimized save cart to localStorage - compress data
   function saveCartToStorage() {
     try {
-      localStorage.setItem('charge_cart', JSON.stringify(cart));
+      const optimizedData = getOptimizedCartData();
+      localStorage.setItem('charge_cart', JSON.stringify(optimizedData));
     } catch (e) {
       console.error('Error saving cart to localStorage:', e);
+      // If storage is full, try to clear and save again
+      if (e.name === 'QuotaExceededError') {
+        localStorage.removeItem('charge_cart');
+        try {
+          localStorage.setItem('charge_cart', JSON.stringify(optimizedData));
+        } catch (e2) {
+          console.error('Still failed after clearing:', e2);
+        }
+      }
     }
+  }
+
+  // Helper function to get current stock for an item
+  function getItemStock(itemId) {
+    const $itemButton = $(`.add-item[data-id="${itemId}"]`);
+    return $itemButton.length ? parseInt($itemButton.data("stock")) : 0;
   }
 
   // Clear cart from localStorage
@@ -81,7 +117,7 @@ $(document).ready(function () {
     });
   }
 
-  // Update cart display
+  // Optimized update cart display - reduce DOM manipulation
   function updateCart() {
     const cartContainer = $("#cart-items");
     cartContainer.empty();
@@ -93,6 +129,7 @@ $(document).ready(function () {
     }
 
     let totalAmount = 0;
+    const fragment = document.createDocumentFragment(); // Use document fragment for better performance
 
     cart.forEach((item, index) => {
       // Safety check: ensure item has total calculated
@@ -108,7 +145,7 @@ $(document).ready(function () {
 
       // Initialize unit if not exists
       if (item.unit === undefined || item.unit === null || item.unit === "") {
-        item.unit = ""; // Default unit only if no unit is set
+        item.unit = "";
       }
 
       totalAmount += item.total;
@@ -116,101 +153,92 @@ $(document).ready(function () {
       const subtotal = item.customPrice * item.quantity;
       const savings = subtotal - item.total;
 
-      const itemElement = `
-        <div class="cart-item card mb-3">
-          <div class="card-header bg-light d-flex justify-content-between align-items-center">
-            <h6 class="mb-0 px-2">${item.name}</h6>
-            <div class="d-flex align-items-center">
-              <button class="btn btn-sm btn-outline-danger remove-item" data-index="${index}">
-                <span class="iconify" data-icon="solar:trash-bin-minimalistic-outline" data-width="16"></span>
-              </button>
+      // Create element without jQuery for better performance
+      const itemDiv = document.createElement('div');
+      itemDiv.className = 'cart-item card mb-3';
+      itemDiv.innerHTML = `
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+          <h6 class="mb-0 px-2">${item.name}</h6>
+          <div class="d-flex align-items-center">
+            <button class="btn btn-sm btn-outline-danger remove-item" data-index="${index}">
+              <span class="iconify" data-icon="solar:trash-bin-minimalistic-outline" data-width="16"></span>
+            </button>
+          </div>
+        </div>
+        <div class="card-body py-2">
+          <div class="row mb-2">
+            <div class="col-12 mb-2">
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="form-check form-switch">
+                  <input class="form-check-input price-toggle" type="checkbox" data-index="${index}" ${item.isPriceEditable ? 'checked' : ''}>
+                  <label class="form-check-label small text-muted">Edit Price</label>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 mb-2">
+              <label class="form-label small mb-1">Unit</label>
+              <input type="text" class="form-control form-control-sm item-unit" 
+                value="${item.unit}" 
+                data-index="${index}" 
+                data-item-id="${item.id}"
+                placeholder="e.g., PCS, KG, LTR">
+            </div>
+            <div class="col-6 mb-2">
+              <div class="text-end">
+                ${item.isPriceEditable ? `
+                  <label class="form-label small mb-1">Unit Price</label>
+                  <input type="number" class="form-control form-control-sm item-custom-price" 
+                    value="${item.customPrice.toFixed(2)}" 
+                    min="0" step="0.01" data-index="${index}"
+                    placeholder="0.00">
+                  ${item.customPrice !== item.price ? 
+                    `<small class="text-muted">Original: ₱${item.price.toFixed(2)}</small>` : 
+                    ''
+                  }
+                ` : `
+                  <label class="form-label small mb-1">Unit Price</label>
+                  <div class="text-muted small border rounded px-2 py-1">₱${item.customPrice.toFixed(2)}</div>
+                  ${item.customPrice !== item.price ? 
+                    `<small class="text-warning">Custom Price (Original: ₱${item.price.toFixed(2)})</small>` : 
+                    ''
+                  }
+                `}
+              </div>
+            </div>
+            <div class="col-6 pe-1">
+              <label class="form-label small mb-1">Quantity</label>
+              <input type="number" class="form-control form-control-sm item-quantity" value="${item.quantity}" 
+                min="1" max="${getItemStock(item.id)}" 
+                data-index="${index}" data-max-stock="${getItemStock(item.id)}">
+            </div>
+            <div class="col-6 ps-1">
+              <label class="form-label small mb-1">Discount %</label>
+              <input type="number" class="form-control form-control-sm item-discount" value="${item.discount}" 
+                min="0" max="100" step="0.01" data-index="${index}">
             </div>
           </div>
-          <div class="card-body py-2">
-            <div class="row mb-2">
-              <div class="col-12 mb-2">
-                <div class="d-flex justify-content-between align-items-center">
-                  <div class="form-check form-switch">
-                    <input class="form-check-input price-toggle" type="checkbox" data-index="${index}" ${item.isPriceEditable ? 'checked' : ''}>
-                    <label class="form-check-label small text-muted">Edit Price</label>
-                  </div>
-                </div>
-              </div>
-              <div class="col-6 mb-2">
-                <label class="form-label small mb-1">Unit</label>
-                <input type="text" class="form-control form-control-sm item-unit" 
-                  value="${item.unit}" 
-                  data-index="${index}" 
-                  data-item-id="${item.id}"
-                  placeholder="e.g., PCS, KG, LTR">
-              </div>
-              <div class="col-6 mb-2">
-                <div class="text-end">
-                  ${item.isPriceEditable ? `
-                    <label class="form-label small mb-1">Unit Price</label>
-                    <input type="number" class="form-control form-control-sm item-custom-price" 
-                      value="${item.customPrice.toFixed(2)}" 
-                      min="0" step="0.01" data-index="${index}"
-                      placeholder="0.00">
-                    ${item.customPrice !== item.price ? 
-                      `<small class="text-muted">Original: ₱${item.price.toFixed(2)}</small>` : 
-                      ''
-                    }
-                  ` : `
-                    <label class="form-label small mb-1">Unit Price</label>
-                    <div class="text-muted small border rounded px-2 py-1">₱${item.customPrice.toFixed(2)}</div>
-                    ${item.customPrice !== item.price ? 
-                      `<small class="text-warning">Custom Price (Original: ₱${item.price.toFixed(2)})</small>` : 
-                      ''
-                    }
-                  `}
-                </div>
-              </div>
-              <div class="col-6 pe-1">
-                <label class="form-label small mb-1">Quantity</label>
-                <input type="number" class="form-control form-control-sm item-quantity" value="${
-                  item.quantity
-                }" 
-                  min="1" max="${$(`.add-item[data-id="${item.id}"]`).data(
-                    "stock"
-                  )}" 
-                  data-index="${index}" data-max-stock="${$(
-        `.add-item[data-id="${item.id}"]`
-      ).data("stock")}">
-              </div>
-              <div class="col-6 ps-1">
-                <label class="form-label small mb-1">Discount %</label>
-                <input type="number" class="form-control form-control-sm item-discount" value="${
-                  item.discount
-                }" 
-                  min="0" max="100" step="0.01" data-index="${index}">
+          
+          <div class="row align-items-center mb-1">
+            <div class="col-12">
+              <div class="text-end">
+                <strong class="h6">Total: ₱${item.total.toFixed(2)}</strong>
               </div>
             </div>
-            
-            <div class="row align-items-center mb-1">
-              <div class="col-12">
-                <div class="text-end">
-                  <strong class="h6">Total: ₱${item.total.toFixed(2)}</strong>
-                </div>
-              </div>
-            </div>
-            
-            ${
-              item.discount > 0
-                ? `
-              <div class="discount-info alert alert-success py-1 px-2 mt-1 mb-0 d-flex justify-content-between align-items-center">
-                <small>You save:</small>
-                <strong>₱${savings.toFixed(2)}</strong>
-              </div>
-            `
-                : ""
-            }
           </div>
+          
+          ${item.discount > 0 ? `
+            <div class="discount-info alert alert-success py-1 px-2 mt-1 mb-0 d-flex justify-content-between align-items-center">
+              <small>You save:</small>
+              <strong>₱${savings.toFixed(2)}</strong>
+            </div>
+          ` : ""}
         </div>
       `;
 
-      cartContainer.append(itemElement);
+      fragment.appendChild(itemDiv);
     });
+
+    cartContainer.append(fragment);
 
     const discountedItems = cart.filter((item) => item.discount > 0);
     if (discountedItems.length > 0) {
@@ -232,6 +260,15 @@ $(document).ready(function () {
     $("#total-amount").text(totalAmount.toFixed(2));
   }
 
+  // Debounced save function to reduce localStorage writes
+  let saveTimeout;
+  function debouncedSave() {
+    clearTimeout(saveTimeout);
+    saveTimeout = setTimeout(() => {
+      saveCartToStorage();
+    }, 300); // Save after 300ms of inactivity
+  }
+
   // Handle price toggle
   $(document).on("change", ".price-toggle", function () {
     const index = $(this).data("index");
@@ -243,8 +280,7 @@ $(document).ready(function () {
       calculateItemTotal(cart[index]);
     }
     
-    // Save cart to localStorage after price toggle
-    saveCartToStorage();
+    debouncedSave(); // Use debounced save
     updateCart();
   });
 
@@ -271,8 +307,7 @@ $(document).ready(function () {
         $cartItem.find('.discount-info strong').text(`₱${savings.toFixed(2)}`);
       }
 
-      // Save cart to localStorage after price change
-      saveCartToStorage();
+      debouncedSave(); // Use debounced save
       // Update grand total immediately
       updateGrandTotal();
     }
@@ -300,14 +335,14 @@ $(document).ready(function () {
     return item.total;
   }
 
-  // Move add-item click handler to separate function
+  // Move add-item click handler to separate function - optimized
   function handleAddItem() {
     const button = $(this);
     const itemId = button.data("id");
     const itemName = button.data("name");
     const itemPrice = parseFloat(button.data("price"));
     const itemStock = parseInt(button.data("stock"));
-    const itemUnit = button.data("unit"); // Remove the fallback, trust the backend
+    const itemUnit = button.data("unit");
 
     const existingItem = cart.find((item) => item.id === itemId);
 
@@ -334,31 +369,25 @@ $(document).ready(function () {
         alert("This item is out of stock!");
         return;
       }
-      // Create new item with proper initialization of all fields
+      // Create new item with minimal data structure
       const newItem = {
         id: itemId,
         name: itemName,
         price: itemPrice,
         customPrice: itemPrice,
         isPriceEditable: false,
-        quantity: 0,
+        quantity: 1,
         discount: 0,
-        unit: itemUnit, 
+        unit: itemUnit || '',
         maxStock: itemStock,
+        total: itemPrice // Initial total
       };
-
-      // Calculate initial total
-      const initialUnitPrice = newItem.isPriceEditable && newItem.customPrice !== undefined
-        ? newItem.customPrice
-        : newItem.price;
-      newItem.total = initialUnitPrice * newItem.quantity;
 
       // Add new item to the beginning of cart array (top position)
       cart.unshift(newItem);
     }
 
-    // Save cart to localStorage after adding item
-    saveCartToStorage();
+    debouncedSave(); // Use debounced save
     updateCart();
   }
 
@@ -427,8 +456,7 @@ $(document).ready(function () {
   $(document).on("click", ".remove-item", function () {
     const index = $(this).data("index");
     cart.splice(index, 1);
-    // Save cart to localStorage after removing item
-    saveCartToStorage();
+    debouncedSave(); // Use debounced save
     updateCart();
   });
 
@@ -476,9 +504,9 @@ $(document).ready(function () {
       method: "POST",
       data: {
         action: "process_charge",
-        customer_id: $("#customer_id").val(), // <-- Use the hidden input for customer ID
-        items: cart,
-        po_number: poNumber, // Include P.O. number in the request
+        customer_id: $("#customer_id").val(),
+        items: getOptimizedCartData(), // Send optimized data
+        po_number: poNumber,
       },
       success: function (response) {
         if (response.status === "success") {
@@ -500,7 +528,7 @@ $(document).ready(function () {
 
           // Clear the form and localStorage
           cart = [];
-          clearCartFromStorage(); // Clear localStorage when charge is processed
+          clearCartFromStorage();
           updateCartDisplay();
           $("#customer").val("");
           $("#po_number").val(""); // Clear P.O. Number field
@@ -531,7 +559,7 @@ $(document).ready(function () {
   // Initial click handler setup
   $(".add-item").on("click", handleAddItem);
 
-  // Update quantity - immediate update without debouncing
+  // Update quantity - optimized with debounced save
   $(document).on("input", ".item-quantity", function () {
     const $input = $(this);
     const index = $input.data("index");
@@ -563,8 +591,7 @@ $(document).ready(function () {
       $cartItem.find('.discount-info strong').text(`₱${savings.toFixed(2)}`);
     }
 
-    // Save cart to localStorage after quantity change
-    saveCartToStorage();
+    debouncedSave(); // Use debounced save
     // Update grand total immediately
     updateGrandTotal();
   });
@@ -587,7 +614,7 @@ $(document).ready(function () {
     }
   });
 
-  // Handle discount change - immediate update without debouncing
+  // Handle discount change - optimized with debounced save
   $(document).on("input", ".item-discount", function () {
     const $input = $(this);
     const index = $input.data("index");
@@ -636,8 +663,7 @@ $(document).ready(function () {
         $cartItem.find('.discount-info').remove();
       }
 
-      // Save cart to localStorage after discount change
-      saveCartToStorage();
+      debouncedSave(); // Use debounced save
       // Update grand total immediately
       updateGrandTotal();
     }
@@ -704,7 +730,7 @@ $(document).ready(function () {
     }
   }
 
-  // Handle unit change and update database
+  // Handle unit change and update database - optimized
   $(document).on("blur", ".item-unit", function () {
     const $input = $(this);
     const index = $input.data("index");
@@ -712,18 +738,16 @@ $(document).ready(function () {
     const newUnit = $input.val().trim();
 
     if (newUnit === "") {
-      $input.val("PCS"); // Default to PCS if empty
+      $input.val("PCS");
       cart[index].unit = "PCS";
-      // Save cart to localStorage after unit change
-      saveCartToStorage();
+      debouncedSave(); // Use debounced save
       return;
     }
 
     // Update cart item
     cart[index].unit = newUnit;
     
-    // Save cart to localStorage after unit change
-    saveCartToStorage();
+    debouncedSave(); // Use debounced save
 
     // Update database
     $.ajax({
