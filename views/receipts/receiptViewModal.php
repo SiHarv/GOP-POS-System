@@ -157,9 +157,8 @@ let originalReceiptData = [];
 document.getElementById('edit-row-item').addEventListener('click', function() {
     if (!isEditMode) {
         enterEditMode();
-    } else {
-        exitEditMode();
     }
+    // Removed exit edit functionality - button will be disabled in edit mode
 });
 
 // Save changes button
@@ -192,9 +191,9 @@ function enterEditMode() {
         addActionButtons(row, index);
     });
     
-    // Update footer buttons
-    document.getElementById('edit-row-item').textContent = 'Exit Edit';
-    document.getElementById('edit-row-item').className = 'btn btn-warning';
+    // Update footer buttons - disable edit button instead of changing text
+    document.getElementById('edit-row-item').disabled = true;
+    document.getElementById('edit-row-item').style.opacity = '0.5';
     document.getElementById('save-receipt').style.display = 'inline-block';
     document.getElementById('cancel-edit').style.display = 'inline-block';
     document.getElementById('print-receipt').style.display = 'none';
@@ -229,9 +228,9 @@ function exitEditMode() {
         }
     });
     
-    // Reset footer buttons
-    document.getElementById('edit-row-item').textContent = 'Edit Receipt';
-    document.getElementById('edit-row-item').className = 'btn btn-danger';
+    // Reset footer buttons - re-enable edit button
+    document.getElementById('edit-row-item').disabled = false;
+    document.getElementById('edit-row-item').style.opacity = '1';
     document.getElementById('save-receipt').style.display = 'none';
     document.getElementById('cancel-edit').style.display = 'none';
     document.getElementById('print-receipt').style.display = 'inline-block';
