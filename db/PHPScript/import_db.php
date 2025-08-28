@@ -5,7 +5,7 @@ ini_set('display_errors', 1);
 class DatabaseImporter {
     private $host = 'localhost';
     private $username = 'root';
-    private $password = '100403.dom'; // Updated password
+    private $password = ''; // Updated password
     private $database = 'gop_marketing_db';
     private $conn;
 
