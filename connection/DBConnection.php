@@ -1,8 +1,8 @@
 <?php
 class DBConnection {
-    private $host = "127.0.0.1";
+    private $host = "localhost";
     private $username = "root";
-    private $password = "100403.dom";
+    private $password = "";
     private $database = "gop_marketing_db";
     private $conn;
 
