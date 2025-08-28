@@ -110,7 +110,7 @@ $(document).ready(function () {
         <style>
             @media print {
                 @page {
-                  margin: 0.5in 0.5in 0.8in 0.5in !important;
+                  margin: 0.5in !important;
                   size: A4 !important;
                   @top-left { content: ""; }
                   @top-center { content: ""; }

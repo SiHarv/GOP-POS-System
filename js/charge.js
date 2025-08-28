@@ -376,7 +376,7 @@ $(document).ready(function () {
         price: itemPrice,
         customPrice: itemPrice,
         isPriceEditable: false,
-        quantity: 1,
+        quantity: 0,
         discount: 0,
         unit: itemUnit || '',
         maxStock: itemStock,
