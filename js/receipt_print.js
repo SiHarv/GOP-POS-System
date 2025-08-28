@@ -272,7 +272,7 @@ $(document).ready(function () {
                 
                 .table tfoot td {
                   border-top: 1px solid #000000 !important;
-                  font-weight: bold !important;
+                  font-weight: !important;
                   padding: 2px 2px !important;
                 }
                
