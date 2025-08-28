@@ -300,7 +300,6 @@ $(document).ready(function () {
                   font-weight: bold !important;
                 }
                 
-                
                 .text-center { text-align: center !important; }
                 .text-start { text-align: left !important; }
                 .text-end { text-align: right !important; }

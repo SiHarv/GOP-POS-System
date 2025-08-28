@@ -120,8 +120,8 @@ $logoBase64 = getImageAsBase64($logoPath);
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="6" class="text-end" style="font-size:12px; padding: 3px;"><strong>Total Amount ₱:</strong></td>
-                            <td style="font-size:12px; padding: 3px; position: relative;"><strong><span style="position: absolute; left: 6px;"></span><span id="receipt-total" style="display: block; text-align: right;"></span></strong></td>
+                            <td colspan="6" class="text-end" style="font-size:10px; padding: 3px;">Total Amount ₱:</td>
+                            <td style="font-size:10px; padding: 3px; position: relative;"><span style="position: absolute; left: 6px;"></span><span id="receipt-total" style="display: block; text-align: right;"></span></td>
                         </tr>
                     </tfoot>
                 </table>
