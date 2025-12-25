@@ -1,0 +1,156 @@
+/* Comparative Analytics Styling */
+.comparative-analytics-container {
+    padding: 0;
+    margin: 0;
+}
+
+.comparative-analytics-container .comparison-card {
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
+    border-left: 4px solid #3b82f6;
+}
+
+.comparative-analytics-container .comparison-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.comparative-analytics-container .comparison-card .card-body {
+    padding: 1.5rem;
+}
+
+.comparative-analytics-container .comparison-card .card-title {
+    font-size: 1.75rem;
+    font-weight: bold;
+    margin: 0;
+    color: #1e293b;
+}
+
+.comparative-analytics-container .comparison-card .card-subtitle {
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.comparative-analytics-container .growth-indicator {
+    font-size: 0.875rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.comparative-analytics-container .growth-indicator .iconify {
+    font-size: 1rem;
+}
+
+.comparative-analytics-container .btn-check:checked + .btn-outline-primary {
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+}
+
+.comparative-analytics-container .card {
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    margin-bottom: 1.5rem;
+    width: 100%;
+}
+
+.comparative-analytics-container .card-header {
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    border-radius: 10px 10px 0 0 !important;
+    font-weight: 600;
+    color: #1e293b;
+    padding: 1rem 1.5rem;
+}
+
+.comparative-analytics-container .card-header h5 {
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+.comparative-analytics-container .card-body {
+    padding: 1.5rem;
+}
+
+.comparative-analytics-container .table {
+    margin-bottom: 0;
+}
+
+.comparative-analytics-container .table th {
+    background: #f8fafc;
+    font-weight: 600;
+    color: #475569;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 1rem;
+    white-space: nowrap;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.comparative-analytics-container .table td {
+    padding: 1rem;
+    vertical-align: middle;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.comparative-analytics-container .table tbody tr:hover {
+    background: #f1f5f9;
+}
+
+.comparative-analytics-container .form-label {
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    color: #475569;
+}
+
+.comparative-analytics-container .form-select,
+.comparative-analytics-container .form-control {
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    padding: 0.625rem 0.875rem;
+}
+
+.comparative-analytics-container .form-select:focus,
+.comparative-analytics-container .form-control:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.comparative-analytics-container .btn {
+    border-radius: 8px;
+    padding: 0.625rem 1.25rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.comparative-analytics-container .btn-primary {
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+}
+
+.comparative-analytics-container .btn-primary:hover {
+    background-color: #2563eb;
+    border-color: #2563eb;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .comparative-analytics-container .comparison-card .card-title {
+        font-size: 1.5rem;
+    }
+    
+    .comparative-analytics-container .table {
+        font-size: 0.875rem;
+    }
+    
+    .comparative-analytics-container .table th,
+    .comparative-analytics-container .table td {
+        padding: 0.75rem 0.5rem;
+    }
+}

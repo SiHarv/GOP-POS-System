@@ -4,6 +4,8 @@
     <div class="row mb-3">
         <div class="col-md-6">
             <div class="btn-group" role="group">
+                <input type="radio" class="btn-check" name="categoryPeriod" id="categoryDaily" value="daily">
+                <label class="btn btn-outline-primary" for="categoryDaily">Daily</label>
                 <input type="radio" class="btn-check" name="categoryPeriod" id="categoryWeekly" value="weekly">
                 <label class="btn btn-outline-primary" for="categoryWeekly">Weekly</label>
                 <input type="radio" class="btn-check" name="categoryPeriod" id="categoryMonthly" value="monthly" checked>
@@ -24,10 +26,24 @@
         </div>
         <div class="col-md-3" id="weekSelectCategory" style="display: none;">
             <select class="form-select" id="categoryWeekSelect">
-                <?php for ($w = 1; $w <= 52; $w++): ?>
-                    <option value="<?= $w ?>">Week <?= $w ?></option>
+                <?php 
+                $currentYear = date('Y');
+                $currentWeek = date('W');
+                for ($w = 1; $w <= 52; $w++): 
+                    $dto = new DateTime();
+                    $dto->setISODate($currentYear, $w);
+                    $weekStart = $dto->format('M d');
+                    $dto->modify('+6 days');
+                    $weekEnd = $dto->format('M d');
+                ?>
+                    <option value="<?= $w ?>" <?= $w == $currentWeek ? 'selected' : '' ?>>
+                        Week <?= $w ?> (<?= $weekStart ?> - <?= $weekEnd ?>)
+                    </option>
                 <?php endfor; ?>
             </select>
+        </div>
+        <div class="col-md-3" id="dateSelectCategory" style="display: none;">
+            <input type="date" class="form-control" id="categoryDateSelect" value="<?= date('Y-m-d') ?>">
         </div>
     </div>
     <div class="analytics-table-container">

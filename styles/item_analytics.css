@@ -1,7 +1,27 @@
+/* Remove padding from container and analytics table container */
+.item-analytics-container {
+    padding: 0;
+    margin: 0;
+}
+
+.item-analytics-container .analytics-table-container {
+    padding: 0;
+    margin: 0;
+}
+
+.item-analytics-container .analytics-table-container .row {
+    margin: 0;
+}
+
+.item-analytics-container .analytics-table-container .col-md-12 {
+    padding: 0;
+}
+
 .item-analytics-container .card {
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     margin-bottom: 1.5rem;
+    width: 100%;
 }
 .item-analytics-container .card-header {
     background: #f8fafc;
@@ -10,6 +30,71 @@
     font-weight: 600;
     color: #1e293b;
 }
+
+/* Fixed table layout for consistent column widths */
+.item-analytics-container #itemsTable {
+    table-layout: fixed;
+    width: 100%;
+    margin: 0;
+}
+
+/* Define specific column widths */
+.item-analytics-container #itemsTable th:nth-child(1), /* Rank */
+.item-analytics-container #itemsTable td:nth-child(1) {
+    width: 5%;
+    text-align: center;
+}
+
+.item-analytics-container #itemsTable th:nth-child(2), /* Item Name */
+.item-analytics-container #itemsTable td:nth-child(2) {
+    width: 20%;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.item-analytics-container #itemsTable th:nth-child(3), /* Category */
+.item-analytics-container #itemsTable td:nth-child(3) {
+    width: 12%;
+}
+
+.item-analytics-container #itemsTable th:nth-child(4), /* Qty Sold */
+.item-analytics-container #itemsTable td:nth-child(4) {
+    width: 8%;
+    text-align: center;
+}
+
+.item-analytics-container #itemsTable th:nth-child(5), /* Cost */
+.item-analytics-container #itemsTable td:nth-child(5) {
+    width: 10%;
+    text-align: right;
+}
+
+.item-analytics-container #itemsTable th:nth-child(6), /* Price */
+.item-analytics-container #itemsTable td:nth-child(6) {
+    width: 10%;
+    text-align: right;
+}
+
+.item-analytics-container #itemsTable th:nth-child(7), /* Gross Sales */
+.item-analytics-container #itemsTable td:nth-child(7) {
+    width: 13%;
+    text-align: right;
+}
+
+.item-analytics-container #itemsTable th:nth-child(8), /* Profit */
+.item-analytics-container #itemsTable td:nth-child(8) {
+    width: 12%;
+    text-align: right;
+}
+
+.item-analytics-container #itemsTable th:nth-child(9), /* Profit % */
+.item-analytics-container #itemsTable td:nth-child(9) {
+    width: 10%;
+    text-align: right;
+}
+
 .item-analytics-container .table th {
     background: #f8fafc;
     font-weight: 600;
@@ -18,6 +103,7 @@
     text-transform: uppercase;
     letter-spacing: 0.05em;
     padding: 1rem;
+    white-space: nowrap;
 }
 .item-analytics-container .table td {
     padding: 1rem;

@@ -4,6 +4,8 @@
     <div class="row mb-3">
         <div class="col-md-6">
             <div class="btn-group" role="group">
+                <input type="radio" class="btn-check" name="itemPeriod" id="itemDaily" value="daily">
+                <label class="btn btn-outline-primary" for="itemDaily">Daily</label>
                 <input type="radio" class="btn-check" name="itemPeriod" id="itemWeekly" value="weekly">
                 <label class="btn btn-outline-primary" for="itemWeekly">Weekly</label>
                 <input type="radio" class="btn-check" name="itemPeriod" id="itemMonthly" value="monthly" checked>
@@ -24,10 +26,24 @@
         </div>
         <div class="col-md-3" id="weekSelectItem" style="display: none;">
             <select class="form-select" id="itemWeekSelect">
-                <?php for ($w = 1; $w <= 52; $w++): ?>
-                    <option value="<?= $w ?>">Week <?= $w ?></option>
+                <?php 
+                $currentYear = date('Y');
+                $currentWeek = date('W');
+                for ($w = 1; $w <= 52; $w++): 
+                    $dto = new DateTime();
+                    $dto->setISODate($currentYear, $w);
+                    $weekStart = $dto->format('M d');
+                    $dto->modify('+6 days');
+                    $weekEnd = $dto->format('M d');
+                ?>
+                    <option value="<?= $w ?>" <?= $w == $currentWeek ? 'selected' : '' ?>>
+                        Week <?= $w ?> (<?= $weekStart ?> - <?= $weekEnd ?>)
+                    </option>
                 <?php endfor; ?>
             </select>
+        </div>
+        <div class="col-md-3" id="dateSelectItem" style="display: none;">
+            <input type="date" class="form-control" id="itemDateSelect" value="<?= date('Y-m-d') ?>">
         </div>
     </div>
     <div class="analytics-table-container">
@@ -43,13 +59,14 @@
                                 <thead>
                                     <tr>
                                         <th>Rank</th>
-                                        <th>Item</th>
+                                        <th>Item Name</th>
                                         <th>Category</th>
                                         <th>Qty Sold</th>
-                                        <th>Revenue</th>
+                                        <th>Cost</th>
+                                        <th>Price</th>
+                                        <th>Gross Sales</th>
                                         <th>Profit</th>
                                         <th>Profit %</th>
-                                        <th>Transactions</th>
                                     </tr>
                                 </thead>
                                 <tbody id="itemsTableBody">

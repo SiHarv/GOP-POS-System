@@ -10,8 +10,9 @@ $(document).ready(function() {
         const year = $('#yearSelect').val();
         const month = period === 'monthly' ? $('#itemMonthSelect').val() : null;
         const week = period === 'weekly' ? $('#itemWeekSelect').val() : null;
+        const date = period === 'daily' ? $('#itemDateSelect').val() : null;
 
-        $('#itemsTableBody').html('<tr><td colspan="8">Loading...</td></tr>');
+        $('#itemsTableBody').html('<tr><td colspan="9">Loading...</td></tr>');
 
         $.ajax({
             url: '../../controller/backend_item_analytics.php',
@@ -21,7 +22,8 @@ $(document).ready(function() {
                 period: period,
                 year: year,
                 month: month,
-                week: week
+                week: week,
+                date: date
             },
             dataType: 'json',
             success: function(response) {
@@ -31,12 +33,12 @@ $(document).ready(function() {
                     updateItemsTable();
                 } else {
                     itemAnalyticsData = [];
-                    $('#itemsTableBody').html('<tr><td colspan="8">No data found.</td></tr>');
+                    $('#itemsTableBody').html('<tr><td colspan="9">No data found.</td></tr>');
                     $('#itemsTablePagination').empty();
                 }
             },
             error: function(xhr, status, error) {
-                $('#itemsTableBody').html('<tr><td colspan="8">Error loading data.</td></tr>');
+                $('#itemsTableBody').html('<tr><td colspan="9">Error loading data.</td></tr>');
                 $('#itemsTablePagination').empty();
             }
         });
@@ -49,16 +51,24 @@ $(document).ready(function() {
         const endIdx = Math.min(startIdx + itemRowsPerPage, itemAnalyticsData.length);
         for (let i = startIdx; i < endIdx; i++) {
             const item = itemAnalyticsData[i];
+            const cost = parseFloat(item.cost || 0);
+            const price = parseFloat(item.price || 0);
+            const qtySold = parseInt(item.qty_sold || 0);
+            const grossSales = parseFloat(item.gross_sales || 0);
+            const profit = parseFloat(item.profit || 0);
+            const profitPercent = parseFloat(item.profit_percent || 0);
+            
             tbody.append(`
                 <tr>
                     <td>${i + 1}</td>
                     <td>${item.item_name}</td>
                     <td>${item.category}</td>
-                    <td>${item.qty_sold}</td>
-                    <td>₱${parseFloat(item.revenue).toLocaleString('en-PH', {minimumFractionDigits:2})}</td>
-                    <td>₱${parseFloat(item.profit).toLocaleString('en-PH', {minimumFractionDigits:2})}</td>
-                    <td>${item.profit_percent}%</td>
-                    <td>${item.transactions}</td>
+                    <td>${qtySold}</td>
+                    <td>₱${cost.toLocaleString('en-PH', {minimumFractionDigits:2, maximumFractionDigits:2})}</td>
+                    <td>₱${price.toLocaleString('en-PH', {minimumFractionDigits:2, maximumFractionDigits:2})}</td>
+                    <td>₱${grossSales.toLocaleString('en-PH', {minimumFractionDigits:2, maximumFractionDigits:2})}</td>
+                    <td>₱${profit.toLocaleString('en-PH', {minimumFractionDigits:2, maximumFractionDigits:2})}</td>
+                    <td>${profitPercent.toFixed(2)}%</td>
                 </tr>
             `);
         }
@@ -89,9 +99,10 @@ $(document).ready(function() {
         const period = $(this).val();
         $('#monthSelectItem').toggle(period === 'monthly');
         $('#weekSelectItem').toggle(period === 'weekly');
+        $('#dateSelectItem').toggle(period === 'daily');
         loadItemAnalytics(1);
     });
-    $('#itemMonthSelect, #itemWeekSelect, #yearSelect').on('change', function() { loadItemAnalytics(1); });
+    $('#itemMonthSelect, #itemWeekSelect, #itemDateSelect, #yearSelect').on('change', function() { loadItemAnalytics(1); });
 
     // Initial load
     loadItemAnalytics(1);

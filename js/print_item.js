@@ -25,6 +25,12 @@ $(document).ready(function() {
         resetModal();
     });
 
+    // Load items when category changes
+    $(document).on('change', '#categorySelect', function() {
+        console.log('Category changed');
+        loadItems();
+    });
+
     function loadCategories() {
         console.log('Loading categories...');
         $.ajax({
@@ -54,17 +60,13 @@ $(document).ready(function() {
         const select = $('#categorySelect');
         select.empty();
         
-        // Add "All Items" option first
-        select.append('<option value="all">All Items</option>');
+        // Add default placeholder option
+        select.append('<option value="">Select a category</option>');
         
         // Add each category
         categories.forEach(function(category) {
             select.append(`<option value="${category}">${category}</option>`);
         });
-        
-        // Auto-select "All Items" and load items automatically
-        select.val('all');
-        loadItems();
     }
 
     function loadItems() {

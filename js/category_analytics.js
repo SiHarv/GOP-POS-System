@@ -10,6 +10,7 @@ $(document).ready(function() {
         const year = $('#yearSelect').val();
         const month = period === 'monthly' ? $('#categoryMonthSelect').val() : null;
         const week = period === 'weekly' ? $('#categoryWeekSelect').val() : null;
+        const date = period === 'daily' ? $('#categoryDateSelect').val() : null;
 
         $('#categoriesTableBody').html('<tr><td colspan="7">Loading...</td></tr>');
 
@@ -21,7 +22,8 @@ $(document).ready(function() {
                 period: period,
                 year: year,
                 month: month,
-                week: week
+                week: week,
+                date: date
             },
             dataType: 'json',
             success: function(response) {
@@ -130,6 +132,7 @@ $(document).ready(function() {
         const period = $('input[name="categoryPeriod"]:checked').val();
         $('#monthSelectCategory').toggle(period === 'monthly');
         $('#weekSelectCategory').toggle(period === 'weekly');
+        $('#dateSelectCategory').toggle(period === 'daily');
         
         loadCategoryAnalytics();
     }
@@ -140,11 +143,12 @@ $(document).ready(function() {
         const period = $(this).val();
         $('#monthSelectCategory').toggle(period === 'monthly');
         $('#weekSelectCategory').toggle(period === 'weekly');
+        $('#dateSelectCategory').toggle(period === 'daily');
         loadCategoryAnalytics(1);
     });
 
     // Handle select changes
-    $('#categoryMonthSelect, #categoryWeekSelect').on('change', function() { loadCategoryAnalytics(1); });
+    $('#categoryMonthSelect, #categoryWeekSelect, #categoryDateSelect').on('change', function() { loadCategoryAnalytics(1); });
     // Handle year changes from the main year select
     $('#yearSelect').on('change', function() { loadCategoryAnalytics(1); });
 

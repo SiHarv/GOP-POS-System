@@ -20,16 +20,20 @@ $currentMonth = date('n');
     <link rel="stylesheet" href="../../bootstrap-5.3.6/css/bootstrap.min.css">
     <style>
         html, body {
-            overflow: hidden !important;
             height: 100%;
+            margin: 0;
+            padding: 0;
         }
         body {
             position: relative;
             height: 100vh;
+            overflow: hidden;
         }
         .main-content {
-            height: 100vh;
-            overflow: hidden;
+            height: calc(100vh - 60px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-bottom: 2rem;
         }
         /* Reduce spacing above h5 titles in tab panes */
         .tab-pane > .d-flex.mb-3 {
@@ -90,6 +94,12 @@ $currentMonth = date('n');
                         Category Analytics
                     </button>
                 </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="comparative-tab" data-bs-toggle="tab" data-bs-target="#comparative" type="button">
+                        <span class="iconify me-1" data-icon="solar:chart-2-outline"></span>
+                        Comparative
+                    </button>
+                </li>
             </ul>
 
             <!-- Tab Content -->
@@ -119,6 +129,14 @@ $currentMonth = date('n');
                         <h5 class="mb-0"><span class="fw-bolder text-danger">Category</span> Analytics</h5>
                     </div>
                     <?php require_once __DIR__ . '/category_analytics.php'; ?>
+                </div>
+
+                <!-- Comparative Analytics Tab -->
+                <div class="tab-pane fade" id="comparative" role="tabpanel">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0"><span class="fw-bolder text-info">Comparative</span> Analytics</h5>
+                    </div>
+                    <?php require_once __DIR__ . '/comparative_analytics.php'; ?>
                 </div>
             </div>
         </div>

@@ -8,6 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $year = $_POST['year'] ?? date('Y');
     $month = $_POST['month'] ?? null;
     $week = $_POST['week'] ?? null;
+    $date = $_POST['date'] ?? null;
 
     $db = new DBConnection();
     $conn = $db->getConnection();
@@ -15,13 +16,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $params = [$year];
     $types = 'i';
     $where = 'WHERE YEAR(c.charge_date) = ?';
-    if ($month && $period === 'monthly') {
-        $where .= ' AND MONTH(c.charge_date) = ?';
-        $params[] = $month;
-        $types .= 'i';
-    } elseif ($week && $period === 'weekly') {
+    
+    if ($period === 'daily' && $date) {
+        $where .= ' AND DATE(c.charge_date) = ?';
+        $params[] = $date;
+        $types .= 's';
+    } elseif ($period === 'weekly' && $week) {
         $where .= ' AND WEEK(c.charge_date, 1) = ?';
         $params[] = $week;
+        $types .= 'i';
+    } elseif ($period === 'monthly' && $month) {
+        $where .= ' AND MONTH(c.charge_date) = ?';
+        $params[] = $month;
         $types .= 'i';
     }
 
