@@ -27,6 +27,10 @@
             <span class="iconify" data-icon="solar:chat-round-money-linear" data-width="24" data-height="24"></span>
             <small class="sidebar-text">Sales</small>
         </a>
+        <a href="../reports/reports.php" class="sidebar-icon d-flex flex-column align-items-center" title="Reports">
+            <span class="iconify" data-icon="solar:document-text-outline" data-width="24" data-height="24"></span>
+            <small class="sidebar-text">Reports</small>
+        </a>
     </div>
 
     <div class="sidebar-footer mt-auto">
