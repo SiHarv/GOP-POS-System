@@ -92,89 +92,211 @@ $(document).ready(function () {
             }
 
             // Clear and populate items table
-            const itemsBody = $("#receipt-items");
+            let itemsBody = $("#receipt-items");
             itemsBody.empty();
 
             let total = 0;
-            response.items.forEach((item) => {
-              // Safely parse values with defaults
-              const quantity = parseInt(item.quantity) || 0;
-              const originalPrice = parseFloat(item.unit_price) || 0;
-              const customPrice = item.custom_price !== null && item.custom_price !== undefined ? parseFloat(item.custom_price) : null;
-              const discountPercentage = parseFloat(item.discount_percentage) || 0;
-              const unit = item.unit || "PCS";
-              const itemName = item.name || "-";
+            const ROWS_PER_PAGE = 28;
+            const totalItems = response.items.length;
+            const totalPages = Math.ceil((totalItems + 1) / ROWS_PER_PAGE); // +1 for total row
+            
+            // Get logo base64 from the existing header
+            const logoSrc = $('.receipt-header img').attr('src');
 
-              // Use custom price if it exists and is different, otherwise use original price
-              const basePrice = customPrice !== null ? customPrice : originalPrice;
-              const isCustomPrice = customPrice !== null;
+            // Process items page by page
+            for (let page = 0; page < totalPages; page++) {
+              const startIdx = page * ROWS_PER_PAGE;
+              const endIdx = Math.min(startIdx + ROWS_PER_PAGE, totalItems);
+              const isLastPage = page === totalPages - 1;
+              
+              // Add page header for pages after the first (page 0 uses the original header)
+              if (page > 0) {
+                // Close previous table and add new header section with logo
+                itemsBody.parent().after(`
+                  <div class="page-header-section print-only" style="page-break-before: always;">
+                    <div class="receipt-header text-center" style="margin-top: 20px; margin-bottom: 10px;">
+                      <div style="position: relative;">
+                        <img src="${logoSrc}" alt="gop-icon" style="
+                          position: absolute;
+                          left: 0;
+                          top: 0;
+                          height: 75px; 
+                          width: 90px;
+                        ">
+                        <div>
+                          <div style="font-size: 20px; font-weight: bold;">GOP MARKETING</div>
+                          <div style="font-size: 14px;">Wangag, Damulaan</div>
+                          <div style="font-size: 14px; margin-bottom: 10px;">Albuera, Leyte</div>
+                        </div>
+                      </div>
+                      <div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px; position: relative;">
+                        <div style="flex: 1;"></div>
+                        <div style="flex: 1; text-align: center;"><b>Delivery Receipt</b></div>
+                        <div style="flex: 1; text-align: right;"><strong>Receipt #:</strong> <span style="color: red;">${response.id}</span></div>
+                      </div>
+                      <hr>
+                    </div>
+                    <div class="receipt-details" style="margin-bottom: 10px;">
+                      <div class="d-flex">
+                        <div style="font-size: 14px; display: flex; flex-direction: column; align-items: flex-start; flex: 1; gap: 2px;">
+                          <div style="display: flex; align-items: flex-start; gap: 5px;">
+                            <div style="min-width: 80px; text-align: left;"><strong>Customer:</strong></div>
+                            <div style="text-align: left;">${response.customer_name || "-"}</div>
+                          </div>
+                          <div style="display: flex; align-items: flex-start; gap: 5px;">
+                            <div style="min-width: 80px; text-align: left;"><strong>Address:</strong></div>
+                            <div style="text-align: left;">${response.customer_address || "-"}</div>
+                          </div>
+                          <div style="display: flex; align-items: flex-start; gap: 5px;">
+                            <div style="min-width: 80px; text-align: left;"><strong>P.O N.O:</strong></div>
+                            <div style="text-align: left;">${response.po_number || "-"}</div>
+                          </div>
+                        </div>
+                        <div style="font-size: 14px; display: flex; flex-direction: column; align-items: flex-start; margin-left: auto; gap: 2px;">
+                          <div style="display: flex; align-items: flex-start; gap: 5px;">
+                            <div style="min-width: 80px; text-align: left;"><strong>Date:</strong></div>
+                            <div style="text-align: left;">${new Date(response.date).toLocaleDateString()}</div>
+                          </div>
+                          <div style="display: flex; align-items: flex-start; gap: 5px;">
+                            <div style="min-width: 80px; text-align: left;"><strong>Terms:</strong></div>
+                            <div style="text-align: left;">${response.customer_terms || "-"}</div>
+                          </div>
+                          <div style="display: flex; align-items: flex-start; gap: 5px;">
+                            <div style="min-width: 80px; text-align: left;"><strong>Salesman:</strong></div>
+                            <div style="text-align: left;">${response.customer_salesman || "-"}</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <table class="table table-bordered" style="padding: none; margin:none;">
+                      <thead>
+                        <tr>
+                          <th class="text-center" style="font-size: 12px; padding: 3px;">QTY</th>
+                          <th class="text-center" style="font-size: 12px; padding: 3px;">UNIT</th>
+                          <th class="text-center" style="text-align: center; width: 30%; font-size:12px; padding: 3px;">ITEM/DESCRIPTION</th>
+                          <th class="text-center" style="font-size: 12px; padding: 3px;">BASE PRICE</th>
+                          <th class="text-center" style="font-size: 12px; padding: 3px;">DISC.</th>
+                          <th class="text-center" style="font-size: 12px; padding: 3px;">NET PRICE</th>
+                          <th class="text-center" style="text-align: center; font-size:12px; padding: 3px;">AMOUNT</th>
+                        </tr>
+                      </thead>
+                      <tbody class="page-${page}-items">
+                      </tbody>
+                    </table>
+                  </div>
+                `);
+                // Update itemsBody to point to the new page's tbody
+                itemsBody = $(`.page-${page}-items`);
+              }
 
-              // Calculate net price (discounted price)
-              const discountAmount = basePrice * (discountPercentage / 100);
-              const netPrice = basePrice - discountAmount;
-              const amount = quantity * netPrice;
+              // Add items for this page
+              for (let i = startIdx; i < endIdx; i++) {
+                const item = response.items[i];
 
-              total += amount;
+                // Safely parse values with defaults
+                const quantity = parseInt(item.quantity) || 0;
+                const originalPrice = parseFloat(item.unit_price) || 0;
+                const customPrice = item.custom_price !== null && item.custom_price !== undefined ? parseFloat(item.custom_price) : null;
+                const discountPercentage = parseFloat(item.discount_percentage) || 0;
+                const unit = item.unit || "PCS";
+                const itemName = item.name || "-";
 
-              // Display discount percentage properly
-              const discountText = discountPercentage.toFixed(1) + "%";
+                // Use custom price if it exists, otherwise use original price
+                const basePrice = customPrice !== null ? customPrice : originalPrice;
 
-              // Create item name with custom price indicator if needed
-              let displayName = itemName;
+                // Calculate net price (discounted price)
+                const discountAmount = basePrice * (discountPercentage / 100);
+                const netPrice = basePrice - discountAmount;
+                const amount = quantity * netPrice;
 
-              itemsBody.append(`
-              <tr>
-                <td style="text-align: end; font-size: 14px; padding: 3px;">${quantity}</td>
-                <td style="text-align: start; font-size: 14px; padding: 3px;">${unit}</td>
-                <td style="font-size: 14px; padding: 3px;">${displayName}</td>
-                <td style="text-align: end; font-size: 14px; padding: 3px;">${basePrice.toLocaleString(
-                  "en-US",
-                  {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  }
-                )}</td>
-                <td style="text-align: end; font-size: 14px; padding: 3px;">${discountText}</td>
-                <td style="text-align: end; font-size: 14px; padding: 3px;">${netPrice.toLocaleString(
-                  "en-US",
-                  {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  }
-                )}</td>
-                <td style="text-align: end; font-size: 14px; padding: 3px;">${amount.toLocaleString(
-                  "en-US",
-                  {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  }
-                )}</td>
-              </tr>
-            `);
-            });
-            // Add empty rows to ensure the table fills the bond paper
-            const minRows = 28;
-            const currentRows = response.items.length;
-            for (let i = currentRows; i < minRows; i++) {
-              itemsBody.append(`
-              <tr>
-                <td style="text-align: end; font-size: 14px; padding: 8px;">&nbsp;</td>
-                <td style="text-align: start; font-size: 14px; padding: 8px;">&nbsp;</td>
-                <td style="font-size: 14px; padding: 8px;">&nbsp;</td>
-                <td style="text-align: end; font-size: 14px; padding: 8px;">&nbsp;</td>
-                <td style="text-align: end; font-size: 14px; padding: 8px;">&nbsp;</td>
-                <td style="text-align: end; font-size: 14px; padding: 8px;">&nbsp;</td>
-                <td style="text-align: end; font-size: 14px; padding: 8px;">&nbsp;</td>
-              </tr>
-            `);
+                total += amount;
+
+                // Display discount percentage properly
+                const discountText = discountPercentage.toFixed(1) + "%";
+                let displayName = itemName;
+
+                itemsBody.append(`
+                <tr>
+                  <td style="text-align: end; font-size: 14px; padding: 3px;">${quantity}</td>
+                  <td style="text-align: start; font-size: 14px; padding: 3px;">${unit}</td>
+                  <td style="font-size: 14px; padding: 3px;">${displayName}</td>
+                  <td style="text-align: end; font-size: 14px; padding: 3px;">${basePrice.toLocaleString(
+                    "en-US",
+                    {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    }
+                  )}</td>
+                  <td style="text-align: end; font-size: 14px; padding: 3px;">${discountText}</td>
+                  <td style="text-align: end; font-size: 14px; padding: 3px;">${netPrice.toLocaleString(
+                    "en-US",
+                    {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    }
+                  )}</td>
+                  <td style="text-align: end; font-size: 14px; padding: 3px;">${amount.toLocaleString(
+                    "en-US",
+                    {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    }
+                  )}</td>
+                </tr>
+              `);
+              }
+
+              // Calculate how many empty rows needed for this page
+              const currentPageRows = endIdx - startIdx;
+              let emptyRowsForPage;
+              
+              if (isLastPage) {
+                // Last page: fill to make (items + empty + total) = 28
+                emptyRowsForPage = ROWS_PER_PAGE - currentPageRows - 1; // -1 for total row
+              } else {
+                // Not last page: fill to exactly 28 rows
+                emptyRowsForPage = ROWS_PER_PAGE - currentPageRows;
+              }
+
+              // Add empty rows for this page
+              for (let i = 0; i < emptyRowsForPage; i++) {
+                itemsBody.append(`
+                <tr class="print-only-row">
+                  <td style="text-align: end; font-size: 14px; padding: 8px;">&nbsp;</td>
+                  <td style="text-align: start; font-size: 14px; padding: 8px;">&nbsp;</td>
+                  <td style="font-size: 14px; padding: 8px;">&nbsp;</td>
+                  <td style="text-align: end; font-size: 14px; padding: 8px;">&nbsp;</td>
+                  <td style="text-align: end; font-size: 14px; padding: 8px;">&nbsp;</td>
+                  <td style="text-align: end; font-size: 14px; padding: 8px;">&nbsp;</td>
+                  <td style="text-align: end; font-size: 14px; padding: 8px;">&nbsp;</td>
+                </tr>
+              `);
+              }
+
+              // Only add total row on the last page
+              if (isLastPage) {
+                itemsBody.append(`
+                <tr>
+                  <td colspan="6" class="text-end" style="font-size:12px; padding: 3px;"><strong>Total Amount ₱:</strong></td>
+                  <td style="font-size:12px; padding: 3px; position: relative;"><strong><span id="receipt-total" style="display: block; text-align: right;">${total.toLocaleString(
+                    "en-US",
+                    {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    }
+                  )}</span></strong></td>
+                </tr>
+              `);
+              }
             }
 
-            $("#receipt-total").text(
+            /* $("#receipt-total").text(
               total.toLocaleString("en-US", {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2,
               })
-            );
+            ); */
+
 
             // Show modal
             receiptModal.show();

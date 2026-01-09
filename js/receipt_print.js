@@ -166,6 +166,32 @@ $(document).ready(function () {
                   page-break-inside: avoid !important;
                 }
                 
+                /* Show empty rows when printing */
+                .print-only-row {
+                  display: table-row !important;
+                }
+                
+                /* Show repeated headers when printing */
+                .print-only {
+                  display: block !important;
+                  page-break-before: always !important;
+                }
+                
+                /* Make header repeat on every page */
+                thead {
+                  display: table-header-group !important;
+                }
+                
+                .receipt-header {
+                  page-break-inside: avoid !important;
+                  page-break-after: avoid !important;
+                }
+                
+                .receipt-details {
+                  page-break-inside: avoid !important;
+                  page-break-after: avoid !important;
+                }
+                
                 /* Alternative footer for browsers that don't support @page bottom-center */
                 .print-page-footer {
                   position: fixed !important;
