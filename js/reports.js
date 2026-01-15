@@ -69,6 +69,7 @@ $(document).ready(function() {
     }
 
     function updateSummaryCards(summary) {
+        $('#totalCost').text('₱' + parseFloat(summary.total_cost).toLocaleString('en-PH', {minimumFractionDigits: 2}));
         $('#totalRevenue').text('₱' + parseFloat(summary.total_revenue).toLocaleString('en-PH', {minimumFractionDigits: 2}));
         $('#totalProfit').text('₱' + parseFloat(summary.total_profit).toLocaleString('en-PH', {minimumFractionDigits: 2}));
         $('#totalTransactions').text(summary.total_transactions.toLocaleString());
@@ -140,7 +141,8 @@ $(document).ready(function() {
 
         let html = '<div class="table-responsive"><table class="table table-hover" id="reportTable">';
         html += '<thead><tr>';
-        html += '<th>Date</th><th>Transactions</th><th>Items Sold</th><th>Revenue</th><th>Cost</th><th>Profit</th><th>Margin %</th>';
+        // Order: Date | Transactions | Items Sold | Cost | Revenue | Profit | Margin %
+        html += '<th>Date</th><th>Transactions</th><th>Items Sold</th><th>Cost</th><th>Revenue</th><th>Profit</th><th>Margin %</th>';
         html += '</tr></thead><tbody>';
 
         data.forEach(row => {
@@ -153,8 +155,8 @@ $(document).ready(function() {
             html += `<td>${formatDate(row.date)}</td>`;
             html += `<td>${row.transactions}</td>`;
             html += `<td>${row.items_sold}</td>`;
-            html += `<td>₱${revenue.toLocaleString('en-PH', {minimumFractionDigits:2})}</td>`;
             html += `<td>₱${cost.toLocaleString('en-PH', {minimumFractionDigits:2})}</td>`;
+            html += `<td>₱${revenue.toLocaleString('en-PH', {minimumFractionDigits:2})}</td>`;
             html += `<td>₱${profit.toLocaleString('en-PH', {minimumFractionDigits:2})}</td>`;
             html += `<td>${margin}%</td>`;
             html += '</tr>';

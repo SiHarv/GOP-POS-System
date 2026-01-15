@@ -13,10 +13,11 @@ class ReportsController {
 
     // Sales Summary Report
     public function getSalesSummary($startDate, $endDate) {
+        // Use line-item sums for revenue/cost to keep profit consistent with table values
         $sql = "SELECT 
                     DATE(c.charge_date) as date,
                     COUNT(DISTINCT c.id) as transactions,
-                    SUM(c.total_price) as revenue,
+                    SUM(ci.price * ci.quantity) as revenue,
                     SUM(ci.quantity * i.cost) as cost,
                     SUM((ci.price - i.cost) * ci.quantity) as profit,
                     SUM(ci.quantity) as items_sold
@@ -58,8 +59,9 @@ class ReportsController {
 
     // Profit & Loss Report
     public function getProfitLoss($startDate, $endDate) {
+        // Align totals with line-item calculations
         $sql = "SELECT 
-                    SUM(c.total_price) as total_revenue,
+                    SUM(ci.price * ci.quantity) as total_revenue,
                     SUM(ci.quantity * i.cost) as total_cost,
                     SUM((ci.price - i.cost) * ci.quantity) as gross_profit,
                     COUNT(DISTINCT c.id) as total_transactions,
@@ -191,6 +193,7 @@ class ReportsController {
         $profitLoss = $this->getProfitLoss($startDate, $endDate);
         return [
             'total_revenue' => floatval($profitLoss['total_revenue'] ?? 0),
+            'total_cost' => floatval($profitLoss['total_cost'] ?? 0),
             'total_profit' => floatval($profitLoss['gross_profit'] ?? 0),
             'total_transactions' => intval($profitLoss['total_transactions'] ?? 0),
             'profit_margin' => round($profitLoss['profit_margin'] ?? 0, 2)

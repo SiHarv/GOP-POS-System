@@ -111,6 +111,21 @@ require_once __DIR__ . '/../../auth/check_auth.php';
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
+                                    <p class="text-muted mb-1 small fw-semibold" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">Total Cost</p>
+                                    <h3 class="mb-0 fw-bold" style="color: #dc2626;" id="totalCost">₱0.00</h3>
+                                </div>
+                                <div class="stat-icon-modern" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                                    <span class="iconify" data-icon="solar:bag-outline" data-width="28" style="color: white;"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
                                     <p class="text-muted mb-1 small fw-semibold" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">Total Revenue</p>
                                     <h3 class="mb-0 fw-bold" style="color: #1e3a8a;" id="totalRevenue">₱0.00</h3>
                                 </div>
@@ -131,21 +146,6 @@ require_once __DIR__ . '/../../auth/check_auth.php';
                                 </div>
                                 <div class="stat-icon-modern" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
                                     <span class="iconify" data-icon="solar:chart-square-bold" data-width="28" style="color: white;"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card border-0 shadow-sm h-100">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <p class="text-muted mb-1 small fw-semibold" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">Transactions</p>
-                                    <h3 class="mb-0 fw-bold" style="color: #0369a1;" id="totalTransactions">0</h3>
-                                </div>
-                                <div class="stat-icon-modern" style="background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
-                                    <span class="iconify" data-icon="solar:bill-check-bold" data-width="28" style="color: white;"></span>
                                 </div>
                             </div>
                         </div>
