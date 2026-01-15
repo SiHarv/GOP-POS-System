@@ -399,3 +399,8 @@ body {
 .print-only {
   display: none !important;
 }
+
+/* Hide print-only tbody sections in modal view */
+.print-only-tbody {
+  display: none !important;
+}

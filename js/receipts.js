@@ -120,7 +120,77 @@ $(document).ready(function () {
             // Get logo base64 from the existing header
             const logoSrc = $('.receipt-header img').attr('src') || '';
 
-            // Process items page by page
+            // FIRST: Add all items to modal (without pagination) for viewing
+            response.items.forEach((item, index) => {
+                // Safely parse values with defaults
+                const quantity = parseInt(item.quantity) || 0;
+                const originalPrice = parseFloat(item.unit_price) || 0;
+                const customPrice = item.custom_price !== null && item.custom_price !== undefined ? parseFloat(item.custom_price) : null;
+                const discountPercentage = parseFloat(item.discount_percentage) || 0;
+                const unit = item.unit || "PCS";
+                const itemName = item.name || "-";
+
+                // Use custom price if it exists, otherwise use original price
+                const basePrice = customPrice !== null ? customPrice : originalPrice;
+
+                // Calculate net price (discounted price)
+                const discountAmount = basePrice * (discountPercentage / 100);
+                const netPrice = basePrice - discountAmount;
+                const amount = quantity * netPrice;
+
+                total += amount;
+
+                // Display discount percentage properly
+                const discountText = discountPercentage.toFixed(1) + "%";
+                let displayName = itemName;
+
+                itemsBody.append(`
+                <tr>
+                  <td style="text-align: end; font-size: 14px; padding: 3px;">${quantity}</td>
+                  <td style="text-align: start; font-size: 14px; padding: 3px;">${unit}</td>
+                  <td style="font-size: 14px; padding: 3px;">${displayName}</td>
+                  <td style="text-align: end; font-size: 14px; padding: 3px;">${basePrice.toLocaleString(
+                    "en-US",
+                    {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    }
+                  )}</td>
+                  <td style="text-align: end; font-size: 14px; padding: 3px;">${discountText}</td>
+                  <td style="text-align: end; font-size: 14px; padding: 3px;">${netPrice.toLocaleString(
+                    "en-US",
+                    {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    }
+                  )}</td>
+                  <td style="text-align: end; font-size: 14px; padding: 3px;">${amount.toLocaleString(
+                    "en-US",
+                    {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    }
+                  )}</td>
+                </tr>
+              `);
+            });
+
+            // Add total row to main table (always visible in modal)
+            itemsBody.append(`
+                <tr class="total-row">
+                  <td colspan="6" class="text-end" style="font-size:12px; padding: 3px;"><strong>Total Amount ₱:</strong></td>
+                  <td style="font-size:12px; padding: 3px; position: relative;"><strong><span id="receipt-total" style="display: block; text-align: right;">${total.toLocaleString(
+                    "en-US",
+                    {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    }
+                  )}</span></strong></td>
+                </tr>
+              `);
+
+            // SECOND: Build paginated print structure (hidden in modal, shown when printing)
+            // Process items page by page for printing
             let processedItems = 0;
             for (let page = 0; page < totalPages; page++) {
               const isLastPage = page === totalPages - 1;
@@ -201,16 +271,20 @@ $(document).ready(function () {
                           <th class="text-center" style="text-align: center; font-size:12px; padding: 3px;">AMOUNT</th>
                         </tr>
                       </thead>
-                      <tbody class="page-${page}-items">
+                      <tbody class="page-${page}-items print-only-tbody">
                       </tbody>
                     </table>
                   </div>
                 `);
-                // Update itemsBody to point to the new page's tbody
+                // Get reference to the new page's tbody
+                itemsBody = $(`.page-${page}-items`);
+              } else {
+                // For page 0, create a hidden print-only tbody that duplicates the items
+                itemsBody.parent().append(`<tbody class="page-${page}-items print-only-tbody"></tbody>`);
                 itemsBody = $(`.page-${page}-items`);
               }
 
-              // Add items for this page
+              // Add items for this page (for print only)
               for (let i = startIdx; i < endIdx; i++) {
                 const item = response.items[i];
 
@@ -229,8 +303,6 @@ $(document).ready(function () {
                 const discountAmount = basePrice * (discountPercentage / 100);
                 const netPrice = basePrice - discountAmount;
                 const amount = quantity * netPrice;
-
-                total += amount;
 
                 // Display discount percentage properly
                 const discountText = discountPercentage.toFixed(1) + "%";
@@ -279,7 +351,7 @@ $(document).ready(function () {
                 emptyRowsForPage = ROWS_FIRST_PAGES - currentPageRows;
               }
 
-              // Add empty rows for this page
+              // Add empty rows for this page (for print only)
               for (let i = 0; i < emptyRowsForPage; i++) {
                 itemsBody.append(`
                 <tr class="print-only-row">
@@ -294,12 +366,12 @@ $(document).ready(function () {
               `);
               }
 
-              // Only add total row on the last page
+              // Only add total row on the last page (for print only)
               if (isLastPage) {
                 itemsBody.append(`
                 <tr>
                   <td colspan="6" class="text-end" style="font-size:12px; padding: 3px;"><strong>Total Amount ₱:</strong></td>
-                  <td style="font-size:12px; padding: 3px; position: relative;"><strong><span id="receipt-total" style="display: block; text-align: right;">${total.toLocaleString(
+                  <td style="font-size:12px; padding: 3px; position: relative;"><strong><span style="display: block; text-align: right;">${total.toLocaleString(
                     "en-US",
                     {
                       minimumFractionDigits: 2,

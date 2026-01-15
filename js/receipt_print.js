@@ -177,6 +177,16 @@ $(document).ready(function () {
                   page-break-before: always !important;
                 }
                 
+                /* Show print-only tbody sections when printing */
+                .print-only-tbody {
+                  display: table-row-group !important;
+                }
+                
+                /* Hide the main tbody (modal view) when printing, show only paginated tbodies */
+                #receipt-items {
+                  display: none !important;
+                }
+                
                 /* Make header repeat on every page */
                 thead {
                   display: table-header-group !important;
