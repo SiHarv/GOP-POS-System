@@ -151,20 +151,62 @@ try {
                         <!-- Bootstrap Pagination -->
                         <div id="pagination-container">
                             <?php if ($totalPages > 1): ?>
+                                <?php
+                                    // Calculate pagination range (show max 10 pages at a time)
+                                    $maxPagesToShow = 10;
+                                    $startPage = max(1, $currentPage - floor($maxPagesToShow / 2));
+                                    $endPage = min($totalPages, $startPage + $maxPagesToShow - 1);
+                                    
+                                    // Adjust start page if we're near the end
+                                    if ($endPage - $startPage < $maxPagesToShow - 1) {
+                                        $startPage = max(1, $endPage - $maxPagesToShow + 1);
+                                    }
+                                ?>
                                 <nav class="mt-4">
                                     <ul class="pagination justify-content-center">
+                                        <!-- Previous Button -->
                                         <li class="page-item <?php echo ($currentPage <= 1) ? 'disabled' : ''; ?>">
-                                            <a class="page-link" href="#" data-page="<?php echo $currentPage - 1; ?>">Previous</a>
+                                            <a class="page-link" href="#" data-page="<?php echo $currentPage - 1; ?>" aria-label="Previous">
+                                                <span aria-hidden="true">&laquo;</span> Previous
+                                            </a>
                                         </li>
 
-                                        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                                        <!-- First page if not in range -->
+                                        <?php if ($startPage > 1): ?>
+                                            <li class="page-item">
+                                                <a class="page-link" href="#" data-page="1">1</a>
+                                            </li>
+                                            <?php if ($startPage > 2): ?>
+                                                <li class="page-item disabled">
+                                                    <span class="page-link">...</span>
+                                                </li>
+                                            <?php endif; ?>
+                                        <?php endif; ?>
+
+                                        <!-- Page numbers -->
+                                        <?php for ($i = $startPage; $i <= $endPage; $i++): ?>
                                             <li class="page-item <?php echo ($i == $currentPage) ? 'active' : ''; ?>">
                                                 <a class="page-link" href="#" data-page="<?php echo $i; ?>"><?php echo $i; ?></a>
                                             </li>
                                         <?php endfor; ?>
 
+                                        <!-- Last page if not in range -->
+                                        <?php if ($endPage < $totalPages): ?>
+                                            <?php if ($endPage < $totalPages - 1): ?>
+                                                <li class="page-item disabled">
+                                                    <span class="page-link">...</span>
+                                                </li>
+                                            <?php endif; ?>
+                                            <li class="page-item">
+                                                <a class="page-link" href="#" data-page="<?php echo $totalPages; ?>"><?php echo $totalPages; ?></a>
+                                            </li>
+                                        <?php endif; ?>
+
+                                        <!-- Next Button -->
                                         <li class="page-item <?php echo ($currentPage >= $totalPages) ? 'disabled' : ''; ?>">
-                                            <a class="page-link" href="#" data-page="<?php echo $currentPage + 1; ?>">Next</a>
+                                            <a class="page-link" href="#" data-page="<?php echo $currentPage + 1; ?>" aria-label="Next">
+                                                Next <span aria-hidden="true">&raquo;</span>
+                                            </a>
                                         </li>
                                     </ul>
                                     <div class="text-center">
