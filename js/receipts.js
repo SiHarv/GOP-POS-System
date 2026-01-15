@@ -96,18 +96,39 @@ $(document).ready(function () {
             itemsBody.empty();
 
             let total = 0;
-            const ROWS_PER_PAGE = 28;
+            const ROWS_FIRST_PAGES = 35; // First and middle pages have 35 rows
+            const ROWS_LAST_PAGE = 28;   // Last page has 28 rows
             const totalItems = response.items.length;
-            const totalPages = Math.ceil((totalItems + 1) / ROWS_PER_PAGE); // +1 for total row
+            
+            // Calculate total pages based on new logic
+            // We need to figure out how many pages are needed
+            let tempItems = totalItems;
+            let tempPages = 0;
+            
+            // Keep adding pages of 35 until we have less than or equal to 28 items left
+            while (tempItems > ROWS_LAST_PAGE) {
+              tempPages++;
+              tempItems -= ROWS_FIRST_PAGES;
+            }
+            // Add one more page for the remaining items (last page with 28 rows)
+            if (tempItems > 0 || totalItems === 0) {
+              tempPages++;
+            }
+            
+            const totalPages = Math.max(1, tempPages);
             
             // Get logo base64 from the existing header
-            const logoSrc = $('.receipt-header img').attr('src');
+            const logoSrc = $('.receipt-header img').attr('src') || '';
 
             // Process items page by page
+            let processedItems = 0;
             for (let page = 0; page < totalPages; page++) {
-              const startIdx = page * ROWS_PER_PAGE;
-              const endIdx = Math.min(startIdx + ROWS_PER_PAGE, totalItems);
               const isLastPage = page === totalPages - 1;
+              const rowsForThisPage = isLastPage ? ROWS_LAST_PAGE : ROWS_FIRST_PAGES;
+              
+              const startIdx = processedItems;
+              const endIdx = Math.min(startIdx + rowsForThisPage, totalItems);
+              processedItems = endIdx;
               
               // Add page header for pages after the first (page 0 uses the original header)
               if (page > 0) {
@@ -252,10 +273,10 @@ $(document).ready(function () {
               
               if (isLastPage) {
                 // Last page: fill to make (items + empty + total) = 28
-                emptyRowsForPage = ROWS_PER_PAGE - currentPageRows - 1; // -1 for total row
+                emptyRowsForPage = ROWS_LAST_PAGE - currentPageRows - 1; // -1 for total row
               } else {
-                // Not last page: fill to exactly 28 rows
-                emptyRowsForPage = ROWS_PER_PAGE - currentPageRows;
+                // Not last page: fill to exactly 35 rows
+                emptyRowsForPage = ROWS_FIRST_PAGES - currentPageRows;
               }
 
               // Add empty rows for this page

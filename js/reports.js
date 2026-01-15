@@ -258,7 +258,9 @@ $(document).ready(function() {
             html += '<tr>';
             html += `<td>${row.receipt_id}</td>`;
             html += `<td>${formatDateTime(row.charge_date)}</td>`;
-            html += `<td>${row.customer_name || 'Walk-in'}</td>`;
+            html += `<td>${row.customer_name || 'Sample Name'}</td>`;
+            
+            // Please querry the name from customer name in table "Customers" to get customer name
             html += `<td>${row.items_count}</td>`;
             html += `<td>${row.total_qty}</td>`;
             html += `<td>₱${parseFloat(row.total_price).toLocaleString('en-PH', {minimumFractionDigits:2})}</td>`;

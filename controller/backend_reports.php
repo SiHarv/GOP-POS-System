@@ -115,7 +115,7 @@ class ReportsController {
                     c.id as receipt_id,
                     c.charge_date,
                     c.total_price,
-                    c.customer_name,
+                    c.customer_id,
                     COUNT(ci.id) as items_count,
                     SUM(ci.quantity) as total_qty,
                     SUM(ci.quantity * i.cost) as cost,
@@ -137,7 +137,7 @@ class ReportsController {
     // Customer Sales Report
     public function getCustomerSales($startDate, $endDate) {
         $sql = "SELECT 
-                    c.customer_name,
+                    c.customer_id,
                     COUNT(DISTINCT c.id) as total_purchases,
                     SUM(c.total_price) as total_spent,
                     AVG(c.total_price) as avg_purchase,
@@ -146,9 +146,9 @@ class ReportsController {
                 FROM charges c
                 LEFT JOIN charge_items ci ON c.id = ci.charge_id
                 WHERE DATE(c.charge_date) BETWEEN ? AND ?
-                    AND c.customer_name IS NOT NULL 
-                    AND c.customer_name != ''
-                GROUP BY c.customer_name
+                    AND c.customer_id IS NOT NULL 
+                    AND c.customer_id != ''
+                GROUP BY c.customer_id
                 ORDER BY total_spent DESC
                 LIMIT 100";
         
