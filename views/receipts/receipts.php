@@ -34,6 +34,24 @@ try {
     <link rel="stylesheet" href="../../styles/receipts.css">
     <link rel="stylesheet" href="../../styles/header.css">
     <link rel="stylesheet" href="../../bootstrap-5.3.6/css/bootstrap.min.css">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            position: relative;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .main-content {
+            height: calc(100vh - 60px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-bottom: 2rem;
+        }
+    </style>
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
     <script src="../../bootstrap-5.3.6/js/bootstrap.bundle.min.js"></script>
     <script src="../../js/libraries/jquery-3.7.1.min.js"></script>
@@ -45,16 +63,12 @@ try {
 <body>
     <?php require_once '../renderParts/header.php'; ?>
     <?php require_once '../renderParts/sidebar.php'; ?>
-    <main class="main-content" style="margin-left: 4.5em; margin-top: 4.5em;">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-lg-1"></div>
-                <div class="col-lg-10">
-                    <div class="table-header">
-                        <div class="receipts d-flex align-items-center">
-                            <!-- <span class="iconify me-1 ms-3" data-icon="solar:chat-square-2-broken" data-width="24"></span> -->
-                            <h5 class="fw-bold"><span class="fw-bolder text-danger">Charge</span> History</h5>
-                        </div>
+    <main class="main-content">
+        <div class="container px-2" style="max-width: 1500px;">
+            <!-- Page Title -->
+            <div class="mb-4 mt-2 d-flex justify-content-between align-items-center">
+                <h2 class="fw-bold mb-0" style="letter-spacing: 1px;"><span class="fw-bolder text-danger">Charge</span> History</h2>
+            </div>
 
                         <!-- Filter Section -->
                         <div class="filter-container mb-3">
@@ -216,10 +230,6 @@ try {
                                     </div>
                                 </nav>
                             <?php endif; ?>
-                        </div>
-                    </div>
-                </div>
-                <!-- Right Sidebar Removed -->
             </div>
         </div>
     </main>

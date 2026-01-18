@@ -48,6 +48,65 @@
     padding: 1.25rem;
 }
 
+/* Responsive Design */
+@media (max-width: 992px) {
+    .overview-analytics-container {
+        padding: 12px;
+    }
+
+    .summary-card .card-title {
+        font-size: 1.3rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .overview-analytics-container {
+        padding: 10px;
+    }
+
+    .summary-card .card-title {
+        font-size: 1.2rem;
+    }
+
+    .summary-card .card-subtitle {
+        font-size: 0.8rem;
+    }
+
+    .card-header {
+        padding: 0.85rem;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .overview-analytics-container {
+        padding: 8px;
+    }
+
+    .summary-card .card-title {
+        font-size: 1.1rem;
+    }
+
+    .summary-card .card-subtitle {
+        font-size: 0.75rem;
+    }
+
+    .card-header {
+        padding: 0.75rem;
+    }
+
+    .card-header h5 {
+        font-size: 0.95rem;
+    }
+
+    .card-body {
+        padding: 0.85rem;
+    }
+}
+
 canvas {
     width: 100% !important;
     height: 300px !important;

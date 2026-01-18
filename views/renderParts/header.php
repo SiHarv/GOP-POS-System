@@ -99,6 +99,10 @@ $networkInfo = getNetworkInfo();
 
 <header class="main-header">
     <div class="header-content">
+        <!-- Mobile menu toggle - positioned at very left -->
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" style="display: none;">
+            <span class="iconify" data-icon="solar:hamburger-menu-outline" data-width="24"></span>
+        </button>
         <div class="header-left">
             <!-- <img src="../../icon/icon.png" alt="" style="height: 40px; width: 30px; margin-right: 10px;"> -->
             <h1 class="fw-bold">GOP-<span class="fw-bold">MARKETING</span></h1>

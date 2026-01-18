@@ -7,6 +7,19 @@
   padding-top: 5.5rem;
   padding-left: 80px; /* Default padding to account for sidebar */
 }
+
+@media (max-width: 992px) {
+  .main-content {
+    padding-left: 60px;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    padding-left: 0;
+    padding-top: 4.5rem;
+  }
+}
 body {
   font-family: Arial, sans-serif;
   background-color: #f4f6f9;

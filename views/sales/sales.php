@@ -61,10 +61,10 @@ $currentMonth = date('n');
                     <select id="yearSelect" class="form-select" style="width: 100px;">
                         <?php 
                         $currentYear = date('Y');
-                        $years = range(max(2025, $currentYear), $currentYear - 5);
+                        $years = range($currentYear, $currentYear - 5);
                         foreach ($years as $y): 
                         ?>
-                            <option value="<?= $y ?>" <?= $y == 2025 ? 'selected' : '' ?>><?= $y ?></option>
+                            <option value="<?= $y ?>" <?= $y == $currentYear ? 'selected' : '' ?>><?= $y ?></option>
                         <?php endforeach; ?>
                     </select>
                     <button class="btn btn-outline-primary" onclick="exportData()">

@@ -9,7 +9,8 @@ $(document).ready(function() {
         'charge.php': 'charge',
         'customers.php': 'customers',
         'items.php': 'items',
-        'sales.php': 'sales'
+        'sales.php': 'sales',
+        'reports.php': 'reports'
     };
     
     Object.keys(menuItems).forEach(key => {
@@ -28,6 +29,42 @@ $(document).ready(function() {
         }
     });
 
+    // Mobile menu toggle functionality
+    $('#mobileMenuToggle').on('click', function() {
+        $('.sidebar').toggleClass('active');
+        $('body').toggleClass('sidebar-open');
+    });
+
+    // Close sidebar when clicking outside on mobile
+    $(document).on('click', function(e) {
+        if (window.innerWidth <= 768) {
+            if (!$(e.target).closest('.sidebar').length && !$(e.target).closest('#mobileMenuToggle').length) {
+                $('.sidebar').removeClass('active');
+                $('body').removeClass('sidebar-open');
+            }
+        }
+    });
+
+    // Close sidebar after clicking a menu item on mobile
+    $('.sidebar-icon').on('click', function() {
+        if (window.innerWidth <= 768) {
+            setTimeout(function() {
+                $('.sidebar').removeClass('active');
+                $('body').removeClass('sidebar-open');
+            }, 200);
+        }
+        localStorage.setItem('lastActiveSidebar', $(this).attr('href'));
+    });
+
+    // Handle window resize
+    $(window).on('resize', function() {
+        if (window.innerWidth > 768) {
+            $('.sidebar').removeClass('active');
+            $('body').removeClass('sidebar-open');
+        }
+    });
+
+    // Touch support for mobile
     if (window.innerWidth <= 768) {
         $('.sidebar').on('touchstart', function() {
             $(this).addClass('hover-effect');
@@ -39,8 +76,4 @@ $(document).ready(function() {
             }
         });
     }
-    
-    $('.sidebar-icon').on('click', function() {
-        localStorage.setItem('lastActiveSidebar', $(this).attr('href'));
-    });
 });

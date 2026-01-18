@@ -71,13 +71,13 @@ require_once __DIR__ . '/../../auth/check_auth.php';
                                 Report Type
                             </label>
                             <select class="form-select" id="reportType">
-                                <option value="sales_summary">📊 Sales Summary</option>
-                                <option value="inventory">📦 Inventory Status</option>
-                                <option value="profit_loss">💰 Profit & Loss</option>
-                                <option value="product_performance">⭐ Product Performance</option>
-                                <option value="transaction">🧾 Transactions</option>
-                                <option value="customer_sales">👥 Customer Sales</option>
-                                <option value="low_stock">⚠️ Low Stock Alert</option>
+                                <option value="sales_summary">Sales Summary</option>
+                                <option value="inventory">Inventory Status</option>
+                                <option value="profit_loss">Profit & Loss</option>
+                                <option value="product_performance">Product Performance</option>
+                                <option value="transaction">Transactions</option>
+                                <option value="customer_sales">Customer Sales</option>
+                                <option value="low_stock">Low Stock Alert</option>
                             </select>
                         </div>
                         <div class="col-md-3">
@@ -170,14 +170,21 @@ require_once __DIR__ . '/../../auth/check_auth.php';
 
             <!-- Report Content -->
             <div class="card border-0 shadow-sm">
-                <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center py-3">
-                    <h5 class="mb-0 fw-bold" id="reportTitle">
-                        <span class="iconify me-2" data-icon="solar:document-text-bold" style="color: #3b82f6;"></span>
-                        <span class="fw-bolder" style="color: #3b82f6;">Report</span> Preview
-                    </h5>
-                    <small class="text-muted fw-semibold" id="reportDateRange">
-                        <span class="iconify me-1" data-icon="solar:calendar-mark-outline"></span>
-                    </small>
+                <div class="card-header bg-white border-bottom py-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="mb-0 fw-bold" id="reportTitle">
+                            <span class="iconify me-2" data-icon="solar:document-text-bold" style="color: #3b82f6;"></span>
+                            <span class="fw-bolder" style="color: #3b82f6;">Report</span> Preview
+                        </h5>
+                        <small class="text-muted fw-semibold" id="reportDateRange">
+                            <span class="iconify me-1" data-icon="solar:calendar-mark-outline"></span>
+                        </small>
+                    </div>
+                    <div class="position-relative" id="searchBarContainer" style="display: none;">
+                        <span class="iconify position-absolute" data-icon="solar:magnifer-outline" style="left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8;"></span>
+                        <input type="text" class="form-control ps-5" id="tableSearchInput" placeholder="Search in table..." style="font-size: 14px;">
+                        <span class="position-absolute text-muted small" id="searchResultCount" style="right: 12px; top: 50%; transform: translateY(-50%);"></span>
+                    </div>
                 </div>
                 <div class="card-body p-0">
                     <div id="reportContent">

@@ -93,6 +93,8 @@
 .table-responsive {
     overflow-x: auto;
     margin: 0;
+    max-height: calc(100vh - 420px);
+    overflow-y: auto;
 }
 
 #reportTable {
@@ -117,6 +119,8 @@
     letter-spacing: 0.8px;
     border-bottom: 2px solid #e2e8f0;
     white-space: nowrap;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 #reportTable tbody td {

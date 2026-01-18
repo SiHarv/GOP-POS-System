@@ -7,6 +7,11 @@ $(document).ready(function() {
         generateReport();
     });
 
+    // Table Search Functionality
+    $('#tableSearchInput').on('keyup', function() {
+        searchTable($(this).val());
+    });
+
     // Export PDF
     $('#exportPdfBtn').on('click', function() {
         if (!currentReportData) {
@@ -132,6 +137,52 @@ $(document).ready(function() {
             <span class="fw-bolder" style="color: ${color};">${title.split(' ')[0]}</span> ${title.split(' ').slice(1).join(' ')}
         `);
         $('#reportContent').html(html);
+        
+        // Show search bar if there's a table
+        if (html.includes('reportTable')) {
+            $('#searchBarContainer').show();
+            $('#tableSearchInput').val('');
+            updateSearchCount();
+        } else {
+            $('#searchBarContainer').hide();
+        }
+    }
+
+    function searchTable(searchTerm) {
+        const table = $('#reportTable');
+        if (!table.length) return;
+
+        const rows = table.find('tbody tr');
+        searchTerm = searchTerm.toLowerCase().trim();
+
+        if (searchTerm === '') {
+            rows.show();
+        } else {
+            rows.each(function() {
+                const rowText = $(this).text().toLowerCase();
+                if (rowText.includes(searchTerm)) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        }
+        
+        updateSearchCount();
+    }
+
+    function updateSearchCount() {
+        const table = $('#reportTable');
+        if (!table.length) return;
+
+        const visibleRows = table.find('tbody tr:visible').length;
+        const totalRows = table.find('tbody tr').length;
+        
+        if ($('#tableSearchInput').val()) {
+            $('#searchResultCount').text(`${visibleRows} of ${totalRows}`);
+        } else {
+            $('#searchResultCount').text(`${totalRows} rows`);
+        }
     }
 
     function renderSalesSummary(data) {
@@ -261,8 +312,6 @@ $(document).ready(function() {
             html += `<td>${row.receipt_id}</td>`;
             html += `<td>${formatDateTime(row.charge_date)}</td>`;
             html += `<td>${row.customer_name || 'Sample Name'}</td>`;
-            
-            // Please querry the name from customer name in table "Customers" to get customer name
             html += `<td>${row.items_count}</td>`;
             html += `<td>${row.total_qty}</td>`;
             html += `<td>₱${parseFloat(row.total_price).toLocaleString('en-PH', {minimumFractionDigits:2})}</td>`;

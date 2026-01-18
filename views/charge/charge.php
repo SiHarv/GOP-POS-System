@@ -26,6 +26,24 @@ $selectedSalesman = isset($_SESSION['charge_salesman']) ? $_SESSION['charge_sale
     <link rel="stylesheet" href="../../styles/charge.css">
     <link rel="stylesheet" href="../../styles/header.css">
     <link rel="stylesheet" href="../../bootstrap-5.3.6/css/bootstrap.min.css">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            position: relative;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .main-content {
+            height: calc(100vh - 60px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-bottom: 2rem;
+        }
+    </style>
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
     <script src="../../bootstrap-5.3.6/js/bootstrap.bundle.min.js"></script>
     <script src="../../js/libraries/jquery-3.7.1.min.js"></script>
@@ -38,11 +56,13 @@ $selectedSalesman = isset($_SESSION['charge_salesman']) ? $_SESSION['charge_sale
     <?php require_once '../renderParts/sidebar.php'; ?>
 
     <main class="main-content">
-        <div class="container">
+        <div class="container px-2" style="max-width: 1500px;">
+            <!-- Page Title -->
+            <div class="mb-4 mt-2 d-flex justify-content-between align-items-center">
+                <h2 class="fw-bold mb-0" style="letter-spacing: 1px;"><span class="text-danger fw-bolder">Charge</span> Management</h2>
+            </div>
+
             <div class="row gx-3">
-                <div class="mb-2">
-                    <h5 class="text-start fw-bold"><span class="text-danger fw-bolder">Charge</span> Management</h5>
-                </div>
                 <!-- Left side - Item Selection -->
                 <div class="col-lg-9 col-md-8">
                     <div class="card mb-4">

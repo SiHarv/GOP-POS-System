@@ -118,6 +118,7 @@ class ReportsController {
                     c.charge_date,
                     c.total_price,
                     c.customer_id,
+                    cust.name as customer_name,
                     COUNT(ci.id) as items_count,
                     SUM(ci.quantity) as total_qty,
                     SUM(ci.quantity * i.cost) as cost,
@@ -125,6 +126,7 @@ class ReportsController {
                 FROM charges c
                 LEFT JOIN charge_items ci ON c.id = ci.charge_id
                 LEFT JOIN items i ON ci.item_id = i.id
+                LEFT JOIN customers cust ON c.customer_id = cust.id
                 WHERE DATE(c.charge_date) BETWEEN ? AND ?
                 GROUP BY c.id
                 ORDER BY c.charge_date DESC
@@ -140,6 +142,7 @@ class ReportsController {
     public function getCustomerSales($startDate, $endDate) {
         $sql = "SELECT 
                     c.customer_id,
+                    cust.name as customer_name,
                     COUNT(DISTINCT c.id) as total_purchases,
                     SUM(c.total_price) as total_spent,
                     AVG(c.total_price) as avg_purchase,
@@ -147,10 +150,11 @@ class ReportsController {
                     MAX(c.charge_date) as last_purchase
                 FROM charges c
                 LEFT JOIN charge_items ci ON c.id = ci.charge_id
+                LEFT JOIN customers cust ON c.customer_id = cust.id
                 WHERE DATE(c.charge_date) BETWEEN ? AND ?
                     AND c.customer_id IS NOT NULL 
                     AND c.customer_id != ''
-                GROUP BY c.customer_id
+                GROUP BY c.customer_id, cust.name
                 ORDER BY total_spent DESC
                 LIMIT 100";
         

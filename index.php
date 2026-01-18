@@ -43,6 +43,7 @@ function showLoginForm($error = '')
                 align-items: center;
                 justify-content: center;
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                padding: 15px;
             }
 
             .auth-card {
@@ -184,6 +185,50 @@ function showLoginForm($error = '')
 
             .shake {
                 animation: shake 0.5s ease-in-out;
+            }
+
+            /* Responsive Design */
+            @media (max-width: 576px) {
+                .auth-card {
+                    padding: 30px 20px;
+                }
+
+                .logo {
+                    width: 80px;
+                    height: 80px;
+                    font-size: 1.8rem;
+                }
+
+                .pin-digit {
+                    width: 40px;
+                    height: 40px;
+                    font-size: 1.4rem;
+                }
+
+                .pin-input-group {
+                    gap: 6px;
+                }
+
+                h2 {
+                    font-size: 1.5rem;
+                }
+
+                .btn-auth {
+                    padding: 12px 30px;
+                    font-size: 1rem;
+                }
+            }
+
+            @media (max-width: 380px) {
+                .pin-digit {
+                    width: 35px;
+                    height: 35px;
+                    font-size: 1.2rem;
+                }
+
+                .pin-input-group {
+                    gap: 4px;
+                }
             }
         </style>
     </head>
