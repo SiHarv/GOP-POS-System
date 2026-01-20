@@ -188,6 +188,33 @@ class ItemsController
         try {
             $this->conn->begin_transaction();
 
+            $itemId = isset($data['id']) ? (int)$data['id'] : 0;
+            if ($itemId <= 0) {
+                throw new Exception("Invalid item ID");
+            }
+
+            $baseStock = isset($data['stock']) ? (int)$data['stock'] : 0;
+            $newStock = isset($data['new_stock']) ? (int)$data['new_stock'] : 0;
+
+            if ($baseStock < 0 || $newStock < 0) {
+                throw new Exception("Stock values cannot be negative");
+            }
+
+            $currentSql = "SELECT stock FROM items WHERE id = ? FOR UPDATE";
+            $currentStmt = $this->conn->prepare($currentSql);
+            $currentStmt->bind_param("i", $itemId);
+            $currentStmt->execute();
+            $currentResult = $currentStmt->get_result();
+
+            if ($currentResult->num_rows === 0) {
+                throw new Exception("Item not found");
+            }
+
+            $currentRow = $currentResult->fetch_assoc();
+            $existingStock = (int)$currentRow['stock'];
+
+            $finalStock = $baseStock + $newStock;
+
             // Update main item information
             $sql = "UPDATE items SET 
                     name = ?, 
@@ -195,7 +222,7 @@ class ItemsController
                     sold_by = ?, 
                     cost = ?, 
                     price = ?,
-                    stock = stock + ? 
+                    stock = ? 
                     WHERE id = ?";
 
             $stmt = $this->conn->prepare($sql);
@@ -206,16 +233,16 @@ class ItemsController
                 $data['sold_by'],
                 $data['cost'],
                 $data['price'],
-                $data['new_stock'],
-                $data['id']
+                $finalStock,
+                $itemId
             );
             $stmt->execute();
 
-            // Record new stock addition if any
-            if (!empty($data['new_stock']) && $data['new_stock'] > 0) {
+            $addedStock = $finalStock - $existingStock;
+            if ($addedStock > 0) {
                 $historySql = "INSERT INTO item_stock_history (item_id, quantity_added) VALUES (?, ?)";
                 $stmt = $this->conn->prepare($historySql);
-                $stmt->bind_param("ii", $data['id'], $data['new_stock']);
+                $stmt->bind_param("ii", $itemId, $addedStock);
                 $stmt->execute();
             }
 

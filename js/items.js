@@ -79,6 +79,7 @@ $(document).ready(function() {
             $('#edit_item_id').val(id);
             $('#edit_name').val(name);
             $('#edit_stock').val(stock);
+            $('#edit_new_stock').val();
             $('#edit_sold_by').val(soldBy);
             $('#edit_category').val(category);
             $('#edit_cost').val(cost);
@@ -221,8 +222,8 @@ $(document).ready(function() {
         const formData = {
             id: $('#edit_item_id').val(),
             name: $('#edit_name').val(),
-            stock: $('#edit_stock').val(),
-            new_stock: $('#edit_new_stock').val(),
+            stock: parseInt($('#edit_stock').val(), 10) || 0,
+            new_stock: parseInt($('#edit_new_stock').val(), 10) || 0,
             sold_by: $('#edit_sold_by').val(),
             category: $('#edit_category').val(),
             cost: $('#edit_cost').val(),
@@ -237,7 +238,7 @@ $(document).ready(function() {
             success: function(response) {
                 if(response.success) {
                     // Clear all input fields
-                    $('#edit_new_stock').val('');  // Clear new stock field
+                    $('#edit_new_stock').val(0);  // Reset new stock field
                     
                     // Close modal and refresh table
                     $('#editItemModal').modal('hide');

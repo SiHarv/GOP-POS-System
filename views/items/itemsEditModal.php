@@ -14,8 +14,8 @@
                         <input type="text" class="form-control" id="edit_name" name="name" required>
                     </div>
                     <div class="mb-3">
-                        <label for="edit_stock" class="form-label">Current Stock</label>
-                        <input type="number" class="form-control" id="edit_stock" name="stock" min="0" readonly>
+                        <label for="edit_stock" class="form-label">Current Stock (editable)</label>
+                        <input type="number" class="form-control" id="edit_stock" name="stock" min="0">
                     </div>
                     <div class="mb-3">
                         <label for="edit_new_stock" class="form-label">Add New Stock</label>
